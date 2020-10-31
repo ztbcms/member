@@ -2,7 +2,7 @@
     <el-card>
         <h3>添加会员</h3>
         <el-row>
-            <el-col :span="8">
+            <el-col :span="20">
                 <div class="grid-content ">
                     <el-form ref="form" :model="form" label-width="80px">
                         <el-form-item label="用户名">

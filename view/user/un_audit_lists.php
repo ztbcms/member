@@ -133,18 +133,18 @@
                 align="center"
                 label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="openDetail(scope.row.user_id)" type="success" size="medium">查看详情</el-button>
-                    <el-button @click="editUser(scope.row.user_id)" type="primary"  size="medium">修改</el-button>
+                    <el-button @click="openDetail(scope.row.user_id)" type="success" size="mini">查看详情</el-button>
+                    <el-button @click="editUser(scope.row.user_id)" type="primary"  size="mini">修改</el-button>
 
                     <template v-if="scope.row.is_block == 1">
-                        <el-button @click="blockUser(scope.row.user_id,0,'')" type="success" size="medium">
+                        <el-button @click="blockUser(scope.row.user_id,0,'')" type="success" size="mini">
                             恢复
                         </el-button>
-                        <el-button @click="delUser(scope.row.user_id,'')" type="danger" size="medium">
+                        <el-button @click="delUser(scope.row.user_id,'')" type="danger" size="mini">
                             删除
                         </el-button>
                     </template>
-                    <el-button @click="blockUser(scope.row.user_id,1,'')" type="danger" v-if="scope.row.is_block == 0" size="medium">拉黑
+                    <el-button @click="blockUser(scope.row.user_id,1,'')" type="danger" v-if="scope.row.is_block == 0" size="mini">拉黑
                     </el-button>
                 </template>
             </el-table-column>
@@ -161,11 +161,11 @@
             </el-pagination>
         </div>
         <div>
-            <el-button type="primary"  @click="batchUpdateAudit('',true)">批量审核</el-button>
-            <el-button type="primary"  @click="batchUpdateNoAudit('',true)">取消审核</el-button>
-            <el-button type="danger"  @click="blockUser('',1,true)">拉黑</el-button>
-            <el-button type="primary"  @click="blockUser('',0,true)">取消拉黑</el-button>
-            <el-button type="danger"  @click="delUser('',true)">删除</el-button>
+            <el-button type="primary" @click="batchUpdateAudit('',true)" size="mini">批量审核</el-button>
+            <el-button type="primary" @click="batchUpdateNoAudit('',true)" size="mini">取消审核</el-button>
+            <el-button type="danger" @click="blockUser('',1,true)" size="mini">拉黑</el-button>
+            <el-button type="primary" @click="blockUser('',0,true)" size="mini">取消拉黑</el-button>
+            <el-button type="danger" @click="delUser('',true)" size="mini">删除</el-button>
         </div>
     </el-card>
 </div>

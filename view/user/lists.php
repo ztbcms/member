@@ -1,8 +1,5 @@
 <div id="app" v-cloak>
     <el-card>
-        <div style="margin-bottom: 10px;">
-            <el-button @click="detail(0)" type="primary" >添加会员</el-button>
-        </div>
         <div>
             <el-form :inline="true" :model="searchForm" class="demo-form-inline">
                 <el-form-item label="注册日期">
@@ -39,7 +36,8 @@
                     <el-input v-model="searchForm.search" placeholder="用户名、用户id"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="search">查询</el-button>
+                    <el-button type="primary" @click="search" >查询</el-button>
+                    <el-button @click="detail(0)" type="primary" >添加会员</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -149,19 +147,19 @@
                 align="center"
                 label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="openDetail(scope.row.user_id)" type="success" size="medium">查看详情</el-button>
-                    <el-button @click="detail(scope.row.user_id)" type="primary" size="medium">修改</el-button>
+                    <el-button @click="openDetail(scope.row.user_id)" type="success" size="mini">查看详情</el-button>
+                    <el-button @click="detail(scope.row.user_id)" type="primary" size="mini">修改</el-button>
 
                     <template v-if="scope.row.is_block == 1">
-                        <el-button @click="blockUser(scope.row.user_id,0,'')" type="success" size="medium">
+                        <el-button @click="blockUser(scope.row.user_id,0,'')" type="success" size="mini">
                             恢复
                         </el-button>
-                        <el-button @click="delUser(scope.row.user_id,'')" type="danger" size="medium">
+                        <el-button @click="delUser(scope.row.user_id,'')" type="danger" size="mini">
                             删除
                         </el-button>
                     </template>
                     <el-button @click="blockUser(scope.row.user_id,1,'')" type="danger" v-if="scope.row.is_block == 0"
-                               size="medium">拉黑
+                               size="mini">拉黑
                     </el-button>
                 </template>
             </el-table-column>
@@ -178,11 +176,11 @@
             </el-pagination>
         </div>
         <div>
-            <el-button type="primary" @click="batchUpdateAudit('',true)">批量审核</el-button>
-            <el-button type="primary" @click="batchUpdateNoAudit('',true)">取消审核</el-button>
-            <el-button type="danger" @click="blockUser('',1,true)">拉黑</el-button>
-            <el-button type="primary" @click="blockUser('',0,true)">取消拉黑</el-button>
-            <el-button type="danger" @click="delUser('',true)">删除</el-button>
+            <el-button type="primary" @click="batchUpdateAudit('',true)" size="mini">批量审核</el-button>
+            <el-button type="primary" @click="batchUpdateNoAudit('',true)" size="mini">取消审核</el-button>
+            <el-button type="danger" @click="blockUser('',1,true)" size="mini">拉黑</el-button>
+            <el-button type="primary" @click="blockUser('',0,true)" size="mini">取消拉黑</el-button>
+            <el-button type="danger" @click="delUser('',true)" size="mini">删除</el-button>
         </div>
     </el-card>
 </div>
@@ -226,9 +224,9 @@
                         type: 2,
                         title: '添加',
                         content: "{:api_url('/member/user/add')}" + '?user_id' + user_id,
-                        area: ['100%', '100%'],
+                        area: ['30%', '90%'],
                         end: function () {  //回调函数
-                            that.fetchData()
+                            that.getList()
                         }
                     })
                 },
