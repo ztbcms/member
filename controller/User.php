@@ -50,6 +50,8 @@ class User extends AdminController
     public function addUser()
     {
         $post = $this->request->post();
+        // 主要是Service 层做逻辑 TODO
+
         // 创建主信息
         $MemberService = new MemberService();
         Db::startTrans();
