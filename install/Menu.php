@@ -121,7 +121,7 @@ return [
                         "child"  => []
                     ],
                     [
-                        "route"  => "member/user/auth",
+                        "route"  => "member/connect/lists",
                         "type"   => 1,
                         "status" => 1,
                         "name"   => "登录授权管理",
@@ -248,7 +248,7 @@ return [
                         "child"  => []
                     ],
                     [
-                        "route"  => "member/model/index",
+                        "route"  => "member/model/lists",
                         "type"   => 1,
                         "status" => 1,
                         "name"   => "模型管理",

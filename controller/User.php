@@ -242,16 +242,12 @@ class User extends AdminController
     public function blockUser()
     {
         $userIds = $this->request->post('user_id', 0);
+        $isBlock = $this->request->post('is_block', 0);
         if (empty($userIds)) {
             return self::makeJsonReturn(false, '', '请选择');
         }
-        $isBlock = $this->request->post('is_block', 0);
-
-        $count = 0;
-        foreach ($userIds as $userId) {
-            $count += MemberUserModel::where('user_id', $userId)->save(['is_block' => $isBlock]);
-        }
-        if ($count > 0) {
+        $res = MemberUserService::blockUser($userIds,$isBlock);
+        if ($res) {
             return self::makeJsonReturn(true, '', '操作成功');
         }
         return self::makeJsonReturn(false, '', '操作失败');
@@ -267,7 +263,7 @@ class User extends AdminController
         if (empty($userIds)) {
             return self::makeJsonReturn(false, '', '请选择');
         }
-        $res = MemberUserModel::whereIn('user_id', $userIds)->useSoftDelete('delete_time', time())->delete();
+        $res = MemberUserService::batchDelUser($userIds);
         if ($res) {
             return self::makeJsonReturn(true, '', '删除成功');
         }
@@ -284,14 +280,10 @@ class User extends AdminController
         if (empty($userIds)) {
             return self::makeJsonReturn(false, '', '请选择');
         }
-        $count = 0;
-        foreach ($userIds as $userId) {
-            $count += MemberUserModel::where('user_id', $userId)->save(['checked' => MemberUserModel::IS_CHECKED]);
-        }
-        if ($count > 0) {
+        $res = MemberUserService::auditUser($userIds,MemberUserModel::IS_CHECKED);
+        if ($res) {
             //更新成功触发，审核通过行为 TODO
 //            Hook::listen('member_verify', MemberBehaviorParam::create(['userid' => $val['userid']]));
-
             return self::makeJsonReturn(true, '', '审核成功');
         }
         return self::makeJsonReturn(false, '', '审核失败');
@@ -307,14 +299,10 @@ class User extends AdminController
         if (empty($userIds)) {
             return self::makeJsonReturn(false, '', '请选择');
         }
-        $count = 0;
-        foreach ($userIds as $userId) {
-            $count += MemberUserModel::where('user_id', $userId)->save(['checked' => MemberUserModel::NO_CHECKED]);
-        }
-        if ($count > 0) {
-            //更新成功触发，审核是取消行为
+        $res = MemberUserService::auditUser($userIds,MemberUserModel::NO_CHECKED);
+        if ($res) {
+            //更新成功触发，审核是取消行为 TODO
 //            Hook::listen('member_unverify', MemberBehaviorParam::create(['userid' => $val['userid']]));
-
             return self::makeJsonReturn(true, '', '取消审核成功');
         }
         return self::makeJsonReturn(false, '', '取消审核失败');

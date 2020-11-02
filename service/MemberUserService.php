@@ -273,4 +273,47 @@ class MemberUserService extends BaseService
     {
         return MemberUserModel::where('user_id', $userId)->save(['userpic' => null]);
     }
+
+    /**
+     * 拉黑，启用用户批量
+     * @param $userIds
+     * @param $isBlock
+     * @return bool
+     */
+    public static function blockUser($userIds,$isBlock){
+        $count = 0;
+        foreach ($userIds as $userId) {
+            $count += MemberUserModel::where('user_id', $userId)->save(['is_block' => $isBlock]);
+        }
+        if ($count > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 审核用户状态
+     * @param $userIds
+     * @param $status
+     * @return bool
+     */
+    public static function auditUser($userIds,$status){
+        $count = 0;
+        foreach ($userIds as $userId) {
+            $count += MemberUserModel::where('user_id', $userId)->save(['checked' => $status ]);
+        }
+        if ($count > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 删除用户批量
+     * @param $userIds
+     * @return bool
+     */
+    public static function batchDelUser($userIds){
+        return MemberUserModel::whereIn('user_id', $userIds)->useSoftDelete('delete_time', time())->delete();
+    }
 }

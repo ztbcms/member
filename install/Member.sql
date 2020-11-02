@@ -32,7 +32,8 @@ CREATE TABLE `cms_member_tag` (
 -- ----------------------------
 -- Table structure for cms_member_tag_bind
 -- ----------------------------
-CREATE TABLE `ztb_member_tag_bind` (
+DROP TABLE IF EXISTS `cms_member_tag_bind`;
+CREATE TABLE `cms_member_tag_bind` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `tag_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,

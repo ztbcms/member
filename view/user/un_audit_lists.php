@@ -12,6 +12,16 @@
                         end-placeholder="注册结束日期">
                     </el-date-picker>
                 </el-form-item>
+                <el-form-item label="审核状态">
+                    <el-select v-model="searchForm.checked">
+                        <el-option
+                            v-for="item in statusOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="拉黑状态">
                     <el-select v-model="searchForm.is_block">
                         <el-option
@@ -25,8 +35,12 @@
                 <el-form-item label="">
                     <el-input v-model="searchForm.search" placeholder="用户名、用户id"></el-input>
                 </el-form-item>
+                <el-form-item label="">
+                    <el-input v-model="searchForm.tag_name" placeholder="用户标签名"></el-input>
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="search">查询</el-button>
+                    <el-button @click="add()" type="primary">添加会员</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -47,8 +61,11 @@
                 min-width="60"
                 label="审核状态">
                 <template slot-scope="scope">
-                    <el-link :underline="false"@click="batchUpdateNoAudit(scope.row.user_id,'')" class="el-icon-success" style="color: green;font-size: 24px;" v-if="scope.row.checked == '1'"></el-link>
-                    <el-link :underline="false" v-else  @click="batchUpdateAudit(scope.row.user_id,'')"><span class="el-icon-error" style="color: red;font-size: 24px;"></span></el-link>
+                    <el-link :underline="false" @click="batchUpdateNoAudit(scope.row.user_id,'')"
+                             class="el-icon-success" style="color: green;font-size: 24px;"
+                             v-if="scope.row.checked == '1'"></el-link>
+                    <el-link :underline="false" v-else @click="batchUpdateAudit(scope.row.user_id,'')"><span
+                            class="el-icon-error" style="color: red;font-size: 24px;"></span></el-link>
                 </template>
             </el-table-column>
 
@@ -77,6 +94,13 @@
                 align="center"
                 label="用户名"
             >
+            </el-table-column>
+
+            <el-table-column
+                min-width="100"
+                prop="tags_name"
+                align="center"
+                label="标签">
             </el-table-column>
 
             <el-table-column
@@ -134,7 +158,7 @@
                 label="操作">
                 <template slot-scope="scope">
                     <el-button @click="openDetail(scope.row.user_id)" type="success" size="mini">查看详情</el-button>
-                    <el-button @click="editUser(scope.row.user_id)" type="primary"  size="mini">修改</el-button>
+                    <el-button @click="editUser(scope.row.user_id)" type="primary" size="mini">修改</el-button>
 
                     <template v-if="scope.row.is_block == 1">
                         <el-button @click="blockUser(scope.row.user_id,0,'')" type="success" size="mini">
@@ -144,7 +168,8 @@
                             删除
                         </el-button>
                     </template>
-                    <el-button @click="blockUser(scope.row.user_id,1,'')" type="danger" v-if="scope.row.is_block == 0" size="mini">拉黑
+                    <el-button @click="blockUser(scope.row.user_id,1,'')" type="danger" v-if="scope.row.is_block == 0"
+                               size="mini">拉黑
                     </el-button>
                 </template>
             </el-table-column>
@@ -179,6 +204,7 @@
                     search: "",
                     is_block: "",
                     checked: "0",
+                    tag_name: "",
                 },
                 statusOptions: [
                     {
@@ -203,11 +229,50 @@
                 this.getList();
             },
             methods: {
+                // 查看详情
+                openDetail:function(user_id){
+                    var that = this;
+                    layer.open({
+                        type: 2,
+                        title: '添加',
+                        content: "{:api_url('/member/user/add')}" + '?user_id=' + user_id,
+                        area: ['30%', '90%'],
+                        end: function () {  //回调函数
+                            that.getList()
+                        }
+                    })
+                },
+                // 添加页面
+                add: function () {
+                    var that = this;
+                    layer.open({
+                        type: 2,
+                        title: '添加',
+                        content: "{:api_url('/member/user/add')}",
+                        area: ['30%', '90%'],
+                        end: function () {  //回调函数
+                            that.getList()
+                        }
+                    })
+                },
+                // 编辑页面
+                editUser: function (user_id) {
+                    var that = this;
+                    layer.open({
+                        type: 2,
+                        title: '编辑',
+                        content: "{:api_url('/member/user/edit')}" + '?user_id=' + user_id,
+                        area: ['30%', '90%'],
+                        end: function () {  //回调函数
+                            that.getList()
+                        }
+                    })
+                },
                 // 全选
                 handleSelectionChange: function (val) {
                     this.multipleSelection = val;
                     var selectUserIds = [];
-                    this.multipleSelection.forEach(function (val){
+                    this.multipleSelection.forEach(function (val) {
                         selectUserIds.push(val.user_id);
                     })
                     this.selectUserIds = selectUserIds;
@@ -243,13 +308,13 @@
                     var _this = this;
                     var userIds = [];
                     // 批量
-                    if(batch == true){
+                    if (batch == true) {
                         userIds = this.selectUserIds;
-                        if(userIds.length == 0){
+                        if (userIds.length == 0) {
                             layer.msg('请选择')
                             return false;
                         }
-                    }else{
+                    } else {
                         // 单次
                         userIds.push(userId)
                     }
@@ -270,22 +335,21 @@
                     })
                 },
                 // 审核
-                batchUpdateAudit:function (userId, batch) {
+                batchUpdateAudit: function (userId, batch) {
                     var _this = this;
                     var userIds = [];
                     // 批量
-                    if(batch == true){
+                    if (batch == true) {
                         userIds = this.selectUserIds;
-                        if(userIds.length == 0){
+                        if (userIds.length == 0) {
                             layer.msg('请选择')
                             return false;
                         }
-                    }else{
+                    } else {
                         // 单次
                         userIds.push(userId)
                     }
-                    layer.confirm('确定要审核通过吗？', {
-                    }, function(){
+                    layer.confirm('确定要审核通过吗？', {}, function () {
                         $.ajax({
                             url: "{:api_url('/member/user/auditUser')}",
                             data: {
@@ -300,27 +364,26 @@
                                 layer.msg(res.msg)
                             }
                         })
-                    }, function(){
+                    }, function () {
                         // 取消
                     });
                 },
                 // 取消审核
-                batchUpdateNoAudit:function (userId, batch) {
+                batchUpdateNoAudit: function (userId, batch) {
                     var _this = this;
                     var userIds = [];
                     // 批量
-                    if(batch == true){
+                    if (batch == true) {
                         userIds = this.selectUserIds;
-                        if(userIds.length == 0){
+                        if (userIds.length == 0) {
                             layer.msg('请选择')
                             return false;
                         }
-                    }else{
+                    } else {
                         // 单次
                         userIds.push(userId)
                     }
-                    layer.confirm('确定要取消审核吗？', {
-                    }, function(){
+                    layer.confirm('确定要取消审核吗？', {}, function () {
                         $.ajax({
                             url: "{:api_url('/member/user/cancelAuditUser')}",
                             data: {
@@ -335,27 +398,26 @@
                                 layer.msg(res.msg)
                             }
                         })
-                    }, function(){
+                    }, function () {
                         // 取消
                     });
                 },
                 // 删除用户
-                delUser:function (userId,batch) {
+                delUser: function (userId, batch) {
                     var _this = this;
                     var userIds = [];
                     // 批量
-                    if(batch == true){
+                    if (batch == true) {
                         userIds = this.selectUserIds;
-                        if(userIds.length == 0){
+                        if (userIds.length == 0) {
                             layer.msg('请选择')
                             return false;
                         }
-                    }else{
+                    } else {
                         // 单次
                         userIds.push(userId)
                     }
-                    layer.confirm('确定要删除吗？', {
-                    }, function() {
+                    layer.confirm('确定要删除吗？', {}, function () {
                         $.ajax({
                             url: "{:api_url('/member/user/delUser')}",
                             data: {
