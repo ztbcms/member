@@ -37,7 +37,80 @@ return [
                         "status" => 1,
                         "name"   => "会员列表",
                         "remark" => "",
-                        "child"  => []
+                        "child"  => [
+                            [
+                                "route"  => "member/user/getUserList",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "获取会员列表",
+                                "remark" => "",
+                            ],
+                            [
+                                "route"  => "member/user/add",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "添加会员页面",
+                                "remark" => "",
+                                "child"  => [
+                                    [
+                                        "route"  => "member/user/getGroupList",
+                                        "type"   => 1,
+                                        "status" => 0,
+                                        "name"   => "获取所有会员组",
+                                        "remark" => "",
+                                    ]
+                                ]
+                            ],
+                            [
+                                "route"  => "member/user/addUser",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "添加会员",
+                                "remark" => "",
+                            ],
+                            [
+                                "route"  => "member/user/edit",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "编辑会员页面",
+                                "remark" => "",
+                            ],
+                            [
+                                "route"  => "member/user/editUser",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "编辑会员",
+                                "remark" => "",
+                            ],
+                            [
+                                "route"  => "member/user/auditUser",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "审核会员",
+                                "remark" => "",
+                            ],
+                            [
+                                "route"  => "member/user/cancelAuditUser",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "取消审核会员",
+                                "remark" => "",
+                            ],
+                            [
+                                "route"  => "member/user/blockUser",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "拉黑会员",
+                                "remark" => "",
+                            ],
+                            [
+                                "route"  => "member/user/delUser",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "删除会员",
+                                "remark" => "",
+                            ]
+                        ]
                     ],
                     [
                         "route"  => "member/user/unAuditLists",
@@ -64,6 +137,55 @@ return [
                 "name"   => "会员组列表",
                 "remark" => "",
                 "child"  => [
+                    [
+                        "route"  => "member/group/addEdit",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "添加，编辑会员组",
+                        "remark" => "",
+                        "child"  => []
+                    ],
+                    [
+                        "route"  => "member/group/getList",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "获取会员组列表",
+                        "remark" => "",
+                        "child"  => []
+                    ],
+                    [
+                        "route"  => "member/group/getDetail",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "获取会员组详情",
+                        "remark" => "",
+                        "child"  => []
+                    ],
+                    [
+                        "route"  => "member/group/delGroup",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "删除会员组",
+                        "remark" => "",
+                        "child"  => []
+                    ],
+                    [
+                        "route"  => "member/group/updateField",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "更新会员组字段",
+                        "remark" => "",
+                        "child"  => []
+                    ],
+                    [
+                        "route"  => "member/group/listOrder",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "会员组排序",
+                        "remark" => "",
+                        "child"  => []
+                    ],
+
                 ]
             ],
             [
@@ -72,7 +194,43 @@ return [
                 "status" => 1,
                 "name"   => "会员标签",
                 "remark" => "",
-                "child"  => []
+                "child"  => [
+                    [
+                        "route"  => "member/tag/getList",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "获取会员标签列表",
+                        "remark" => "",
+                    ],
+                    [
+                        "route"  => "member/tag/addEdit",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "添加编辑会员标签",
+                        "remark" => "",
+                    ],
+                    [
+                        "route"  => "member/tag/getDetail",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "获取会员标签详情",
+                        "remark" => "",
+                    ],
+                    [
+                        "route"  => "member/tag/delTag",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "删除会员标签",
+                        "remark" => "",
+                    ],
+                    [
+                        "route"  => "member/tag/updateField",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "更新会员标签字段",
+                        "remark" => "",
+                    ],
+                ]
             ],
             [
                 "route"  => "member/setting/index",

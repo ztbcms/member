@@ -17,6 +17,8 @@ use think\facade\View;
  */
 class Index extends AdminController
 {
+    protected $noNeedPermission = ['index'];
+
     public function index()
     {
         return View::fetch();

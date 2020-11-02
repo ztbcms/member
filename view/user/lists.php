@@ -35,9 +35,12 @@
                 <el-form-item label="">
                     <el-input v-model="searchForm.search" placeholder="用户名、用户id"></el-input>
                 </el-form-item>
+                <el-form-item label="">
+                    <el-input v-model="searchForm.tag_name" placeholder="用户标签名"></el-input>
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="search">查询</el-button>
-                    <el-button @click="detail(0)" type="primary">添加会员</el-button>
+                    <el-button @click="add()" type="primary">添加会员</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -201,6 +204,7 @@
                     search: "",
                     is_block: "",
                     checked: "",
+                    tag_name: "",
                 },
                 statusOptions: [
                     {
@@ -225,7 +229,8 @@
                 this.getList();
             },
             methods: {
-                detail: function (user_id) {
+                // 查看详情
+                openDetail:function(user_id){
                     var that = this;
                     layer.open({
                         type: 2,
@@ -237,6 +242,20 @@
                         }
                     })
                 },
+                // 添加页面
+                add: function () {
+                    var that = this;
+                    layer.open({
+                        type: 2,
+                        title: '添加',
+                        content: "{:api_url('/member/user/add')}",
+                        area: ['30%', '90%'],
+                        end: function () {  //回调函数
+                            that.getList()
+                        }
+                    })
+                },
+                // 编辑页面
                 editUser: function (user_id) {
                     var that = this;
                     layer.open({

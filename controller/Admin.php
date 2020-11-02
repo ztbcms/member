@@ -18,6 +18,8 @@ use think\facade\View;
  */
 class Admin extends AdminController
 {
+    protected $noNeedPermission = ['getDashboardIndexInfo'];
+
     /**
      * 概览页
      * @return string

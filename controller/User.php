@@ -8,6 +8,8 @@
 namespace app\member\controller;
 
 use app\common\controller\AdminController;
+use app\member\model\MemberTagBindModel;
+use app\member\model\MemberTagModel;
 use app\member\model\MemberUserModel;
 use app\member\service\MemberTagBindService;
 use app\member\service\MemberUserService;
@@ -222,6 +224,12 @@ class User extends AdminController
         // 用户名、用户id
         if (!empty($param['search'])) {
             $where[] = ['username|user_id', 'like', $param['search']];
+        }
+        // 用户标签
+        if (!empty($param['tag_name'])) {
+            $tagIds = MemberTagModel::whereLike('tag_name', '%' . $param['tag_name'] . '%')->column('tag_id');
+            $userIds = MemberTagBindModel::whereIn('tag_id', $tagIds)->column('user_id');
+            $where[] = ['user_id', 'in', $userIds];
         }
         $list = MemberUserService::getList($where, $limit);
         return self::makeJsonReturn(true, $list);

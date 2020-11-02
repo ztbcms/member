@@ -22,7 +22,10 @@ use think\facade\View;
  */
 class Group extends AdminController
 {
-    // 获取全部会员组 【添加用户使用】
+    /**
+     * 获取全部会员组 【添加会员使用】
+     * @return \think\response\Json
+     */
     public function getGroupList()
     {
         $list = MemberGroupModel::column('group_id,group_name');

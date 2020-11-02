@@ -27,7 +27,21 @@ CREATE TABLE `cms_member_tag` (
   `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
   `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
   PRIMARY KEY (`tag_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='用户标签';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='用户标签表';
+
+-- ----------------------------
+-- Table structure for cms_member_tag_bind
+-- ----------------------------
+CREATE TABLE `ztb_member_tag_bind` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tag_id` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `create_time` int(11) DEFAULT '0',
+  `update_time` int(11) DEFAULT '0',
+  `delete_time` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户标签关联表';
+
 
 -- ----------------------------
 -- Table structure for `cms_member`
