@@ -6,7 +6,7 @@
                 <div class="grid-content ">
                     <el-form ref="form" :model="form" label-width="80px">
                         <el-form-item label="用户名">
-                            <el-input v-model="form.username"></el-input>
+                            <span>{{form.username}}</span>
                         </el-form-item>
                         <el-form-item label="审核通过">
                             <el-radio-group v-model="form.checked">
@@ -157,7 +157,7 @@
                     var formData = this.form;
                     formData.tag_ids = this.tag_ids;
                     $.ajax({
-                        url: "{:api_url('/member/user/addUser')}",
+                        url: "{:api_url('/member/user/editUser')}",
                         data: this.form,
                         method: 'post',
                         success: function (res) {
@@ -174,6 +174,26 @@
                         }
                     })
                 },
+                // 获取详情
+                getDetail:function(){
+                    var that = this;
+                    $.ajax({
+                        url: "{:api_url('/member/user/getDetail')}" + "?user_id=" + this.user_id,
+                        data: {},
+                        method: 'post',
+                        success: function (res) {
+                            if (res.status) {
+                                that.form = res.data
+                                that.form.password = null
+                                that.form.password_confirm = null
+                                that.form.checked = res.data.checked.toString()
+                                that.tag_ids = res.data.tag_ids
+                            }else{
+                                layer.msg(res.msg);
+                            }
+                        }
+                    })
+                },
                 onCancel: function () {
                     window.parent.layer.closeAll()
                 },
@@ -181,6 +201,9 @@
             mounted: function () {
                 this.getGroup();
                 this.getTagsList();
+                if (this.user_id > 0) {
+                    this.getDetail()
+                }
             },
 
         })

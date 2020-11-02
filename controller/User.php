@@ -9,7 +9,6 @@ namespace app\member\controller;
 
 use app\common\controller\AdminController;
 use app\member\model\MemberUserModel;
-use app\member\service\MemberService;
 use app\member\service\MemberTagBindService;
 use app\member\service\MemberUserService;
 use think\facade\Db;
@@ -41,10 +40,19 @@ class User extends AdminController
     }
 
     /**
-     * 添加，编辑用户页面
+     * 添加用户页面
      * @return string
      */
     public function add()
+    {
+        return View::fetch();
+    }
+
+    /**
+     * 编辑用户页面
+     * @return string
+     */
+    public function edit()
     {
         return View::fetch();
     }
@@ -74,12 +82,12 @@ class User extends AdminController
     {
         $post = $this->request->post();
         // 创建主信息
-        $MemberService = new MemberService();
+        $MemberUserService = new MemberUserService();
         Db::startTrans();
         if ($post['password_confirm'] != $post['password']) return self::makeJsonReturn(false, '', '两次密码不一致');
-        $userInfo = $MemberService->userRegister($post['username'], $post['password'], $post['email']);
+        $userInfo = $MemberUserService->userRegister($post['username'], $post['password'], $post['email']);
         if (!$userInfo) {
-            return self::makeJsonReturn(false, '', $MemberService->getError() ?: '创建失败');
+            return self::makeJsonReturn(false, '', $MemberUserService->getError() ?: '创建失败');
         }
         // 创建附加资料
         if (!empty($userInfo['user_id'])) {
@@ -92,13 +100,86 @@ class User extends AdminController
             return self::makeJsonReturn(true, '', '添加会员成功');
         } else {
             Db::rollback();
-            return self::makeJsonReturn(false, '', $MemberService->getError() ?: '创建失败');
+            return self::makeJsonReturn(false, '', $MemberUserService->getError() ?: '创建失败');
         }
     }
 
-    // 编辑用户
-    public function editUser(){
+    // 编辑用户 TODO
+    public function editUser()
+    {
+        if ($this->request->isPost()) {
+            $userId = $this->request->post('user_id', 0, 'intval');
+            $postData = $this->request->post();
 
+            // 模型信息相关更新 TODO
+            $info = $postData['info'];
+            $modelId = $this->request->post('modelid', 0, 'intval');
+
+            Db::startTrans();
+//            $userInfo = MemberUserModel::where('user_id', $userId)->findOrEmpty();
+
+            // 获取用户信息
+            $MemberUserService = new MemberUserService();
+            $userInfo = $MemberUserService->getLocalUser($userId);
+            if (empty($userInfo)) {
+                return self::makeJsonReturn(false, '', '该会员不存在');
+            }
+            // VIP过期时间
+            $data['overduedate'] = strtotime($postData['overduedate']);
+
+            // 模型信息 TODO
+//                $ContentModel = Db::name('model');
+//                if ($userInfo['modelid'] == $modelId && $info) {
+//                    //详细信息验证
+//                    $content_input = new \content_input($modelId);
+//                    $inputinfo = $content_input->get($info, 2);
+//                    if ($inputinfo) {
+//                        //数据验证
+//                        $inputinfo = $ContentModel->token(false)->create($inputinfo, 2);
+//                        if (false == $inputinfo) {
+//                            $ContentModel->tokenRecovery($post);
+//                            $this->error($ContentModel->getError());
+//                        }
+//                    } else {
+//                        $ContentModel->tokenRecovery($post);
+//                        $this->error($content_input->getError());
+//                    }
+//                    //检查详细信息是否已经添加过
+//                    if ($ContentModel->where(array("userid" => $userid))->find()) {
+//                        $ContentModel->where(array("userid" => $userid))->save($inputinfo);
+//                    } else {
+//                        $inputinfo['userid'] = $userid;
+//                        $ContentModel->add($inputinfo);
+//                    }
+//                }
+
+            //判断是否需要删除头像
+            $isDelAvatar = $this->request->post('delavatar', 0);
+            if ($isDelAvatar) {
+                MemberUserService::delAvatar($userInfo['user_id']);
+            }
+            //修改基本资料
+            if ($userInfo['username'] != $postData['username'] || !empty($postData['password']) || $userInfo['email'] != $postData['email']) {
+                $MemberUserService = new MemberUserService();
+                $editRes = $MemberUserService->userEdit($postData['username'], '', $postData['password'], $postData['email'], 1);
+                if (!$editRes) {
+                    return self::makeJsonReturn(false, '', $MemberUserService->getError());
+                }
+            }
+            unset($postData['username'], $postData['password'], $postData['email']);
+            // 更新标签
+            MemberTagBindService::bindUserTag($userId, $postData['tag_ids']);
+            unset($postData['tag_ids']);
+            unset($postData['tags_name']);
+            unset($postData['password_confirm']);
+            unset($postData['info']);
+            //更新除基本资料外的其他信息
+            if (false === MemberUserModel::where('user_id', $userId)->save($postData)) {
+                return self::makeJsonReturn(false, '', '更新失败');
+            }
+            DB::commit();
+            return self::makeJsonReturn(true, '', '更新成功');
+        }
     }
 
     /**

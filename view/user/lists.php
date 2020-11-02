@@ -36,8 +36,8 @@
                     <el-input v-model="searchForm.search" placeholder="用户名、用户id"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="search" >查询</el-button>
-                    <el-button @click="detail(0)" type="primary" >添加会员</el-button>
+                    <el-button type="primary" @click="search">查询</el-button>
+                    <el-button @click="detail(0)" type="primary">添加会员</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -155,7 +155,7 @@
                 label="操作">
                 <template slot-scope="scope">
                     <el-button @click="openDetail(scope.row.user_id)" type="success" size="mini">查看详情</el-button>
-                    <el-button @click="detail(scope.row.user_id)" type="primary" size="mini">修改</el-button>
+                    <el-button @click="editUser(scope.row.user_id)" type="primary" size="mini">修改</el-button>
 
                     <template v-if="scope.row.is_block == 1">
                         <el-button @click="blockUser(scope.row.user_id,0,'')" type="success" size="mini">
@@ -231,6 +231,18 @@
                         type: 2,
                         title: '添加',
                         content: "{:api_url('/member/user/add')}" + '?user_id=' + user_id,
+                        area: ['30%', '90%'],
+                        end: function () {  //回调函数
+                            that.getList()
+                        }
+                    })
+                },
+                editUser: function (user_id) {
+                    var that = this;
+                    layer.open({
+                        type: 2,
+                        title: '编辑',
+                        content: "{:api_url('/member/user/edit')}" + '?user_id=' + user_id,
                         area: ['30%', '90%'],
                         end: function () {  //回调函数
                             that.getList()
