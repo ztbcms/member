@@ -91,6 +91,22 @@ CREATE TABLE `cms_member` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员表';
 
 -- ----------------------------
+-- Table structure for `cms_member_bind`
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_member_bind`;
+CREATE TABLE `cms_member_bind` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `user_id` int(11) DEFAULT NULL COMMENT '用户id',
+  `bind_type` varchar(255) DEFAULT NULL COMMENT '绑定第三方类型',
+  `bind_user_id` int(11) DEFAULT NULL COMMENT '绑定第三方的用户信息id',
+  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
+  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
+  `delete_time` int(11) DEFAULT NULL COMMENT '删除时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员第三方绑定表';
+
+
+-- ----------------------------
 -- Table structure for `cms_member_favorite`
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_member_favorite`;

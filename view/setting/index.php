@@ -4,9 +4,14 @@
             <div>
                 <el-form ref="elForm" :model="formData" size="medium" label-width="180px">
                     <el-form-item label="通行证设置" required>
-                        <el-input v-model="formData.interface"
-                                  placeholder="" clearable :style="{width: '50%'}">
-                        </el-input>  通行证可以放到
+                        <el-select v-model="formData.interface">
+                            <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>通行证可以放到
                     </el-form-item>
 
                     <el-form-item label="允许新会员注册">
@@ -128,9 +133,7 @@
             created() {
             },
             mounted() {
-                if (this.formData.tag_id > 0) {
-                    this.getDetail()
-                }
+                this.getDetail()
             },
             methods: {
                 submitForm: function () {
@@ -151,9 +154,9 @@
                     });
                 },
                 getDetail: function () {
-                    var url = "{:api_url('/member/tag/getDetail')}"
+                    var url = "{:api_url('/member/setting/setting')}"
                     var _this = this;
-                    this.httpGet(url, {tag_id: this.formData.tag_id}, function (res) {
+                    this.httpGet(url, {}, function (res) {
                         if (res.status) {
                             _this.formData = res.data
                         } else {
@@ -162,7 +165,7 @@
                     });
                 },
                 resetForm: function () {
-                    window.parent.layer.closeAll()
+                    // window.parent.layer.closeAll()
                 },
             }
         });

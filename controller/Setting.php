@@ -42,7 +42,7 @@ class Setting extends AdminController
                 $this->error($Module->getError());
             }
         } else {
-            //取得会员接口信息
+//            //取得会员接口信息
 //            $Dir = new \Dir(PROJECT_PATH . 'Libs/Driver/Passport/');
 //            $Interface = array(
 //                '' => '请选择帐号通行证接口（默认本地）',
@@ -55,9 +55,9 @@ class Setting extends AdminController
 //                $neme = str_replace(array('Passport', '.class.php'), '', $r['filename']);
 //                $Interface[$neme] = $lan[$neme] ? $lan[$neme] : $neme;
 //            }
+
             // 模型
-            $setting = Db::name('module')->where('module','Member')->value('setting');
-            echo json_encode($setting);die();
+            $setting = Db::name('module')->where('module', 'Member')->value('setting');
             // 会员组
             $groupList = MemberGroupService::getGroupList();
             foreach ($groupList as $group) {
@@ -66,19 +66,23 @@ class Setting extends AdminController
                 }
                 $groupCache[$group['group_id']] = $group['group_name'];
             }
+
+            return self::makeJsonReturn(true, unserialize($setting));
+
             // 会员模型列表 TODO
 //            foreach ($this->groupsModel as $m) {
 //                $groupsModel[$m['modelid']] = $m['name'];
 //            }
-            $this->assign('groupCache', $groupCache);
+//            $this->assign('groupCache', $groupCache);
 //            $this->assign('groupsModel', $groupsModel);
-            $this->assign("setting", unserialize($setting));
+//            $this->assign("setting", unserialize($setting));
 //            $this->assign("Interface", $Interface);
-            $this->display();
+//            $this->display();
         }
     }
 
-    public function updateSetting(){
+    public function updateSetting()
+    {
 
     }
 }
