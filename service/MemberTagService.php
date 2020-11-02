@@ -67,7 +67,7 @@ class MemberTagService extends BaseService
         $tag->is_show = $isShow;
         $res = $tag->save();
         if ($res) {
-            return true;
+            return $tag->tag_id;
         }
         return false;
     }

@@ -12,7 +12,7 @@
                   highlight-current-row
                   style="width: 100%;"
         >
-            <el-table-column label="标签名称" width="" align="center" width="">
+            <el-table-column label="标签名称" width="" align="center">
                 <template slot-scope="{row}">
                     <div>
                         <span>{{ row.tag_name }}</span>

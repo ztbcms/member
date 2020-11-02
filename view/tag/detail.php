@@ -5,7 +5,6 @@
                 <el-form ref="elForm" :model="formData" size="medium" label-width="100px">
                     <el-form-item label="标签名称" required>
                         <el-input v-model="formData.tag_name"
-                                  maxlength="4"
                                   placeholder="请输入标签名称" clearable :style="{width: '100%'}">
                         </el-input>
                     </el-form-item>

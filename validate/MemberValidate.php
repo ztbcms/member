@@ -8,6 +8,10 @@ namespace app\member\validate;
 
 use think\Validate;
 
+/**
+ * Class MemberValidate
+ * @package app\member\validate
+ */
 class MemberValidate extends Validate
 {
     protected $rule = [

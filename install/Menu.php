@@ -25,39 +25,6 @@ return [
                 "child"  => []
             ],
             [
-                "route"  => "member/tag/lists",
-                "type"   => 1,
-                "status" => 1,
-                "name"   => "会员标签",
-                "remark" => "",
-                "child"  => []
-            ],
-            [
-                "route"  => "member/setting/index",
-                "type"   => 0,
-                "status" => 1,
-                "name"   => "设置",
-                "remark" => "",
-                "child"  => [
-                    [
-                        "route"  => "member/setting/index",
-                        "type"   => 1,
-                        "status" => 1,
-                        "name"   => "会员设置",
-                        "remark" => "",
-                        "child"  => []
-                    ],
-                    [
-                        "route"  => "member/model/index",
-                        "type"   => 1,
-                        "status" => 1,
-                        "name"   => "模型管理",
-                        "remark" => "",
-                        "child"  => []
-                    ],
-                ]
-            ],
-            [
                 "route"  => "member/user/lists",
                 "type"   => 1,
                 "status" => 1,
@@ -91,25 +58,42 @@ return [
                 ]
             ],
             [
-                "route"  => "member/group/index",
+                "route"  => "member/group/lists",
                 "type"   => 1,
                 "status" => 1,
-                "name"   => "会员组管理",
+                "name"   => "会员组列表",
+                "remark" => "",
+                "child"  => [
+                ]
+            ],
+            [
+                "route"  => "member/tag/lists",
+                "type"   => 1,
+                "status" => 1,
+                "name"   => "会员标签",
+                "remark" => "",
+                "child"  => []
+            ],
+            [
+                "route"  => "member/setting/index",
+                "type"   => 0,
+                "status" => 1,
+                "name"   => "设置",
                 "remark" => "",
                 "child"  => [
                     [
-                        "route"  => "member/group/index",
+                        "route"  => "member/setting/index",
                         "type"   => 1,
                         "status" => 1,
-                        "name"   => "会员组列表",
+                        "name"   => "会员设置",
                         "remark" => "",
                         "child"  => []
                     ],
                     [
-                        "route"  => "member/group/add",
+                        "route"  => "member/model/index",
                         "type"   => 1,
                         "status" => 1,
-                        "name"   => "添加会员组",
+                        "name"   => "模型管理",
                         "remark" => "",
                         "child"  => []
                     ],

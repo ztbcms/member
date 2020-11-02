@@ -8,7 +8,7 @@
 namespace app\member\controller;
 
 use app\common\controller\AdminController;
-use app\member\model\MemberModel;
+use app\member\model\MemberUserModel;
 use think\facade\View;
 
 /**
@@ -33,13 +33,13 @@ class Admin extends AdminController
     public function getDashboardIndexInfo()
     {
         // 总数
-        $totalMember = MemberModel::count();
+        $totalMember = MemberUserModel::count();
 
         // 今日新用户
-        $todayNewMember = MemberModel::whereDay('reg_date','today')->count();
+        $todayNewMember = MemberUserModel::whereDay('reg_date','today')->count();
 
         // 7天内增长用户数
-        $lastSeventDayNewMember = MemberModel::whereWeek('reg_date','today')->count();
+        $lastSeventDayNewMember = MemberUserModel::whereWeek('reg_date','today')->count();
 
         $adminStatisticsInfo = [
             'total_member' => $totalMember,

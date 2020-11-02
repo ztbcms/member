@@ -56,7 +56,7 @@ CREATE TABLE `cms_member` (
   `loginnum` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '登录次数',
   `email` varchar(128) NOT NULL DEFAULT '' COMMENT '电子邮箱',
   `phone` varchar(32) NOT NULL DEFAULT '' COMMENT '手机号码',
-  `groupid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '用户组id',
+  `group_id` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '用户组id',
   `areaid` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '地区id',
   `amount` decimal(8,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '钱金总额',
   `point` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '积分',
@@ -127,12 +127,12 @@ CREATE TABLE `cms_member_content` (
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_member_group`;
 CREATE TABLE `cms_member_group` (
-  `groupid` tinyint(3) unsigned NOT NULL auto_increment COMMENT '会员组id',
-  `name` char(15) NOT NULL COMMENT '用户组名称',
+  `group_id` tinyint(3) unsigned NOT NULL auto_increment COMMENT '会员组id',
+  `group_name` char(15) NOT NULL COMMENT '用户组名称',
   `issystem` tinyint(1) unsigned NOT NULL default '0' COMMENT '是否是系统组',
   `starnum` tinyint(2) unsigned NOT NULL COMMENT '会员组星星数',
   `point` smallint(6) unsigned NOT NULL COMMENT '积分范围',
-  `allowmessage` smallint(5) unsigned NOT NULL default '0' COMMENT '许允发短消息数量',
+  `allowmessage` smallint(5) unsigned NOT NULL default '0' COMMENT '最大发送短消息数量',
   `allowvisit` tinyint(1) unsigned NOT NULL default '0' COMMENT '是否允许访问',
   `allowpost` tinyint(1) unsigned NOT NULL default '0' COMMENT '是否允许发稿',
   `allowpostverify` tinyint(1) unsigned NOT NULL COMMENT '是否投稿不需审核',
@@ -144,13 +144,13 @@ CREATE TABLE `cms_member_group` (
   `icon` char(255) NOT NULL COMMENT '用户组图标',
   `usernamecolor` char(7) NOT NULL COMMENT '用户名颜色',
   `description` char(100) NOT NULL COMMENT '描述',
-  `sort` tinyint(3) unsigned NOT NULL default '0' COMMENT '序排',
+  `sort` tinyint(3) unsigned NOT NULL default '0' COMMENT '排序',
   `disabled` tinyint(1) unsigned NOT NULL default '0' COMMENT '是否禁用',
   `expand` mediumtext NOT NULL COMMENT '扩展',
   `create_time` int(11) DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
   `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
-  PRIMARY KEY  (`groupid`),
+  PRIMARY KEY  (`group_id`),
   KEY `disabled` (`disabled`),
   KEY `listorder` (`sort`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='会员组';

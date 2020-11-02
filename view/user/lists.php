@@ -94,6 +94,13 @@
             </el-table-column>
 
             <el-table-column
+                min-width="100"
+                prop="tags_name"
+                align="center"
+                label="标签">
+            </el-table-column>
+
+            <el-table-column
                 min-width="80"
                 prop="email"
                 align="center"
@@ -223,7 +230,7 @@
                     layer.open({
                         type: 2,
                         title: '添加',
-                        content: "{:api_url('/member/user/add')}" + '?user_id' + user_id,
+                        content: "{:api_url('/member/user/add')}" + '?user_id=' + user_id,
                         area: ['30%', '90%'],
                         end: function () {  //回调函数
                             that.getList()

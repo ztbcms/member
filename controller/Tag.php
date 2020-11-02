@@ -38,7 +38,8 @@ class Tag extends AdminController
     public function getList()
     {
         $limit = $this->request->get('limit', 15);
-        $list = MemberTagService::getTagsList(true, $limit);
+        $isPage = $this->request->get('is_page', true);
+        $list = MemberTagService::getTagsList($isPage, $limit);
         return self::makeJsonReturn(true, $list);
     }
 
@@ -68,10 +69,10 @@ class Tag extends AdminController
             return self::makeJsonReturn(false, [], $validate->getError());
         }
         $res = MemberTagService::addEditTag($tagName, $tagId, $sort, $isShow);
-        if($res){
-            return self::makeJsonReturn(true, [], '操作成功');
+        if (!$res) {
+            return self::makeJsonReturn(false, $res, '操作失败');
         }
-        return self::makeJsonReturn(false, [], '操作失败');
+        return self::makeJsonReturn(true, $res, '操作成功');
     }
 
     /**
@@ -104,8 +105,8 @@ class Tag extends AdminController
         $tagId = $this->request->post('tag_id', 0);
         $field = $this->request->post('field', 0);
         $value = $this->request->post('value', 0);
-        $res = MemberTagService::updateField($tagId,$field,$value);
-        if($res){
+        $res = MemberTagService::updateField($tagId, $field, $value);
+        if ($res) {
             return self::makeJsonReturn(true, [], '更新成功');
         }
         return self::makeJsonReturn(false, [], '更新失败');

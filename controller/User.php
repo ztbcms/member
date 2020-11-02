@@ -8,8 +8,10 @@
 namespace app\member\controller;
 
 use app\common\controller\AdminController;
-use app\member\model\MemberModel;
+use app\member\model\MemberUserModel;
 use app\member\service\MemberService;
+use app\member\service\MemberTagBindService;
+use app\member\service\MemberUserService;
 use think\facade\Db;
 use think\facade\View;
 
@@ -38,42 +40,65 @@ class User extends AdminController
         return View::fetch();
     }
 
+    /**
+     * 添加，编辑用户页面
+     * @return string
+     */
     public function add()
     {
         return View::fetch();
     }
 
     /**
+     * 获取用户信息
+     * @return \think\response\Json
+     */
+    public function getDetail()
+    {
+        $userId = $this->request->get('user_id', 0);
+        $info = MemberUserService::getDetail($userId);
+        if ($info->isEmpty()) {
+            return self::makeJsonReturn(false, '', '用户不存在');
+        }
+        return self::makeJsonReturn(true, $info, '');
+    }
+
+    /**
      * 添加用户
      * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     public function addUser()
     {
         $post = $this->request->post();
-        // 主要是Service 层做逻辑 TODO
-
         // 创建主信息
         $MemberService = new MemberService();
         Db::startTrans();
+        if ($post['password_confirm'] != $post['password']) return self::makeJsonReturn(false, '', '两次密码不一致');
         $userInfo = $MemberService->userRegister($post['username'], $post['password'], $post['email']);
-        if(!$userInfo){
-            return self::makeJsonReturn(false,'',$MemberService->getError() ?: '创建失败');
+        if (!$userInfo) {
+            return self::makeJsonReturn(false, '', $MemberService->getError() ?: '创建失败');
         }
-        if (!empty($userInfo)) {
+        // 创建附加资料
+        if (!empty($userInfo['user_id'])) {
             $userId = $userInfo['user_id'];
-            if ($userId) {
-                //添加附表信息
-                $this->addMemberData($userId, $post['modelid'], $post['info']);
-                Db::commit();
-                return self::makeJsonReturn(true,'','添加会员成功');
-            } else {
-                Db::rollback();
-                return self::makeJsonReturn(false,'',$MemberService->getError() ?: '创建失败-2');
-            }
+            // 添加附表信息
+            $this->addMemberData($userId, $post['modelid'], $post['info']);
+            // 添加标签
+            MemberTagBindService::bindUserTag($userId, $post['tag_ids']);
+            Db::commit();
+            return self::makeJsonReturn(true, '', '添加会员成功');
         } else {
             Db::rollback();
-            return self::makeJsonReturn(false,'',$MemberService->getError() ?: '创建失败-1');
+            return self::makeJsonReturn(false, '', $MemberService->getError() ?: '创建失败');
         }
+    }
+
+    // 编辑用户
+    public function editUser(){
+
     }
 
     /**
@@ -82,10 +107,11 @@ class User extends AdminController
      * @param $modelId
      * @param $info
      */
-    protected function addMemberData($userId, $modelId, $info) {
+    protected function addMemberData($userId, $modelId, $info)
+    {
         if ($modelId) {
             $tablename = getModel($modelId, 'tablename');
-            // $info 附表的字段 TODO
+            // $info 附表模型字段 TODO
             $info['userid'] = $userId;
             Db::table($tablename)->save($info);
         }
@@ -100,24 +126,23 @@ class User extends AdminController
     {
         $limit = $this->request->get('limit', 15);
         $param = $this->request->param();
-        $model = new MemberModel();
-        $list = $model->order('create_time', 'desc');
+        $where = [];
         if (!empty($param['datetime'])) {
-            $list->whereBetweenTime('reg_time', $param['datetime'][0], $param['datetime'][1]);
+            $where[] = ['reg_time', 'between', [$param['datetime'][0], $param['datetime'][1]]];
         }
         // 审核状态
         if (isset($param['checked']) && $param['checked'] != '') {
-            $list->where('checked', '=', $param['checked']);
+            $where[] = ['checked', '=', $param['checked']];
         }
         // 拉黑状态
         if (isset($param['is_block']) && $param['is_block'] != '') {
-            $list->where('is_block', $param['is_block']);
+            $where[] = ['is_block', '=', $param['is_block']];
         }
         // 用户名、用户id
         if (!empty($param['search'])) {
-            $list->whereLike('username|user_id', $param['search']);
+            $where[] = ['username|user_id', 'like', $param['search']];
         }
-        $list = $list->paginate($limit);
+        $list = MemberUserService::getList($where, $limit);
         return self::makeJsonReturn(true, $list);
     }
 
@@ -135,7 +160,7 @@ class User extends AdminController
 
         $count = 0;
         foreach ($userIds as $userId) {
-            $count += MemberModel::where('user_id', $userId)->save(['is_block' => $isBlock]);
+            $count += MemberUserModel::where('user_id', $userId)->save(['is_block' => $isBlock]);
         }
         if ($count > 0) {
             return self::makeJsonReturn(true, '', '操作成功');
@@ -153,7 +178,7 @@ class User extends AdminController
         if (empty($userIds)) {
             return self::makeJsonReturn(false, '', '请选择');
         }
-        $res = MemberModel::whereIn('user_id', $userIds)->useSoftDelete('delete_time', time())->delete();
+        $res = MemberUserModel::whereIn('user_id', $userIds)->useSoftDelete('delete_time', time())->delete();
         if ($res) {
             return self::makeJsonReturn(true, '', '删除成功');
         }
@@ -172,9 +197,12 @@ class User extends AdminController
         }
         $count = 0;
         foreach ($userIds as $userId) {
-            $count += MemberModel::where('user_id', $userId)->save(['checked' => MemberModel::IS_CHECKED]);
+            $count += MemberUserModel::where('user_id', $userId)->save(['checked' => MemberUserModel::IS_CHECKED]);
         }
         if ($count > 0) {
+            //更新成功触发，审核通过行为 TODO
+//            Hook::listen('member_verify', MemberBehaviorParam::create(['userid' => $val['userid']]));
+
             return self::makeJsonReturn(true, '', '审核成功');
         }
         return self::makeJsonReturn(false, '', '审核失败');
@@ -192,9 +220,12 @@ class User extends AdminController
         }
         $count = 0;
         foreach ($userIds as $userId) {
-            $count += MemberModel::where('user_id', $userId)->save(['checked' => MemberModel::NO_CHECKED]);
+            $count += MemberUserModel::where('user_id', $userId)->save(['checked' => MemberUserModel::NO_CHECKED]);
         }
         if ($count > 0) {
+            //更新成功触发，审核是取消行为
+//            Hook::listen('member_unverify', MemberBehaviorParam::create(['userid' => $val['userid']]));
+
             return self::makeJsonReturn(true, '', '取消审核成功');
         }
         return self::makeJsonReturn(false, '', '取消审核失败');

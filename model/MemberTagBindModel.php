@@ -11,14 +11,13 @@ use think\Model;
 use think\model\concern\SoftDelete;
 
 /**
- * 标签
+ * 用户标签关联表
  * Class TagModel
  * @package app\member\model
  */
-class MemberTagModel extends Model
+class MemberTagBindModel extends Model
 {
-    protected $name = 'member_tag';
-    protected $pk = 'tag_id';
+    protected $name = 'member_tag_bind';
 
     use SoftDelete;
     protected $defaultSoftDelete = 'delete_time';

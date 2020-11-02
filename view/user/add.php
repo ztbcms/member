@@ -27,6 +27,24 @@
                             <el-input v-model="form.nickname"></el-input>
                         </el-form-item>
 
+                        <el-form-item label="标签" required>
+                            <el-select
+                                v-model="tag_ids"
+                                multiple
+                                filterable
+                                allow-create
+                                default-first-option
+                                @change="selectChange"
+                                placeholder="标签,可多选">
+                                <el-option
+                                    v-for="item in TagsList"
+                                    :key="item.tag_id"
+                                    :label="item.tag_name"
+                                    :value="item.tag_id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+
                         <el-form-item label="邮箱">
                             <el-input v-model="form.email"></el-input>
                         </el-form-item>
@@ -36,12 +54,12 @@
                         </el-form-item>
 
                         <el-form-item label="会员组">
-                            <el-select v-model="form.groupid">
+                            <el-select v-model="form.group_id">
                                 <el-option
                                     v-for="item in group"
-                                    :key="item.groupid"
-                                    :label="item.name"
-                                    :value="item.groupid">
+                                    :key="item.group_id"
+                                    :label="item.group_name"
+                                    :value="item.group_id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -71,8 +89,8 @@
         new Vue({
             el: '#app',
             data: {
-                group:[],
-                user_id : "{:input('user_id')}",
+                group: [],
+                TagsList: [],
                 form: {
                     username: '',
                     checked: '1',
@@ -80,36 +98,98 @@
                     email: '',
                     password_confirm: '',
                     modelid: '', // 模型
-                    info: '' , // 模型字段内容
+                    info: '', // 模型字段内容
+                },
+                tag_ids: [],
+                user_id: "{:input('user_id')}",
+            },
+            watch: {
+                tag_ids :function(val){
+                    var url = '{:api_url("/member/tag/addEdit")}';
+                    var that = this;
+                    var value = val[val.length-1];
+                    // 如果是字符串
+                    if(typeof(value)  =='string' ){
+                        // 进行添加新标签
+                        this.httpPost(url, {tag_name: value }, function(res){
+                            if(res.status){
+                                that.TagsList.push({ tag_name : value , tag_id: parseInt(res.data) })
+                                that.tag_ids[val.length-1] = parseInt(res.data)
+                            }else{
+                                // 删除
+                                that.tag_ids.splice(val.length-1,1)
+                                layer.msg(res.msg)
+                            }
+                        });
+                    }
                 }
             },
-            watch: {},
             filters: {},
             methods: {
-                getGroup:function(){
+                selectChange: function (val) {
+                    console.log(val)
+                },
+                // 获取所有标签
+                getTagsList: function () {
+                    var that = this;
+                    $.ajax({
+                        url: "{:api_url('/member/tag/getList')}",
+                        data: {is_page: ''},
+                        method: 'get',
+                        success: function (res) {
+                            that.TagsList = res.data
+                        }
+                    })
+                },
+                // 获取所有会员组
+                getGroup: function () {
                     var that = this;
                     $.ajax({
                         url: "{:api_url('/member/group/getGroupList')}",
-                        data:{},
-                        method:'get',
-                        success:function(res){
+                        data: {},
+                        method: 'get',
+                        success: function (res) {
                             that.group = res.data
                         }
                     })
                 },
                 onSubmit: function () {
-                    console.log(this.form)
+                    var formData = this.form;
+                    formData.tag_ids = this.tag_ids;
                     $.ajax({
                         url: "{:api_url('/member/user/addUser')}",
                         data: this.form,
-                        method:'post',
-                        success:function(res){
+                        method: 'post',
+                        success: function (res) {
                             layer.msg(res.msg);
-                            // 关闭窗口
-                            if (window !== window.parent) {
-                                setTimeout(function () {
-                                    window.parent.layer.closeAll()
-                                }, 1000);
+                            if (res.status) {
+                                // 关闭窗口
+                                if (window !== window.parent) {
+                                    setTimeout(function () {
+                                        window.parent.layer.closeAll()
+                                    }, 1000);
+                                }
+                            }
+
+                        }
+                    })
+                },
+                // 获取详情
+                getDetail:function(){
+                    var that = this;
+                    $.ajax({
+                        url: "{:api_url('/member/user/getDetail')}" + "?user_id=" + this.user_id,
+                        data: {},
+                        method: 'post',
+                        success: function (res) {
+                            if (res.status) {
+                                that.form = res.data
+                                that.form.password = null
+                                that.form.password_confirm = null
+                                that.form.checked = res.data.checked.toString()
+                                that.tag_ids = res.data.tag_ids
+                            }else{
+                                layer.msg(res.msg);
                             }
                         }
                     })
@@ -119,9 +199,9 @@
                 },
             },
             mounted: function () {
-                // 获取会员组
                 this.getGroup();
-                if(this.user_id > 0){
+                this.getTagsList();
+                if (this.user_id > 0) {
                     this.getDetail()
                 }
             },
