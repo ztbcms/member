@@ -13,6 +13,22 @@ CREATE TABLE `cms_connect` (
   PRIMARY KEY (`connectid`),
   KEY `openid` (`openid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='登录授权';
+
+-- ----------------------------
+-- Table structure for cms_member_tag
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_member_tag`;
+CREATE TABLE `cms_member_tag` (
+  `tag_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '标签id',
+  `tag_name` varchar(255) DEFAULT NULL COMMENT '标签名',
+  `sort` int(11) DEFAULT NULL COMMENT '排序',
+  `is_show` int(11) DEFAULT '1' COMMENT '是否显示',
+  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
+  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
+  `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
+  PRIMARY KEY (`tag_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='用户标签';
+
 -- ----------------------------
 -- Table structure for `cms_member`
 -- ----------------------------

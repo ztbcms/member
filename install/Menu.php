@@ -25,6 +25,14 @@ return [
                 "child"  => []
             ],
             [
+                "route"  => "member/tag/lists",
+                "type"   => 1,
+                "status" => 1,
+                "name"   => "会员标签",
+                "remark" => "",
+                "child"  => []
+            ],
+            [
                 "route"  => "member/setting/index",
                 "type"   => 0,
                 "status" => 1,
