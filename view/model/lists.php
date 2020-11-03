@@ -6,6 +6,9 @@
                 <br>
                 2、移动模型会员，将会把原有模型里的会员信息删除，将不能修复。</p>
         </div>
+        <div>
+            <el-button size="mini" type="primary" @click="detailModel(0)">添加模型</el-button>
+        </div>
         <el-table size=""
                   :key="tableKey"
                   :data="list"
@@ -15,40 +18,43 @@
         >
             <el-table-column label="ID" width="" align="center">
                 <template slot-scope="{row}">
-                    <span>{{ row.tag_name }}</span>
+                    <span>{{ row.modelid }}</span>
                 </template>
             </el-table-column>
 
             <el-table-column label="模型名称" width="" align="center">
                 <template slot-scope="{row}">
-                    <span>{{ row.tag_name }}</span>
+                    <span>{{ row.name }}</span>
                 </template>
             </el-table-column>
 
             <el-table-column label="模型描述" width="" align="center">
                 <template slot-scope="{row}">
-                    {{ row.sort }}
+                    {{ row.description }}
                 </template>
             </el-table-column>
 
             <el-table-column label="数据表名" align="center">
                 <template slot-scope="{row}">
-                    {{ row.sort }}
+                    {{ row.tablename }}
                 </template>
             </el-table-column>
 
             <el-table-column label="状态" width="" align="center">
                 <template slot-scope="{row}">
-                    {{ row.sort }}
+                     <span class="el-icon-success" style="color: green;font-size: 24px;"
+                           v-if="row.disabled == '0'"></span>
+                    <span class="el-icon-error" style="color: red;font-size: 24px;"
+                          v-if="row.disabled == '1'"></span>
                 </template>
             </el-table-column>
 
             <el-table-column label="操作" width="300px" align="center" class-name="small-padding fixed-width">
                 <template slot-scope="{row}">
-                    <el-button type="primary" size="mini" @click="addEdit(row.tag_id)">
-                        更新时间
+                    <el-button type="primary" size="mini" @click="detailModel(row.modelid)">
+                        编辑
                     </el-button>
-                    <el-button type="danger" size="mini" @click="deleteItem(row.tag_id)">
+                    <el-button type="danger" size="mini" @click="deleteItem(row.modelid)">
                         删除
                     </el-button>
                 </template>
@@ -117,7 +123,7 @@
                 },
                 getList: function () {
                     var that = this;
-                    var url = '{:api_url("/member/tag/getList")}';
+                    var url = '{:api_url("/member/model/getList")}';
                     var data = that.listQuery;
                     that.httpGet(url, data, function (res) {
                         if (res.status) {
@@ -127,31 +133,32 @@
                         }
                     });
                 },
+                // 添加模型
+                detailModel:function (id) {
+                    var that = this;
+                    layer.open({
+                        type: 2,
+                        title: '详情',
+                        content: "{:api_url('/member/model/detail')}?model_id=" + id,
+                        area: ['50%', '90%'],
+                        end: function () {  //回调函数
+                            that.getList()
+                        }
+                    })
+                },
                 // 删除
                 deleteItem: function (id) {
                     var that = this;
-                    var url = '{:api_url("/member/tag/delTag")}';
+                    var url = '{:api_url("/member/model/delModel")}';
                     layer.confirm('您确定需要删除？', {
                         btn: ['确定', '取消'] //按钮
                     }, function () {
-                        that.httpPost(url, {tag_id: id}, function (res) {
+                        that.httpPost(url, {model_id: id}, function (res) {
                             layer.msg(res.msg);
                             if (res.status) {
                                 that.getList();
                             }
                         });
-                    });
-                },
-                // 更新时间
-                updateShow: function (id, value) {
-                    var that = this;
-                    var url = '{:api_url("/member/tag/updateField")}';
-                    var data = {tag_id: id, field: 'is_show', value: value};
-                    that.httpPost(url, data, function (res) {
-                        if (res.status) {
-                            that.$message.success(res.msg);
-                            that.getList();
-                        }
                     });
                 },
             },

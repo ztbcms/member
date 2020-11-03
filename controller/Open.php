@@ -18,6 +18,7 @@ use think\facade\View;
  */
 class Open extends AdminController
 {
+    protected $noNeedPermission = ['getTypeList'];
     /**
      * 第三方平台
      * @return string

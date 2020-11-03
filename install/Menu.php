@@ -131,6 +131,50 @@ return [
                 ]
             ],
             [
+                "route"  => "member/tag/lists",
+                "type"   => 1,
+                "status" => 1,
+                "name"   => "会员标签",
+                "remark" => "",
+                "child"  => [
+                    [
+                        "route"  => "member/tag/getList",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "获取会员标签列表",
+                        "remark" => "",
+                    ],
+                    [
+                        "route"  => "member/tag/addEdit",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "添加编辑会员标签",
+                        "remark" => "",
+                    ],
+                    [
+                        "route"  => "member/tag/getDetail",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "获取会员标签详情",
+                        "remark" => "",
+                    ],
+                    [
+                        "route"  => "member/tag/delTag",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "删除会员标签",
+                        "remark" => "",
+                    ],
+                    [
+                        "route"  => "member/tag/updateField",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "更新会员标签字段",
+                        "remark" => "",
+                    ],
+                ]
+            ],
+            [
                 "route"  => "member/group/lists",
                 "type"   => 1,
                 "status" => 1,
@@ -189,50 +233,6 @@ return [
                 ]
             ],
             [
-                "route"  => "member/tag/lists",
-                "type"   => 1,
-                "status" => 1,
-                "name"   => "会员标签",
-                "remark" => "",
-                "child"  => [
-                    [
-                        "route"  => "member/tag/getList",
-                        "type"   => 1,
-                        "status" => 0,
-                        "name"   => "获取会员标签列表",
-                        "remark" => "",
-                    ],
-                    [
-                        "route"  => "member/tag/addEdit",
-                        "type"   => 1,
-                        "status" => 0,
-                        "name"   => "添加编辑会员标签",
-                        "remark" => "",
-                    ],
-                    [
-                        "route"  => "member/tag/getDetail",
-                        "type"   => 1,
-                        "status" => 0,
-                        "name"   => "获取会员标签详情",
-                        "remark" => "",
-                    ],
-                    [
-                        "route"  => "member/tag/delTag",
-                        "type"   => 1,
-                        "status" => 0,
-                        "name"   => "删除会员标签",
-                        "remark" => "",
-                    ],
-                    [
-                        "route"  => "member/tag/updateField",
-                        "type"   => 1,
-                        "status" => 0,
-                        "name"   => "更新会员标签字段",
-                        "remark" => "",
-                    ],
-                ]
-            ],
-            [
                 "route"  => "member/setting/index",
                 "type"   => 0,
                 "status" => 1,
@@ -246,6 +246,36 @@ return [
                         "name"   => "会员设置",
                         "remark" => "",
                         "child"  => []
+                    ],
+                    [
+                        "route"  => "member/open/index",
+                        "type"   => 1,
+                        "status" => 1,
+                        "name"   => "第三方平台设置",
+                        "remark" => "",
+                        "child"  => [
+                            [
+                                "route"  => "member/open/addEditApp",
+                                "type"   => 1,
+                                "status" => 1,
+                                "name"   => "添加编辑第三方平台",
+                                "remark" => "",
+                            ],
+                            [
+                                "route"  => "member/open/delApp",
+                                "type"   => 1,
+                                "status" => 1,
+                                "name"   => "删除第三方平台",
+                                "remark" => "",
+                            ],
+                            [
+                                "route"  => "member/open/getDetail",
+                                "type"   => 1,
+                                "status" => 1,
+                                "name"   => "获取第三方平台详情",
+                                "remark" => "",
+                            ],
+                        ]
                     ],
                     [
                         "route"  => "member/model/lists",
