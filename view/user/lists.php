@@ -209,11 +209,11 @@
                 statusOptions: [
                     {
                         label: '是',
-                        value: 1
+                        value: '1'
                     },
                     {
                         label: '否',
-                        value: 0
+                        value: '0'
                     },
                 ],
                 defaultImage: '/statics/images/member/nophoto.gif',

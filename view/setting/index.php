@@ -11,7 +11,7 @@
                                 :label="item.label"
                                 :value="item.value">
                             </el-option>
-                        </el-select>通行证可以放到
+                        </el-select>
                     </el-form-item>
 
                     <el-form-item label="允许新会员注册">
@@ -107,7 +107,6 @@
 
                     <el-form-item size="large">
                         <el-button type="primary" @click="submitForm">提交</el-button>
-                        <el-button @click="resetForm">取消</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -121,12 +120,16 @@
             el: '#app',
             components: {},
             props: [],
-            data() {
-                return {
-                    formData: {
-                        interface: '本地用户通行证',
+            data: {
+                formData: {
+                    interface: '本地用户通行证',
+                },
+                options:[
+                    {
+                        label:'Local',
+                        value:'Local'
                     }
-                }
+                ]
             },
             computed: {},
             watch: {},
@@ -138,23 +141,17 @@
             methods: {
                 submitForm: function () {
                     var that = this;
-                    var url = "{:api_url('/member/tag/addEdit')}"
+                    var url = "{:api_url('/member/setting/updateSetting')}"
                     this.httpPost(url, this.formData, function (res) {
                         if (res.status) {
                             that.$message.success(res.msg);
-                            // 关闭窗口
-                            if (window !== window.parent) {
-                                setTimeout(function () {
-                                    window.parent.layer.closeAll()
-                                }, 1000);
-                            }
                         }else{
                             that.$message.error(res.msg);
                         }
                     });
                 },
                 getDetail: function () {
-                    var url = "{:api_url('/member/setting/setting')}"
+                    var url = "{:api_url('/member/setting/getSetting')}"
                     var _this = this;
                     this.httpGet(url, {}, function (res) {
                         if (res.status) {
@@ -163,9 +160,6 @@
                             layer.msg(res.msg);
                         }
                     });
-                },
-                resetForm: function () {
-                    // window.parent.layer.closeAll()
                 },
             }
         });

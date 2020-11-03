@@ -43,6 +43,21 @@ CREATE TABLE `cms_member_tag_bind` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户标签关联表';
 
+-- ----------------------------
+-- Table structure for cms_member_open
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_member_open`;
+CREATE TABLE `cms_member_open` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `app_type` varchar(255) DEFAULT NULL COMMENT 'APP类型',
+  `app_key` text,
+  `app_secret` text,
+  `create_time` int(11) DEFAULT NULL,
+  `update_time` int(11) DEFAULT NULL,
+  `delete_time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='第三方平台管理表';
+
 
 -- ----------------------------
 -- Table structure for `cms_member`

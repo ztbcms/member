@@ -7,3 +7,4 @@ DROP TABLE IF EXISTS `cms_member_group`;
 DROP TABLE IF EXISTS `cms_member_bind`;
 DROP TABLE IF EXISTS `cms_member_tag`;
 DROP TABLE IF EXISTS `cms_member_tag_bind`;
+DROP TABLE IF EXISTS `cms_member_open`;

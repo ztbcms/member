@@ -7,7 +7,9 @@
 
 namespace app\member\model;
 
+use app\cms\model\ModelModel;
 use app\member\validate\MemberValidate;
+use think\facade\Db;
 use think\Model;
 use think\model\concern\SoftDelete;
 
@@ -50,6 +52,35 @@ class MemberUserModel extends Model
         $tagName = MemberTagModel::whereIn('tag_id', $tagIds)->column('tag_name');
         return implode(',',$tagName);
     }
+
+    /**
+     * 会员配置缓存
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function member_cache() {
+        $data = Db::name('module')->where('module','Member')->value('setting');
+        $setting = unserialize($data);
+        cache("Member_Config", $setting);
+        $this->member_model_cahce();
+        return $data;
+    }
+
+    /**
+     * 会员模型缓存
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function member_model_cahce() {
+        $data = ModelModel::getModelAll(2);
+        cache("Model_Member", $data);
+        return $data;
+    }
+
 
 //    // 添加用户
 //    public function addUser($data){

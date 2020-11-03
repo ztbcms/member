@@ -8,6 +8,7 @@
 namespace app\member\controller;
 
 use app\common\controller\AdminController;
+use app\member\model\MemberUserModel;
 use app\member\service\MemberGroupService;
 use think\facade\Db;
 use think\facade\View;
@@ -19,30 +20,26 @@ use think\facade\View;
  */
 class Setting extends AdminController
 {
+    /**
+     * 主页
+     * @return string
+     */
     public function index()
     {
         return View::fetch();
     }
 
-    // 获取更新
-    public function setting()
+
+    /**
+     * 获取更新
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function getSetting()
     {
-        if ($this->request->isPost()) {
-            $setting = $_POST['setting'];
-            $data['setting'] = serialize($setting);
-            $Module = M('Module');
-            if ($Module->create()) {
-                if ($Module->where(array("module" => "Member"))->save($data) !== false) {
-                    $this->member->member_cache();
-                    $this->success("更新成功！", U("Setting/setting"));
-                } else {
-                    $this->error("更新失败！", U("Setting/setting"));
-                }
-            } else {
-                $this->error($Module->getError());
-            }
-        } else {
-//            //取得会员接口信息
+//            //取得会员接口信息 TODO
 //            $Dir = new \Dir(PROJECT_PATH . 'Libs/Driver/Passport/');
 //            $Interface = array(
 //                '' => '请选择帐号通行证接口（默认本地）',
@@ -56,33 +53,47 @@ class Setting extends AdminController
 //                $Interface[$neme] = $lan[$neme] ? $lan[$neme] : $neme;
 //            }
 
-            // 模型
-            $setting = Db::name('module')->where('module', 'Member')->value('setting');
-            // 会员组
-            $groupList = MemberGroupService::getGroupList();
-            foreach ($groupList as $group) {
-                if (in_array($group['group_id'], array(8, 1, 7))) {
-                    continue;
-                }
-                $groupCache[$group['group_id']] = $group['group_name'];
+        // 模型
+        $setting = Db::name('module')->where('module', 'Member')->value('setting');
+        // 会员组
+        $groupList = MemberGroupService::getGroupList();
+        foreach ($groupList as $group) {
+            if (in_array($group['group_id'], array(8, 1, 7))) {
+                continue;
             }
+            $groupCache[$group['group_id']] = $group['group_name'];
+        }
 
-            return self::makeJsonReturn(true, unserialize($setting));
-
-            // 会员模型列表 TODO
+        // 会员模型列表 TODO
 //            foreach ($this->groupsModel as $m) {
 //                $groupsModel[$m['modelid']] = $m['name'];
 //            }
-//            $this->assign('groupCache', $groupCache);
-//            $this->assign('groupsModel', $groupsModel);
-//            $this->assign("setting", unserialize($setting));
-//            $this->assign("Interface", $Interface);
-//            $this->display();
-        }
+
+        return self::makeJsonReturn(true, unserialize($setting));
+
     }
 
+    /**
+     * 更新系统配置
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     public function updateSetting()
     {
-
+        if ($this->request->isPost()) {
+            $setting = $this->request->post();
+            $data['setting'] = serialize($setting);
+            $Module = Db::name('module');
+            $res = $Module->where('module', 'Member')->save($data);
+            if ($res) {
+                // 更新会员配置缓存
+                (new MemberUserModel)->member_cache();
+                return self::makeJsonReturn(true, [], '更新成功');
+            } else {
+                return self::makeJsonReturn(false, [], '更新失败');
+            }
+        }
     }
 }
