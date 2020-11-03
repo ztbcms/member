@@ -27,7 +27,7 @@
                             <el-input v-model="form.nickname"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="标签" required>
+                        <el-form-item label="标签">
                             <el-select
                                 v-model="tag_ids"
                                 multiple
@@ -64,6 +64,27 @@
                             </el-select>
                         </el-form-item>
 
+                        <el-form-item label="会员模型">
+                            <el-select v-model="form.modelid" @change="changeModelId()">
+                                <el-option
+                                    v-for="item in modelList"
+                                    :key="item.modelid"
+                                    :label="item.name"
+                                    :value="item.modelid">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <template v-if="modelFields.length > 0 ">
+                            <h3>模型字段</h3>
+                        </template>
+
+                        <template v-for="(item,index) in modelFields">
+                            <el-form-item :label="item.name">
+                                <el-input v-model="modelFields[index].value"></el-input>
+                            </el-form-item>
+                        </template>
+
                         <el-form-item>
                             <el-button type="primary" @click="onSubmit">添加</el-button>
                             <el-button @click="onCancel">取消</el-button>
@@ -91,6 +112,8 @@
             data: {
                 group: [],
                 TagsList: [],
+                modelList: [],
+                modelFields: [],
                 form: {
                     username: '',
                     checked: '1',
@@ -98,26 +121,28 @@
                     email: '',
                     password_confirm: '',
                     modelid: '', // 模型
-                    info: '', // 模型字段内容
+                    info: {
+                        userid: '',
+                    }, // 模型字段内容
                 },
                 tag_ids: [],
                 user_id: "{:input('user_id')}",
             },
             watch: {
-                tag_ids :function(val){
+                tag_ids: function (val) {
                     var url = '{:api_url("/member/tag/addEdit")}';
                     var that = this;
-                    var value = val[val.length-1];
+                    var value = val[val.length - 1];
                     // 如果是字符串
-                    if(typeof(value)  =='string' ){
+                    if (typeof (value) == 'string') {
                         // 进行添加新标签
-                        this.httpPost(url, {tag_name: value }, function(res){
-                            if(res.status){
-                                that.TagsList.push({ tag_name : value , tag_id: parseInt(res.data) })
-                                that.tag_ids[val.length-1] = parseInt(res.data)
-                            }else{
+                        this.httpPost(url, {tag_name: value}, function (res) {
+                            if (res.status) {
+                                that.TagsList.push({tag_name: value, tag_id: parseInt(res.data)})
+                                that.tag_ids[val.length - 1] = parseInt(res.data)
+                            } else {
                                 // 删除
-                                that.tag_ids.splice(val.length-1,1)
+                                that.tag_ids.splice(val.length - 1, 1)
                                 layer.msg(res.msg)
                             }
                         });
@@ -141,6 +166,34 @@
                         }
                     })
                 },
+                // 选择会员模型
+                changeModelId: function () {
+                    this.getModelField(this.form.modelid)
+                },
+                // 获取所有模型
+                getModelList: function () {
+                    var that = this;
+                    $.ajax({
+                        url: "{:api_url('/member/user/getAllModel')}",
+                        data: {},
+                        method: 'get',
+                        success: function (res) {
+                            that.modelList = res.data
+                        }
+                    })
+                },
+                // 获取模型中的字段
+                getModelField: function (model_id) {
+                    var that = this;
+                    $.ajax({
+                        url: "{:api_url('/member/user/getModelFields')}",
+                        data: {model_id: model_id, user_id: that.form.user_id},
+                        method: 'get',
+                        success: function (res) {
+                            that.modelFields = res.data
+                        }
+                    })
+                },
                 // 获取所有会员组
                 getGroup: function () {
                     var that = this;
@@ -156,6 +209,7 @@
                 onSubmit: function () {
                     var formData = this.form;
                     formData.tag_ids = this.tag_ids;
+                    formData.info = this.modelFields;
                     $.ajax({
                         url: "{:api_url('/member/user/editUser')}",
                         data: this.form,
@@ -175,7 +229,7 @@
                     })
                 },
                 // 获取详情
-                getDetail:function(){
+                getDetail: function () {
                     var that = this;
                     $.ajax({
                         url: "{:api_url('/member/user/getDetail')}" + "?user_id=" + this.user_id,
@@ -186,9 +240,14 @@
                                 that.form = res.data
                                 that.form.password = null
                                 that.form.password_confirm = null
+                                if (that.form.group_id < 1)
+                                    that.form.group_id = null
                                 that.form.checked = res.data.checked.toString()
                                 that.tag_ids = res.data.tag_ids
-                            }else{
+
+                                if (that.form.modelid > 0)
+                                    that.getModelField(that.form.modelid)
+                            } else {
                                 layer.msg(res.msg);
                             }
                         }
@@ -201,6 +260,7 @@
             mounted: function () {
                 this.getGroup();
                 this.getTagsList();
+                this.getModelList();
                 if (this.user_id > 0) {
                     this.getDetail()
                 }

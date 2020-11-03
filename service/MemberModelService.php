@@ -8,6 +8,7 @@
 namespace app\member\service;
 
 use app\common\service\BaseService;
+use app\member\model\MemberModelModel;
 use think\facade\Db;
 
 /**
@@ -80,13 +81,14 @@ class MemberModelService extends BaseService
         }
         if ($res) {
             Db::commit();
-            //更新缓存 TODO
-//            D('Member/Member')->member_cache();
+            //更新缓存
+            MemberModelModel::member_cache();
             return true;
         }
         Db::rollback();
         return false;
     }
+
 
     /**
      * 创建表
@@ -141,6 +143,8 @@ class MemberModelService extends BaseService
             //删除副表
             $this->deleteTable($modelTable . "_data");
         }
+        //更新缓存
+        MemberModelModel::member_cache();
         return true;
     }
 

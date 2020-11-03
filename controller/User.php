@@ -8,6 +8,7 @@
 namespace app\member\controller;
 
 use app\common\controller\AdminController;
+use app\member\model\MemberModelModel;
 use app\member\model\MemberTagBindModel;
 use app\member\model\MemberTagModel;
 use app\member\model\MemberUserModel;
@@ -74,6 +75,35 @@ class User extends AdminController
     }
 
     /**
+     * 获取所有模型
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function getAllModel()
+    {
+        // 会员模型
+        $model = MemberModelModel::member_model_cahce();
+        return self::makeJsonReturn(true, $model, '');
+    }
+
+    /**
+     * 获取模型的字段
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function getModelFields()
+    {
+        $modelId = $this->request->get('model_id',0);
+        $userId  = $this->request->get('user_id',0);
+        $data = MemberModelModel::getModelFields($modelId,$userId);
+        return self::makeJsonReturn(true, $data, '');
+    }
+
+    /**
      * 添加用户
      * @return \think\response\Json
      * @throws \think\db\exception\DataNotFoundException
@@ -87,39 +117,44 @@ class User extends AdminController
         $MemberUserService = new MemberUserService();
         Db::startTrans();
         if ($post['password_confirm'] != $post['password']) return self::makeJsonReturn(false, '', '两次密码不一致');
-        $userInfo = $MemberUserService->userRegister($post['username'], $post['password'], $post['email']);
-        if (!$userInfo) {
-            return self::makeJsonReturn(false, '', $MemberUserService->getError() ?: '创建失败');
-        }
-        // 创建附加资料
-        if (!empty($userInfo['user_id'])) {
-            $userId = $userInfo['user_id'];
-            // 添加附表信息
-            $this->addMemberData($userId, $post['modelid'], $post['info']);
-            // 添加标签
-            MemberTagBindService::bindUserTag($userId, $post['tag_ids']);
-            Db::commit();
-            return self::makeJsonReturn(true, '', '添加会员成功');
-        } else {
+        $userId = $MemberUserService->userRegister($post['username'], $post['password'], $post['email']);
+        if (!$userId) {
             Db::rollback();
             return self::makeJsonReturn(false, '', $MemberUserService->getError() ?: '创建失败');
         }
+        // 添加附表信息
+        if (!empty($post['info']) && !empty($post['modelid'])) {
+            // 保存模型id
+            MemberUserModel::where('user_id', $userId)->save(['modelid' => $post['modelid']]);
+            // 保存模型字段
+            $info = [];
+            foreach ($post['info'] as $item) {
+                $info[$item['field']] = $item['value'];
+            }
+            $this->addMemberData($userId, $post['modelid'], $info);
+        }
+        // 添加标签
+        if (!empty($post['tag_ids'])) {
+            MemberTagBindService::bindUserTag($userId, $post['tag_ids']);
+        }
+        Db::commit();
+        return self::makeJsonReturn(true, '', '添加会员成功');
     }
 
-    // 编辑用户 TODO
+    /**
+     * 编辑用户
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     public function editUser()
     {
         if ($this->request->isPost()) {
             $userId = $this->request->post('user_id', 0, 'intval');
             $postData = $this->request->post();
 
-            // 模型信息相关更新 TODO
-            $info = $postData['info'];
-            $modelId = $this->request->post('modelid', 0, 'intval');
-
             Db::startTrans();
-//            $userInfo = MemberUserModel::where('user_id', $userId)->findOrEmpty();
-
             // 获取用户信息
             $MemberUserService = new MemberUserService();
             $userInfo = $MemberUserService->getLocalUser($userId);
@@ -128,32 +163,6 @@ class User extends AdminController
             }
             // VIP过期时间
             $data['overduedate'] = strtotime($postData['overduedate']);
-
-            // 模型信息 TODO
-//                $ContentModel = Db::name('model');
-//                if ($userInfo['modelid'] == $modelId && $info) {
-//                    //详细信息验证
-//                    $content_input = new \content_input($modelId);
-//                    $inputinfo = $content_input->get($info, 2);
-//                    if ($inputinfo) {
-//                        //数据验证
-//                        $inputinfo = $ContentModel->token(false)->create($inputinfo, 2);
-//                        if (false == $inputinfo) {
-//                            $ContentModel->tokenRecovery($post);
-//                            $this->error($ContentModel->getError());
-//                        }
-//                    } else {
-//                        $ContentModel->tokenRecovery($post);
-//                        $this->error($content_input->getError());
-//                    }
-//                    //检查详细信息是否已经添加过
-//                    if ($ContentModel->where(array("userid" => $userid))->find()) {
-//                        $ContentModel->where(array("userid" => $userid))->save($inputinfo);
-//                    } else {
-//                        $inputinfo['userid'] = $userid;
-//                        $ContentModel->add($inputinfo);
-//                    }
-//                }
 
             //判断是否需要删除头像
             $isDelAvatar = $this->request->post('delavatar', 0);
@@ -170,10 +179,26 @@ class User extends AdminController
             }
             unset($postData['username'], $postData['password'], $postData['email']);
             // 更新标签
+            if(empty($postData['tag_ids'])) $postData['tag_ids'] = [];
             MemberTagBindService::bindUserTag($userId, $postData['tag_ids']);
             unset($postData['tag_ids']);
             unset($postData['tags_name']);
             unset($postData['password_confirm']);
+
+            // 更新模型字段信息
+            $modelId = $this->request->post('modelid', 0, 'intval');
+            // 添加附表信息
+            if (!empty($postData['info']) && !empty($modelId)) {
+                // 保存模型id
+                MemberUserModel::where('user_id', $userId)->save(['modelid' => $modelId]);
+                // 保存模型字段
+                $info = [];
+                foreach ($postData['info'] as $item) {
+                    $info[$item['field']] = $item['value'];
+                }
+                $this->addMemberData($userId, $modelId, $info);
+            }
+
             unset($postData['info']);
             //更新除基本资料外的其他信息
             if (false === MemberUserModel::where('user_id', $userId)->save($postData)) {
@@ -194,9 +219,14 @@ class User extends AdminController
     {
         if ($modelId) {
             $tablename = getModel($modelId, 'tablename');
-            // $info 附表模型字段 TODO
-            $info['userid'] = $userId;
-            Db::table($tablename)->save($info);
+            // $info 附表模型字段
+            $check = Db::name($tablename)->where('userid',$userId)->findOrEmpty();
+            if($check){
+                Db::name($tablename)->where('userid',$userId)->save($info);
+            }else{
+                $info['userid'] = $userId;
+                Db::name($tablename)->insert($info);
+            }
         }
     }
 
@@ -246,7 +276,7 @@ class User extends AdminController
         if (empty($userIds)) {
             return self::makeJsonReturn(false, '', '请选择');
         }
-        $res = MemberUserService::blockUser($userIds,$isBlock);
+        $res = MemberUserService::blockUser($userIds, $isBlock);
         if ($res) {
             return self::makeJsonReturn(true, '', '操作成功');
         }
@@ -280,7 +310,7 @@ class User extends AdminController
         if (empty($userIds)) {
             return self::makeJsonReturn(false, '', '请选择');
         }
-        $res = MemberUserService::auditUser($userIds,MemberUserModel::IS_CHECKED);
+        $res = MemberUserService::auditUser($userIds, MemberUserModel::IS_CHECKED);
         if ($res) {
             //更新成功触发，审核通过行为 TODO
 //            Hook::listen('member_verify', MemberBehaviorParam::create(['userid' => $val['userid']]));
@@ -299,7 +329,7 @@ class User extends AdminController
         if (empty($userIds)) {
             return self::makeJsonReturn(false, '', '请选择');
         }
-        $res = MemberUserService::auditUser($userIds,MemberUserModel::NO_CHECKED);
+        $res = MemberUserService::auditUser($userIds, MemberUserModel::NO_CHECKED);
         if ($res) {
             //更新成功触发，审核是取消行为 TODO
 //            Hook::listen('member_unverify', MemberBehaviorParam::create(['userid' => $val['userid']]));

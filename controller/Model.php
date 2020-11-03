@@ -8,6 +8,7 @@
 namespace app\member\controller;
 
 use app\common\controller\AdminController;
+use app\member\model\MemberModelModel;
 use app\member\service\MemberModelService;
 use think\facade\Config;
 use think\facade\Db;

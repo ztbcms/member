@@ -66,7 +66,7 @@ function getModel($modelId, $field = '')
     if (empty($cache)) {
         //读取数据
         $cache = \think\facade\Db::name('model')->where('modelid', $modelId)->findOrEmpty();
-        if ($cache->isEmpty()) {
+        if (empty($cache)) {
             cache($key, 'false', 60);
             return false;
         } else {

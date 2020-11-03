@@ -28,12 +28,12 @@ class MemberTagBindService extends BaseService
      */
     static function bindUserTag($userId, $tagIds)
     {
-        if(empty($tagIds)){
-            return true;
-        }
         // 删除原有绑定
         $MemberTagBindModel = new MemberTagBindModel();
         $MemberTagBindModel->where('user_id', $userId)->select()->delete();
+        if(empty($tagIds)){
+            return true;
+        }
 
         $data = [];
         foreach ($tagIds as $tagId) {

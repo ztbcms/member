@@ -32,15 +32,19 @@ class MemberUserService extends BaseService
             ->paginate($limit);
     }
 
+    /**
+     * 获取详情
+     * @param $userId
+     * @return array|\think\Model
+     */
     static function getDetail($userId)
     {
         $user = MemberUserModel::where('user_id', $userId)->findOrEmpty();
         if (!$user->isEmpty()) {
             // 查询标签
             $user['tag_ids'] = MemberTagBindService::getUserTagIds($userId);
-            // 用户关联模型信息 TODO
-            $user['info'] = '';
-
+            // 用户关联模型信息
+            if (empty($user['info'])) $user['info'] = [];
         }
         return $user;
     }
@@ -74,14 +78,17 @@ class MemberUserService extends BaseService
         // 密码加密
         $encrypt = genRandomString(6);
         $password = $this->encryption(0, $password, $encrypt);
-        $data = array(
-            "username" => $username,
-            "password" => $password,
-            "email"    => $email,
-            "encrypt"  => $encrypt,
-            "amount"   => 0,
-        );
-        $userId = $Member->create($data);
+        $data = [
+            "username"    => $username,
+            "password"    => $password,
+            "email"       => $email,
+            "encrypt"     => $encrypt,
+            "amount"      => 0,
+            "create_time" => time(),
+            "reg_date"    => time(),
+            "reg_ip"      => request()->ip(),
+        ];
+        $userId = $Member->insertGetId($data);
         if ($userId) {
             // TODO HOOK
 //            Hook::listen('member_register', MemberRegisterBehaviorParam::create(['userid' => $userid]));
@@ -109,7 +116,7 @@ class MemberUserService extends BaseService
         $memberModel = new MemberUserModel();
         //验证旧密码是否正确
         if ($ignoreoldpw == 0) {
-            $info = $memberModel->where("username" , $username)->find();
+            $info = $memberModel->where("username", $username)->find();
             $pas = $this->encryption(0, $oldpw, $info['encrypt']);
             if ($pas != $info['password']) {
                 $this->error = '旧密码错误！';
@@ -201,9 +208,12 @@ class MemberUserService extends BaseService
 
     /**
      * 获取用户信息
-     * @param string $identifier 用户/UID
-     * @param string $password 明文密码，填写表示验证密码
-     * @return array|boolean
+     * @param $identifier 用户/UID
+     * @param null $password 明文密码，填写表示验证密码
+     * @return array|bool|\think\Model
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     public function getLocalUser($identifier, $password = null)
     {
@@ -218,8 +228,8 @@ class MemberUserService extends BaseService
             $map['username'] = $identifier;
         }
         $UserModel = new MemberUserModel();
-        $user = $UserModel->where($map)->find();
-        if (empty($user)) {
+        $user = $UserModel->where($map)->findOrEmpty();
+        if ($user->isEmpty()) {
             $this->error = '该用户不存在！';
             return false;
         }
@@ -238,7 +248,7 @@ class MemberUserService extends BaseService
         $user_model = Db::name('model')->where('modelid', $user['modelid'])->find();
         $user_data = [];
         if ($user_model) {
-            $user_data = Db::table($user_model['tablename'])->where('user_id', $user['user_id'])->find();
+            $user_data = Db::name($user_model['tablename'])->where('userid', $user['user_id'])->find();
         }
         $user['data'] = $user_data;
 
@@ -250,12 +260,13 @@ class MemberUserService extends BaseService
      * 对明文密码，进行加密，返回加密后的密码
      * @param string $identifier 为数字时，表示uid，其他为用户名
      * @param string $pass 明文密码，不能为空
+     * @param string $verify
      * @return string 返回加密后的密码
      */
     protected function encryption($identifier, $pass, $verify = "")
     {
         $v = array();
-        if (is_numeric($identifier)) {
+        if (is_numeric($verify)) {
             $v["id"] = $identifier;
         } else {
             $v["username"] = $identifier;
@@ -280,7 +291,8 @@ class MemberUserService extends BaseService
      * @param $isBlock
      * @return bool
      */
-    public static function blockUser($userIds,$isBlock){
+    public static function blockUser($userIds, $isBlock)
+    {
         $count = 0;
         foreach ($userIds as $userId) {
             $count += MemberUserModel::where('user_id', $userId)->save(['is_block' => $isBlock]);
@@ -297,10 +309,11 @@ class MemberUserService extends BaseService
      * @param $status
      * @return bool
      */
-    public static function auditUser($userIds,$status){
+    public static function auditUser($userIds, $status)
+    {
         $count = 0;
         foreach ($userIds as $userId) {
-            $count += MemberUserModel::where('user_id', $userId)->save(['checked' => $status ]);
+            $count += MemberUserModel::where('user_id', $userId)->save(['checked' => $status]);
         }
         if ($count > 0) {
             return true;
@@ -313,7 +326,8 @@ class MemberUserService extends BaseService
      * @param $userIds
      * @return bool
      */
-    public static function batchDelUser($userIds){
+    public static function batchDelUser($userIds)
+    {
         return MemberUserModel::whereIn('user_id', $userIds)->useSoftDelete('delete_time', time())->delete();
     }
 }
