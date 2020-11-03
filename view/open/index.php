@@ -5,7 +5,7 @@
                 <span>第三方平台应用列表</span>
             </div>
             <div>
-                <el-button @click="addEvent" type="primary">添加应用</el-button>
+                <el-button @click="addEvent" type="primary" size="mini">添加应用</el-button>
             </div>
             <div style="margin-top: 10px">
                 <el-table
@@ -43,8 +43,8 @@
                         align="center"
                         min-width="180">
                         <template slot-scope="scope">
-                            <el-button @click="editEvent(scope.row)" type="primary" size="small">编辑</el-button>
-                            <el-button @click="deleteEvent(scope.row)" type="danger" size="small" >删除
+                            <el-button @click="editEvent(scope.row)" type="primary" size="mini">编辑</el-button>
+                            <el-button @click="deleteEvent(scope.row)" type="danger" size="mini" >删除
                             </el-button>
                         </template>
                     </el-table-column>
@@ -136,7 +136,7 @@
                             type: 2,
                             title: '添加',
                             content: "{:api_url('/member/open/detail')}",
-                            area: ['50%', '90%'],
+                            area: ['50%', '45%'],
                             end: function () {  //回调函数
                                 that.getList()
                             }
@@ -148,7 +148,7 @@
                             type: 2,
                             title: '编辑',
                             content: "{:api_url('/member/open/detail')}?id=" + editItem.id,
-                            area: ['50%', '90%'],
+                            area: ['50%', '45%'],
                             end: function () {  //回调函数
                                 that.getList()
                             }

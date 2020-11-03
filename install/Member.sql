@@ -1,18 +1,23 @@
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
--- Table structure for cms_connect
+-- Table structure for cms_member_connect_token
 -- ----------------------------
-DROP TABLE IF EXISTS `cms_connect`;
-CREATE TABLE `cms_connect` (
-  `connectid` mediumint(8) NOT NULL AUTO_INCREMENT,
-  `openid` varchar(32) NOT NULL COMMENT '授权标识',
+DROP TABLE IF EXISTS `cms_member_connect_token`;
+CREATE TABLE `cms_member_connect_token` (
+  `token_id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` mediumint(8) NOT NULL COMMENT '用户ID',
-  `app` varchar(10) NOT NULL COMMENT '应用名称',
-  `accesstoken` char(50) NOT NULL COMMENT 'access_token',
-  `expires` int(10) NOT NULL COMMENT 'token过期时间',
-  PRIMARY KEY (`connectid`),
-  KEY `openid` (`openid`)
+  `open_id` varchar(32) NOT NULL COMMENT '授权标识',
+  `access_token` varchar(255) NOT NULL COMMENT 'access_token',
+  `open_app_id` int(11) NOT NULL COMMENT '应用id',
+  `app_type_name` varchar(255) DEFAULT NULL COMMENT '应用名称',
+  `expires_in` int(10) NOT NULL COMMENT 'token过期时间',
+  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
+  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
+  `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
+  PRIMARY KEY (`token_id`) USING BTREE,
+  KEY `openid` (`open_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='登录授权';
+
 
 -- ----------------------------
 -- Table structure for cms_member_tag
@@ -113,7 +118,7 @@ CREATE TABLE `cms_member_bind` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `user_id` int(11) DEFAULT NULL COMMENT '用户id',
   `bind_type` varchar(255) DEFAULT NULL COMMENT '绑定第三方类型',
-  `bind_user_id` int(11) DEFAULT NULL COMMENT '绑定第三方的用户信息id',
+  `bind_open_id` varchar(255) DEFAULT NULL COMMENT '绑定第三方的用户 open_id',
   `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
   `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
   `delete_time` int(11) DEFAULT NULL COMMENT '删除时间',
@@ -211,4 +216,11 @@ INSERT INTO `cms_member_group` VALUES ('4', '中级会员', '1', '3', '150', '50
 INSERT INTO `cms_member_group` VALUES ('5', '高级会员', '1', '5', '300', '999', '1', '1', '1', '1', '1', '1', '0', '1', '', '', '', '5', '0', '', '0', '0', '0');
 INSERT INTO `cms_member_group` VALUES ('7', '邮件认证', '1', '0', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', 'images/group/vip.jpg', '#000000', '', '7', '0', '', '0', '0', '0');
 INSERT INTO `cms_member_group` VALUES ('8', '游客', '1', '0', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '', '', '', '0', '0', '', '0', '0', '0');
+
+-- ----------------------------
+-- Records of cms_member_open
+-- ----------------------------
+INSERT INTO `cms_member_open` VALUES (1, 'weibo', '', '', 0, 0, NULL);
+INSERT INTO `cms_member_open` VALUES (2, 'qq', '', '', 0, 0, NULL);
+
 

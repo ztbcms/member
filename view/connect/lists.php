@@ -9,58 +9,55 @@
         >
             <el-table-column label="授权ID" width="" align="center">
                 <template slot-scope="{row}">
-                    <span>{{ row.tag_name }}</span>
+                    <span>{{ row.token_id }}</span>
                 </template>
             </el-table-column>
 
             <el-table-column label="用户UID" width="" align="center">
                 <template slot-scope="{row}">
-                    <span>{{ row.tag_name }}</span>
+                    <span>{{ row.uid }}</span>
                 </template>
             </el-table-column>
 
             <el-table-column label="用户名" width="" align="center">
                 <template slot-scope="{row}">
-                    {{ row.sort }}
+                    {{ row.username }}
                 </template>
             </el-table-column>
 
             <el-table-column label="授权平台" align="center">
                 <template slot-scope="{row}">
-                    {{ row.sort }}
+                    {{ row.app_type_name }}
                 </template>
             </el-table-column>
 
             <el-table-column label="授权平台标识（openid）"  min-width="180" align="center">
                 <template slot-scope="{row}">
-                    {{ row.sort }}
+                    {{ row.open_id }}
                 </template>
             </el-table-column>
 
-            <el-table-column label="access_token" width="" align="center">
+            <el-table-column label="access_token" min-width="120" align="center">
                 <template slot-scope="{row}">
-                    {{ row.sort }}
+                    {{ row.access_token }}
                 </template>
             </el-table-column>
 
-            <el-table-column label="expires_in" width="" align="center">
+            <el-table-column label="有效时间(s)" min-width="120" align="center">
                 <template slot-scope="{row}">
-                    {{ row.expires_in }}
+                    {{ row.expires_in.value }}
                 </template>
             </el-table-column>
 
-            <el-table-column label="是否过期" width="" align="center">
+            <el-table-column label="是否过期"  align="center">
                 <template slot-scope="{row}">
-                    是
+                    {{ row.expires_in.text }}
                 </template>
             </el-table-column>
 
-            <el-table-column label="操作" width="300px" align="center" class-name="small-padding fixed-width">
+            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                 <template slot-scope="{row}">
-                    <el-button type="primary" size="mini" @click="addEdit(row.tag_id)">
-                        更新时间
-                    </el-button>
-                    <el-button type="danger" size="mini" @click="deleteItem(row.tag_id)">
+                    <el-button type="danger" size="mini" @click="deleteItem(row.token_id)">
                         删除
                     </el-button>
                 </template>
@@ -129,7 +126,7 @@
                 },
                 getList: function () {
                     var that = this;
-                    var url = '{:api_url("/member/tag/getList")}';
+                    var url = '{:api_url("/member/connect/getTokenList")}';
                     var data = that.listQuery;
                     that.httpGet(url, data, function (res) {
                         if (res.status) {
@@ -142,28 +139,16 @@
                 // 删除
                 deleteItem: function (id) {
                     var that = this;
-                    var url = '{:api_url("/member/tag/delTag")}';
+                    var url = '{:api_url("/member/connect/delToken")}';
                     layer.confirm('您确定需要删除？', {
                         btn: ['确定', '取消'] //按钮
                     }, function () {
-                        that.httpPost(url, {tag_id: id}, function (res) {
+                        that.httpPost(url, {token_id: id}, function (res) {
                             layer.msg(res.msg);
                             if (res.status) {
                                 that.getList();
                             }
                         });
-                    });
-                },
-                // 更新时间
-                updateShow: function (id, value) {
-                    var that = this;
-                    var url = '{:api_url("/member/tag/updateField")}';
-                    var data = {tag_id: id, field: 'is_show', value: value};
-                    that.httpPost(url, data, function (res) {
-                        if (res.status) {
-                            that.$message.success(res.msg);
-                            that.getList();
-                        }
                     });
                 },
             },

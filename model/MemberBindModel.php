@@ -17,4 +17,5 @@ use think\Model;
 class MemberBindModel extends Model
 {
     protected $name = 'member_bind';
+
 }

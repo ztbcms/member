@@ -52,7 +52,7 @@
                 },
                 methods: {
                     cancelEvent: function () {
-                        location.href = "{:api_url('/member/open/index')}";
+                        parent.layer.closeAll()
                     },
                     // 获取平台
                     getTypeList: function () {
