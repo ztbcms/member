@@ -12,7 +12,8 @@
 3、目录：/member/controller/api 中提供了示例接口：
     列举了较常用的方法：创建用户，进行第三方平台绑定，通过第三方进行登录
 
-这里提出一个bug，安装模块时，不会写入setting.inc.php 文件。
+提一个bug~
+在安装模块时，不会写入setting.inc.php 文件。
 
 
 
