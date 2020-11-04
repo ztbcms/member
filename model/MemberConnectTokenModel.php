@@ -27,13 +27,12 @@ class MemberConnectTokenModel extends Model
     /**
      * 获取是否过期
      * @param $val
-     * @param $data
      * @return array
      */
-    public function getExpiresInAttr($val,$data){
-        $endTime = $data['create_time'] + $val;
+    public function getExpiresInAttr($val)
+    {
         return [
-            'text' => ($endTime < time()) ? '是' : '否',
+            'text'  => ($val < time()) ? '是' : '否',
             'value' => $val
         ];
     }
@@ -42,11 +41,43 @@ class MemberConnectTokenModel extends Model
      * 获取用户名称
      * @return \think\model\relation\HasOne
      */
-    public function userName(){
-        return $this->hasOne(MemberUserModel::class,'user_id','uid')
+    public function userName()
+    {
+        return $this->hasOne(MemberUserModel::class, 'user_id', 'uid')
             ->bind([
                 'nickname',
                 'username',
             ]);
+    }
+
+    /**
+     * 根据授权信息，取得对应绑定的用户ID
+     * @param string $openid
+     * @param string $appType
+     * @return boolean
+     */
+    public function getUserid($openid, $appType)
+    {
+        if (empty($openid) || empty($appType)) {
+            return false;
+        }
+        return $this->where("open_id", $openid)
+            ->where("app_type", $appType)
+            ->value("uid");
+    }
+
+    /**
+     * 更新token
+     * @param $openid
+     * @param $appType
+     * @param $accessToken
+     * @param $expires_in
+     * @return bool
+     */
+    public function updateTokenTime($openid, $appType, $accessToken, $expires_in)
+    {
+        return $this->where("open_id", $openid)
+            ->where("app_type", $appType)
+            ->save(['access_token' => $accessToken, 'expires_in' => $expires_in]);
     }
 }

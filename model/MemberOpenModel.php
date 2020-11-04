@@ -17,8 +17,10 @@ use think\Model;
 class MemberOpenModel extends Model
 {
     protected $name = 'member_open';
-
     protected $append = ['app_name'];
+
+    const TYPE_QQ = 'qq';
+    const TYPE_WEIBO = 'weibo';
 
     // 获取类型名称
     public function getAppNameAttr($val, $data)

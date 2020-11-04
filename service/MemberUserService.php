@@ -7,7 +7,10 @@
 
 namespace app\member\service;
 
+use app\common\model\UserModel;
+use app\common\model\UserTokenModel;
 use app\common\service\BaseService;
+use app\member\libs\util\Encrypt;
 use app\member\model\MemberUserModel;
 use think\facade\Db;
 
@@ -18,6 +21,9 @@ use think\facade\Db;
  */
 class MemberUserService extends BaseService
 {
+    //存储用户uid的Key
+    const userUidKey = 'spf_userid';
+
     /**
      * 获取用户列表
      * @param array $where
@@ -330,4 +336,38 @@ class MemberUserService extends BaseService
     {
         return MemberUserModel::whereIn('user_id', $userIds)->useSoftDelete('delete_time', time())->delete();
     }
+
+    /**
+     * 注册用户登录状态
+     * @param array $userInfo 用户信息
+     */
+    public static function registerLogin(array $userInfo)
+    {
+        //写入session
+        $token = Encrypt::authcode((int)$userInfo['id'], '');
+        session(self::userUidKey, $token);
+        UserTokenModel::insert([
+            'session_id' => session_id(),
+            'token' => $token,
+            'user_id' => (int)$userInfo['id'],
+            'expire_time' => time() + 7 * 86400,
+            'create_time' => time()
+        ]);
+        //更新状态
+        self::loginStatus((int)$userInfo['id']);
+        //注册权限 TODO
+//        \Libs\System\RBAC::saveAccessList((int)$userInfo['id']);
+    }
+
+    /**
+     * 更新登录状态信息
+     * @param string $userId
+     * @return boolean|array
+     */
+    public static function loginStatus($userId) {
+        $data['last_login_time'] = time();
+        $data['last_login_ip'] = get_client_ip();
+        return UserModel::where('id',$userId)->save($data);
+    }
+
 }
