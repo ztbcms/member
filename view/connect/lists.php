@@ -27,7 +27,7 @@
 
             <el-table-column label="授权平台" align="center">
                 <template slot-scope="{row}">
-                    {{ row.app_type }}
+                    {{ row.app_type_name }}
                 </template>
             </el-table-column>
 

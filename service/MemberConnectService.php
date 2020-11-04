@@ -40,13 +40,13 @@ class MemberConnectService extends BaseService
     }
 
     /**
-     * 通过第三方凭证 获取系统用户id
+     * 通过第三方凭证 获取系统用户绑定信息
      * @param $openId
      * @return array|\think\Model
      */
     static function getUid($openId)
     {
-        return MemberBindModel::where('bind_open_id', $openId)->value('user_id');
+        return MemberBindModel::where('bind_open_id', $openId)->findOrEmpty();
     }
 
 
@@ -60,6 +60,32 @@ class MemberConnectService extends BaseService
      */
     static function getBindDetail($userId){
         return MemberBindModel::where('user_id',$userId)->select();
+    }
+
+    /**
+     * 绑定用户与第三方关联
+     * @param $userId
+     * @param $appType
+     * @param $openId
+     * @return bool
+     */
+    public function bindApp($userId, $appType, $openId)
+    {
+        // 判断第三方存在
+        $app = MemberOpenModel::where('app_type', $appType)->findOrEmpty();
+        if ($app->isEmpty()) {
+            $this->error = '第三方应用不存在';
+            return false;
+        }
+        $bind = MemberBindModel::where('user_id', $userId)->where('bind_type', $appType)->findOrEmpty();
+        $bind->user_id = $userId;
+        $bind->bind_type = $appType;
+        $bind->bind_open_id = $openId;
+        $res = $bind->save();
+        if ($res) {
+            return true;
+        }
+        return false;
     }
 
     /**

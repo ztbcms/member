@@ -110,6 +110,37 @@ class MemberUserService extends BaseService
     }
 
     /**
+     * 注册用户登录状态
+     * 获取token
+     * @param int $userId
+     * @param int $openId
+     * @param int $openAppId
+     * @param string $appTypeName
+     * @return bool|string
+     */
+    static function loginToken(int $userId, $openId = 0, $openAppId = 0, $appTypeName = 'Local')
+    {
+        //写入session
+        $token = \app\common\util\Encrypt::authcode($userId, '');
+        session(self::userUidKey, $token);
+
+        $data = [
+            'uid'           => $userId,
+            'open_id'       => $openId,
+            'open_app_id'   => $openAppId,
+            'access_token'  => $token,
+            'app_type_name' => $appTypeName,
+            'expires_in'    => time() + 7 * 86400,
+            'create_time'   => time()
+        ];
+        $res = MemberConnectTokenModel::create($data);
+        if($res) {
+            return $token;
+        }
+        return false;
+    }
+
+    /**
      * 编辑用户
      * @param string $username 用户名
      * @param string $oldpw 旧密码
@@ -160,31 +191,6 @@ class MemberUserService extends BaseService
         }
     }
 
-    /**
-     * 绑定用户与第三方关联
-     * @param $userId
-     * @param $appType
-     * @param $openId
-     * @return bool
-     */
-    public function bindApp($userId, $appType, $openId)
-    {
-        // 判断第三方存在
-        $app = MemberOpenModel::where('app_type', $appType)->findOrEmpty();
-        if ($app->isEmpty()) {
-            $this->error = '第三方应用不存在';
-            return false;
-        }
-        $bind = MemberBindModel::where('user_id', $userId)->where('bind_type', $appType)->findOrEmpty();
-        $bind->user_id = $userId;
-        $bind->bind_type = $appType;
-        $bind->bind_open_id = $openId;
-        $res = $bind->save();
-        if ($res) {
-            return true;
-        }
-        return false;
-    }
 
     /**
      * 检查用户名
