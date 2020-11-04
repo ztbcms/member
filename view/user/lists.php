@@ -235,7 +235,7 @@
                         type: 2,
                         title: '绑定详情',
                         content: "{:api_url('/member/bind/bindDetail')}" + '?user_id=' + user_id,
-                        area: ['40%', '80%'],
+                        area: ['60%', '80%'],
                         end: function () {  //回调函数
                         }
                     })

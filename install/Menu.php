@@ -46,6 +46,13 @@ return [
                                 "remark" => "",
                             ],
                             [
+                                "route"  => "member/bind/bindDetail",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "获取会员绑定详情",
+                                "remark" => "",
+                            ],
+                            [
                                 "route"  => "member/user/add",
                                 "type"   => 1,
                                 "status" => 0,
@@ -283,7 +290,45 @@ return [
                         "status" => 1,
                         "name"   => "模型管理",
                         "remark" => "",
-                        "child"  => []
+                        "child"  => [
+                            [
+                                "route"  => "member/model/getList",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "获取模型列表",
+                                "remark" => "",
+                            ],
+                            [
+                                "route"  => "member/model/getList",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "获取模型列表",
+                                "remark" => "",
+                            ],
+                            [
+                                "route"  => "member/model/detail",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "添加编辑模型",
+                                "remark" => "",
+                                "child"  => [
+                                    [
+                                        "route"  => "member/model/addEditModel",
+                                        "type"   => 1,
+                                        "status" => 0,
+                                        "name"   => "添加编辑模型操作权限",
+                                        "remark" => "",
+                                    ],
+                                ]
+                            ],
+                            [
+                                "route"  => "member/model/delModel",
+                                "type"   => 1,
+                                "status" => 0,
+                                "name"   => "删除模型",
+                                "remark" => "",
+                            ]
+                        ]
                     ],
                 ]
             ],

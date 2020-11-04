@@ -104,6 +104,7 @@ class Model extends AdminController
     /**
      * 获取model 列表
      * @return \think\response\Json
+     * @throws \think\db\exception\DbException
      */
     public function getList()
     {

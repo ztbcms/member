@@ -18,6 +18,8 @@ use think\facade\View;
  */
 class Bind extends AdminController
 {
+    protected $noNeedPermission = ['getBindDetail'];
+
     /**
      * 用户绑定
      * @return string
