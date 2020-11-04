@@ -74,6 +74,7 @@ class User extends AdminController
         return self::makeJsonReturn(true, $info, '');
     }
 
+
     /**
      * 获取所有模型
      * @return \think\response\Json

@@ -11,6 +11,9 @@ use app\common\model\UserModel;
 use app\common\model\UserTokenModel;
 use app\common\service\BaseService;
 use app\member\libs\util\Encrypt;
+use app\member\model\MemberBindModel;
+use app\member\model\MemberConnectTokenModel;
+use app\member\model\MemberOpenModel;
 use app\member\model\MemberUserModel;
 use think\facade\Db;
 
@@ -62,7 +65,7 @@ class MemberUserService extends BaseService
      * @param string $email 邮箱
      * @return boolean
      */
-    public function userRegister($username, $password, $email)
+    public function userRegister($username, $password, $email = '')
     {
         // 检查用户名
         $ckName = $this->CheckUsername($username);
@@ -70,9 +73,11 @@ class MemberUserService extends BaseService
             return false;
         }
         // 检查邮箱
-        $ckEmail = $this->CheckEmail($email);
-        if ($ckEmail !== true) {
-            return false;
+        if (!empty($email)) {
+            $ckEmail = $this->CheckEmail($email);
+            if ($ckEmail !== true) {
+                return false;
+            }
         }
         // 检查密码
         $checkPassword = $this->checkPassword($password);
@@ -96,7 +101,7 @@ class MemberUserService extends BaseService
         ];
         $userId = $Member->insertGetId($data);
         if ($userId) {
-            // TODO HOOK
+            // TODO trigger
 //            Hook::listen('member_register', MemberRegisterBehaviorParam::create(['userid' => $userid]));
             return $userId;
         }
@@ -153,6 +158,32 @@ class MemberUserService extends BaseService
             $this->error = '用户资料更新失败！';
             return false;
         }
+    }
+
+    /**
+     * 绑定用户与第三方关联
+     * @param $userId
+     * @param $appType
+     * @param $openId
+     * @return bool
+     */
+    public function bindApp($userId, $appType, $openId)
+    {
+        // 判断第三方存在
+        $app = MemberOpenModel::where('app_type', $appType)->findOrEmpty();
+        if ($app->isEmpty()) {
+            $this->error = '第三方应用不存在';
+            return false;
+        }
+        $bind = MemberBindModel::where('user_id', $userId)->where('bind_type', $appType)->findOrEmpty();
+        $bind->user_id = $userId;
+        $bind->bind_type = $appType;
+        $bind->bind_open_id = $openId;
+        $res = $bind->save();
+        if ($res) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -341,19 +372,19 @@ class MemberUserService extends BaseService
      * 注册用户登录状态
      * @param array $userInfo 用户信息
      */
-    public static function registerLogin(array $userInfo)
+    static function registerLogin(array $userInfo)
     {
         //写入session
         $token = Encrypt::authcode((int)$userInfo['id'], '');
         session(self::userUidKey, $token);
         UserTokenModel::insert([
-            'session_id' => session_id(),
-            'token' => $token,
-            'user_id' => (int)$userInfo['id'],
+            'session_id'  => session_id(),
+            'token'       => $token,
+            'user_id'     => (int)$userInfo['id'],
             'expire_time' => time() + 7 * 86400,
             'create_time' => time()
         ]);
-        //更新状态
+        //更新会员最新状态
         self::loginStatus((int)$userInfo['id']);
         //注册权限 TODO
 //        \Libs\System\RBAC::saveAccessList((int)$userInfo['id']);
@@ -364,10 +395,11 @@ class MemberUserService extends BaseService
      * @param string $userId
      * @return boolean|array
      */
-    public static function loginStatus($userId) {
+    public static function loginStatus($userId)
+    {
         $data['last_login_time'] = time();
-        $data['last_login_ip'] = get_client_ip();
-        return UserModel::where('id',$userId)->save($data);
+        $data['last_login_ip'] = request()->ip();
+        return UserModel::where('id', $userId)->save($data);
     }
 
 }

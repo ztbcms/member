@@ -22,13 +22,19 @@ class MemberOpenModel extends Model
     const TYPE_QQ = 'qq';
     const TYPE_WEIBO = 'weibo';
 
-    // 获取类型名称
+    public $appNames = [
+        'qq'    => 'QQ',
+        'weibo' => '新浪微博',
+    ];
+
+    /**
+     * 获取应用名称
+     * @param $val
+     * @param $data
+     * @return mixed
+     */
     public function getAppNameAttr($val, $data)
     {
-        $names = [
-            'qq'    => 'QQ',
-            'weibo' => '新浪微博',
-        ];
-        return $names[$data['app_type']];
+        return $this->appNames[$data['app_type']];
     }
 }

@@ -45,6 +45,7 @@ class MemberModelService extends BaseService
     function getList($where = [], $limit = 15){
         return Db::name('model')->where('type',2)
             ->where($where)
+            ->order('modelid','desc')
             ->paginate($limit);
     }
 

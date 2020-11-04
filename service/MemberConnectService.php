@@ -49,8 +49,21 @@ class MemberConnectService extends BaseService
         return MemberBindModel::where('bind_open_id', $openId)->value('user_id');
     }
 
+
     /**
-     * 删除token 记录
+     * 获取用户绑定信息
+     * @param $userId
+     * @return \think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    static function getBindDetail($userId){
+        return MemberBindModel::where('user_id',$userId)->select();
+    }
+
+    /**
+     * 删除绑定记录
      * @param $userId
      * @param $bindType
      * @return array
@@ -69,6 +82,7 @@ class MemberConnectService extends BaseService
         }
         return self::createReturn(false, [], '解绑失败');
     }
+
 
     /**
      * 删除token 记录

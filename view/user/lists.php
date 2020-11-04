@@ -229,16 +229,14 @@
                 this.getList();
             },
             methods: {
-                // 查看详情
+                // 绑定详情
                 openDetail:function(user_id){
-                    var that = this;
                     layer.open({
                         type: 2,
-                        title: '添加',
-                        content: "{:api_url('/member/user/add')}" + '?user_id=' + user_id,
-                        area: ['30%', '90%'],
+                        title: '绑定详情',
+                        content: "{:api_url('/member/bind/bindDetail')}" + '?user_id=' + user_id,
+                        area: ['40%', '80%'],
                         end: function () {  //回调函数
-                            that.getList()
                         }
                     })
                 },

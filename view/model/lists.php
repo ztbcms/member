@@ -1,12 +1,6 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
         <div>
-            <h3>温馨提示</h3>
-            <p>1、请谨慎删除模型，当模型里存在会员时请使用“移动”功能将该模型里的会员移动到其他会员模型中。
-                <br>
-                2、移动模型会员，将会把原有模型里的会员信息删除，将不能修复。</p>
-        </div>
-        <div>
             <el-button size="mini" type="primary" @click="detailModel(0)">添加模型</el-button>
         </div>
         <el-table size=""
@@ -51,6 +45,9 @@
 
             <el-table-column label="操作" width="300px" align="center" class-name="small-padding fixed-width">
                 <template slot-scope="{row}">
+                    <el-button type="primary" size="mini" @click="modelField(row.modelid)">
+                        字段管理
+                    </el-button>
                     <el-button type="primary" size="mini" @click="detailModel(row.modelid)">
                         编辑
                     </el-button>
@@ -133,8 +130,13 @@
                         }
                     });
                 },
+                // 字段管理
+                modelField: function (id) {
+                    var url = "{:api_url('/member/field/lists')}" + '?modelid=' + id;
+                    Ztbcms.openNewIframeByUrl('字段管理',url);
+                },
                 // 添加模型
-                detailModel:function (id) {
+                detailModel: function (id) {
                     var that = this;
                     layer.open({
                         type: 2,

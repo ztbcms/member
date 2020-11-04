@@ -57,7 +57,7 @@ class Index extends BaseController
         if (!empty($this->userid)) {
             $this->success("您已经是登录状态！", $forward ? $forward : U("Index/index"));
         } else {
-            // TODO 目前写死指定模板， 自由选择模板 TODO
+            // TODO 目前写死指定模板， 后续应可自由选择前台模板
             $AdminConfigService = new AdminConfigService();
             $config = $AdminConfigService->getConfig()['data'];
             View::assign('Config', $config);

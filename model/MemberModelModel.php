@@ -84,6 +84,32 @@ class MemberModelModel extends Model
     }
 
     /**
+     * 生成模型缓存，以模型ID为下标的数组
+     * 可用作获取
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public static function model_cache($isForce = false)
+    {
+        // 不强制则检查
+        if(!$isForce){
+            $check = cache('Model');
+            if(empty($check)){
+                $data = self::getModelAll();
+                cache('Model', $data);
+                return $data;
+            }
+            return $check;
+        }
+        $data = self::getModelAll();
+        cache('Model', $data);
+        return $data;
+    }
+
+
+    /**
      * 会员配置缓存
      * @return mixed
      * @throws \think\db\exception\DataNotFoundException

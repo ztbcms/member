@@ -1,6 +1,6 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
-        <h3>添加会员</h3>
+        <h3>编辑会员</h3>
         <el-row>
             <el-col :span="20">
                 <div class="grid-content ">
@@ -238,15 +238,18 @@
                         success: function (res) {
                             if (res.status) {
                                 that.form = res.data
-                                that.form.password = null
-                                that.form.password_confirm = null
-                                if (that.form.group_id < 1)
-                                    that.form.group_id = null
                                 that.form.checked = res.data.checked.toString()
                                 that.tag_ids = res.data.tag_ids
 
+                                that.form.password = null
+                                that.form.password_confirm = null
+                                if (that.form.group_id < 1){
+                                    that.form.group_id = null
+                                }
                                 if (that.form.modelid > 0)
                                     that.getModelField(that.form.modelid)
+                                else
+                                    that.form.modelid = null
                             } else {
                                 layer.msg(res.msg);
                             }
