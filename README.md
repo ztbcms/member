@@ -1,6 +1,6 @@
 ####使用前请安装
 #####1、database 配置文件需开启非严谨模式
-#####2、使用会员模型，需安装CMS模型管理模块
+#####2、使用会员模型，需安装CMS模型管理模块（会员模型的字段管理需进一步优化）
 
 ~~~~
 说明：
@@ -11,6 +11,13 @@
 
 3、目录：/member/controller/api 中提供了示例接口：
     列举了较常用的方法：创建用户，进行第三方平台绑定，通过第三方进行登录
+
+新增表：
+1、标签关联表 member_tag_bind
+2、标签表  member_tag
+3、第三方平台应用表 member_open
+4、第三方平台登录token记录表 member_connect_token
+5、第三方平台绑定用户表  member_bind
 
 提一个bug~
 在安装模块时，不会写入setting.inc.php 文件。
