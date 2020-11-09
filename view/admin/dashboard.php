@@ -1,9 +1,9 @@
 <div id="app" style="padding: 8px;" v-cloak>
-    <el-row :gutter="20">
+    <el-row :gutter="24">
         <!--  左侧  -->
-        <el-col :span="19">
+        <el-col :span="24">
             <!-- 后台统计  -->
-            <el-row :gutter="20" style="margin-top: 20px;">
+            <el-row :gutter="24" style="margin-top: 20px;">
                 <el-col :span="24">
                     <el-card body-style="height:130px; " class="card-summary">
                         <div class="card-summary-label">统计</div>
@@ -48,33 +48,6 @@
                     </el-card>
                 </el-col>
             </el-row>
-
-            <!--常用功能-->
-            <el-row :gutter="20" style="margin-top: 20px;">
-                <el-col :span="24">
-                    <el-card body-style="height:130px;" class="card-changyong">
-                        <div class="card-changyong-label">常用功能</div>
-                        <div class="card-changyong-data">
-                            <el-row>
-                                <el-col :span="4">
-                                    <div class="col-data" @click="gotoPage1">
-                                        <div class="item-icon">
-                                            <i class="iconfont icon-shuju"></i>
-                                        </div>
-                                        <div class="item-label">会员前台</div>
-                                    </div>
-                                </el-col>
-
-
-                            </el-row>
-                        </div>
-
-                    </el-card>
-                </el-col>
-            </el-row>
-        </el-col>
-        <!--  右侧  -->
-        <el-col :span="5">
 
         </el-col>
 
