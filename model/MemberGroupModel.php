@@ -24,4 +24,41 @@ class MemberGroupModel extends Model
     protected $defaultSoftDelete = 0;
 
 
+    /**
+     * 获取用户权限
+     * @param $data
+     * @return array
+     */
+    public static function getPowerData($data)
+    {
+        $power = [];
+        if($data['allowpostverify']) $power[] = 'allowpostverify';
+        if($data['allowupgrade']) $power[] = 'allowupgrade';
+        if($data['allowsendmessage']) $power[] = 'allowsendmessage';
+        if($data['allowpost']) $power[] = 'allowpost';
+        if($data['allowattachment']) $power[] = 'allowattachment';
+        if($data['allowsearch']) $power[] = 'allowsearch';
+        return $power;
+    }
+
+    /**
+     * 获取权限
+     * @param $data
+     * @return array
+     */
+    public static function getExpandData($data){
+        $expand = unserialize($data['expand']);
+        if(!$expand) {
+            $expand = [
+                'upphotomax' => '0',
+                'iswall' => '0',
+                'ismsg' => '0',
+                'isrelatio' => '0',
+                'isfavorite' => '0',
+                'isweibo' => '0'
+            ];
+        }
+        return $expand;
+    }
+
 }

@@ -193,7 +193,7 @@
             el: '#app',
             components: {},
             props: [],
-            data() {
+            data :function() {
                 return {
                     formData: {
                         group_id: "{:input('group_id')}",
@@ -211,16 +211,16 @@
                             ismsg: '0',
                             isrelatio: '0',
                             isfavorite: '0',
-                            isweibo: '0',
+                            isweibo: '0'
                         }
                     }
                 }
             },
             computed: {},
             watch: {},
-            created() {
+            created : function() {
             },
-            mounted() {
+            mounted : function() {
                 window.addEventListener('ZTBCMS_UPLOAD_IMAGE', this.onUploadedImage.bind(this));
                 if (this.formData.group_id > 0) {
                     this.getDetail()
@@ -279,7 +279,7 @@
                 },
                 resetForm: function () {
                     window.parent.layer.closeAll()
-                },
+                }
             }
         });
     });

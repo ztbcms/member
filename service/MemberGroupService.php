@@ -57,7 +57,11 @@ class MemberGroupService extends BaseService
      */
     static function getGroupInfo($groupId)
     {
-        return MemberGroupModel::where('group_id', $groupId)->findOrEmpty();
+        $MemberGroupModel = new MemberGroupModel;
+        $MemberGroup = $MemberGroupModel::where('group_id', $groupId)->findOrEmpty();
+        $MemberGroup['power'] = $MemberGroupModel->getPowerData($MemberGroup);
+        $MemberGroup['expand'] = $MemberGroupModel->getExpandData($MemberGroup);
+        return $MemberGroup;
     }
 
 

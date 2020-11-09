@@ -100,11 +100,6 @@ class Group extends AdminController
     {
         $groupId = $this->request->get('group_id', 0);
         $info = MemberGroupService::getGroupInfo($groupId);
-        // 整理权限
-        if (!$info->isEmpty()) {
-            $info['power'] = unserialize($info['power']);
-            $info['expand'] = unserialize($info['expand']);
-        }
         return self::makeJsonReturn(true, $info);
     }
 
