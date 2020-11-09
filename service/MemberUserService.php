@@ -101,8 +101,6 @@ class MemberUserService extends BaseService
         ];
         $userId = $Member->insertGetId($data);
         if ($userId) {
-            // TODO trigger
-//            Hook::listen('member_register', MemberRegisterBehaviorParam::create(['userid' => $userid]));
             return $userId;
         }
         $this->error = $Member->error ?: '注册失败！';

@@ -235,7 +235,7 @@
                         type: 2,
                         title: '绑定详情',
                         content: "{:api_url('/member/bind/bindDetail')}" + '?user_id=' + user_id,
-                        area: ['60%', '80%'],
+                        area: ['80%', '80%'],
                         end: function () {  //回调函数
                         }
                     })
@@ -247,7 +247,7 @@
                         type: 2,
                         title: '添加',
                         content: "{:api_url('/member/user/add')}",
-                        area: ['30%', '90%'],
+                        area: ['80%', '90%'],
                         end: function () {  //回调函数
                             that.getList()
                         }
@@ -260,7 +260,7 @@
                         type: 2,
                         title: '编辑',
                         content: "{:api_url('/member/user/edit')}" + '?user_id=' + user_id,
-                        area: ['30%', '90%'],
+                        area: ['80%', '90%'],
                         end: function () {  //回调函数
                             that.getList()
                         }

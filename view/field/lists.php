@@ -241,12 +241,12 @@
                 },
                 // 编辑字段
                 edit: function (modelid, fieldid) {
-                    location.href = "{:api_url('/cms/field/edit')}" + '?modelid=' + modelid + '&fieldid=' + fieldid;
+                    location.href = "{:api_url('/member/field/edit')}" + '?modelid=' + modelid + '&fieldid=' + fieldid;
                 },
 
                 // 添加字段
                 add: function () {
-                    location.href = "{:api_url('/cms/field/add')}" + '?modelid=' + this.modelid
+                    location.href = "{:api_url('/member/field/add')}" + '?modelid=' + this.modelid
                 },
 
                 // 返回列表
