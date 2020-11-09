@@ -10,6 +10,7 @@ namespace app\member\controller\api;
 use app\BaseController;
 use app\member\service\MemberConnectService;
 use app\member\service\MemberUserService;
+use app\common\util\Encrypt;
 
 /**
  * 用户接口
@@ -22,13 +23,16 @@ class User extends BaseController
     // home/member/api.user/register
     public function register()
     {
-        $username = $this->request->post('username', null); // 用户名
-        $password = $this->request->post('password', null);
+        $username = input('username', ''); // 用户名
+        $password = input('password', '');
 
         $MemberUserService = new MemberUserService();
         $userId = $MemberUserService->userRegister($username, $password);
         if ($userId) {
-            return self::makeJsonReturn(true, ['user_id' => $userId], '创建成功');
+            return self::makeJsonReturn(true, [
+                'user_id' => $userId,
+                'token' => Encrypt::authcode((int) $userId, Encrypt::OPERATION_ENCODE,'ZTBCMS',86400)
+            ], '创建成功');
         }
         return self::makeJsonReturn(false, [], '创建失败');
     }
@@ -37,9 +41,9 @@ class User extends BaseController
     // home/member/api.user/bindApp
     public function bindApp()
     {
-        $userId = $this->request->post('user_id', null);
-        $appType = $this->request->post('app_type', null);
-        $openId = $this->request->post('open_id', null);
+        $userId = $this->request->post('user_id', '');
+        $appType = $this->request->post('app_type', '');
+        $openId = $this->request->post('open_id', '');
         $MemberConnectService = new MemberConnectService();
         $res = $MemberConnectService->bindApp($userId, $appType, $openId);
         if ($res) {
@@ -66,4 +70,21 @@ class User extends BaseController
         return self::makeJsonReturn(false, [], '登录失败');
     }
 
+    /**
+     * 获取用户token
+     * @return \think\response\Json
+     */
+    public function createSimulationToken(){
+        //用户id
+        $user_id = input('user_id','0','trim');
+
+        //token有效期
+        $expiry = 86400;
+
+        $token = Encrypt::authcode((int) $user_id, Encrypt::OPERATION_ENCODE,'ZTBCMS',$expiry);
+        return json(self::createReturn(true,[
+            'token' => $token,
+            'expiry' => $expiry
+        ]));
+    }
 }

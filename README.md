@@ -21,6 +21,23 @@
 
 提一个bug~
 在安装模块时，不会写入setting.inc.php 文件。
+~~~~
+
+#### 权限介绍
+
+~~~~php
+
+ 直接继承 app\member\controller\api\Base.php 即可获得登录权限
+ 具体的权限控制可以在中间件 app\member\middleware\Authority.php 中进行
+
+~~~~
+
+#### 对外接口
+
+|接口|说明|
+|-|-|-|
+|{{host}}/home/member/api.User/createSimulationToken|获取模拟token|
+|{{host}}/home/member/api.User/register|创建会员|
 
 
 
