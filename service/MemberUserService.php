@@ -8,7 +8,6 @@
 namespace app\member\service;
 
 use app\common\model\UserModel;
-use app\common\model\UserTokenModel;
 use app\common\service\BaseService;
 use app\member\libs\util\Encrypt;
 use app\member\model\MemberBindModel;
@@ -404,6 +403,47 @@ class MemberUserService extends BaseService
         $data['last_login_time'] = time();
         $data['last_login_ip'] = request()->ip();
         return UserModel::where('id', $userId)->save($data);
+    }
+
+    /**
+     * 登录或者注册用户
+     * @param $username
+     * @param $password
+     * @return array
+     */
+    public function getLoginRegisterUser($username, $password){
+        $MemberUserModel = new MemberUserModel();
+        $memberFind = $MemberUserModel->where(['username'=>$username])->find();
+        if($memberFind) {
+            $userId = $memberFind['user_id'];
+        } else {
+            $userId = $this->userRegister($username, $password);
+            if(!$userId) return self::createReturn(false,[],$this->error);
+        }
+        $token = Encrypt::authcode((int) $userId, Encrypt::OPERATION_ENCODE,'ZTBCMS',86400);
+        return self::createReturn(true,
+            [
+                'user_id' => $userId,
+                'token' => $token
+            ]
+        );
+    }
+
+    /**
+     * 更新用户数据
+     * @param string $user_id
+     * @param array $data
+     * @return array
+     */
+    public function sysUserInfo($user_id = '',$data = []){
+        $MemberUserModel = new MemberUserModel();
+        $save = [];
+        if(isset($data['sex'])) $save['sex'] = $data['sex'];  //性别
+        if(isset($data['nickname'])) $save['nickname'] = $data['nickname']; //用户昵称
+        if(isset($data['userpic'])) $save['userpic'] = $data['userpic']; //头像
+        if(isset($data['phone'])) $save['phone'] = $data['phone']; //手机号
+        if(!empty($save)) $MemberUserModel->where(['user_id'=>$user_id])->update($save);
+        return self::createReturn(true);
     }
 
 }

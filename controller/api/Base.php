@@ -8,9 +8,7 @@
 namespace app\member\controller\api;
 
 use app\BaseController;
-use app\member\model\MemberUserModel;
 use think\App;
-use app\common\util\Encrypt;
 
 /**
  * 获取公共基础信息

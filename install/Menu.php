@@ -242,7 +242,7 @@ return [
             [
                 "route"  => "member/setting/index",
                 "type"   => 0,
-                "status" => 1,
+                "status" => 0,
                 "name"   => "设置",
                 "remark" => "",
                 "child"  => [
