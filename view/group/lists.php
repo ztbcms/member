@@ -207,7 +207,7 @@
                 // 新增编辑
                 addEdit: function (id) {
                     var url = '{:api_url("/member/group/detail")}';
-                    if (id) url += '&group_id=' + id;
+                    if (id) url += '?group_id=' + id;
 
                     var that = this;
                     layer.open({

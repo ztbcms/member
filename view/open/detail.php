@@ -91,7 +91,7 @@
                     submitEvent: function () {
                         var _this = this;
                         $.ajax({
-                            url: "{:urlx('/member/open/addEditApp')}",
+                            url: "{:api_url('/member/open/addEditApp')}",
                             data: _this.form,
                             dataType: 'json',
                             type: 'post',
