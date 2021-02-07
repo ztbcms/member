@@ -31,5 +31,5 @@ return array(
     'tags' => array(),
     //缓存，格式：缓存key=>array('module','model','action')
     'cache' => array(),
-    'is_tp6' => true
+
 );
