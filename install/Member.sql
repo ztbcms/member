@@ -1,7 +1,4 @@
-SET FOREIGN_KEY_CHECKS=0;
--- ----------------------------
 -- Table structure for cms_member_connect_token
--- ----------------------------
 DROP TABLE IF EXISTS `cms_member_connect_token`;
 CREATE TABLE `cms_member_connect_token` (
   `token_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -19,9 +16,7 @@ CREATE TABLE `cms_member_connect_token` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='登录授权';
 
 
--- ----------------------------
 -- Table structure for cms_member_tag
--- ----------------------------
 DROP TABLE IF EXISTS `cms_member_tag`;
 CREATE TABLE `cms_member_tag` (
   `tag_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '标签id',
@@ -34,9 +29,7 @@ CREATE TABLE `cms_member_tag` (
   PRIMARY KEY (`tag_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='用户标签表';
 
--- ----------------------------
 -- Table structure for cms_member_tag_bind
--- ----------------------------
 DROP TABLE IF EXISTS `cms_member_tag_bind`;
 CREATE TABLE `cms_member_tag_bind` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -48,9 +41,7 @@ CREATE TABLE `cms_member_tag_bind` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户标签关联表';
 
--- ----------------------------
 -- Table structure for cms_member_open
--- ----------------------------
 DROP TABLE IF EXISTS `cms_member_open`;
 CREATE TABLE `cms_member_open` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -64,9 +55,7 @@ CREATE TABLE `cms_member_open` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='第三方平台管理表';
 
 
--- ----------------------------
 -- Table structure for `cms_member`
--- ----------------------------
 DROP TABLE IF EXISTS `cms_member`;
 CREATE TABLE `cms_member` (
     `user_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户id',
@@ -110,9 +99,7 @@ CREATE TABLE `cms_member` (
   KEY `phone` (`phone`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员表';
 
--- ----------------------------
 -- Table structure for `cms_member_bind`
--- ----------------------------
 DROP TABLE IF EXISTS `cms_member_bind`;
 CREATE TABLE `cms_member_bind` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
@@ -126,9 +113,7 @@ CREATE TABLE `cms_member_bind` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员第三方绑定表';
 
 
--- ----------------------------
 -- Table structure for `cms_member_favorite`
--- ----------------------------
 DROP TABLE IF EXISTS `cms_member_favorite`;
 CREATE TABLE `cms_member_favorite` (
   `fid` int(11) NOT NULL auto_increment COMMENT '收藏ID',
@@ -143,9 +128,7 @@ CREATE TABLE `cms_member_favorite` (
   KEY `userid` (`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员收藏表';
 
--- ----------------------------
 -- Table structure for `cms_member_online`
--- ----------------------------
 DROP TABLE IF EXISTS `cms_member_online`;
 CREATE TABLE `cms_member_online` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -157,9 +140,7 @@ CREATE TABLE `cms_member_online` (
   KEY `lasttime` (`userid`,`lasttime`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='在线用户表';
 
--- ----------------------------
 -- Table structure for `cms_member_content`
--- ----------------------------
 DROP TABLE IF EXISTS `cms_member_content`;
 CREATE TABLE `cms_member_content` (
   `id` int(10) NOT NULL auto_increment,
@@ -173,9 +154,7 @@ CREATE TABLE `cms_member_content` (
   KEY `userid` (`catid`,`content_id`,`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员投稿信息记录表';
 
--- ----------------------------
 -- Table structure for `cms_member_group`
--- ----------------------------
 DROP TABLE IF EXISTS `cms_member_group`;
 CREATE TABLE `cms_member_group` (
   `group_id` tinyint(3) unsigned NOT NULL auto_increment COMMENT '会员组id',

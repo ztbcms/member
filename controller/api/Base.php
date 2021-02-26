@@ -1,8 +1,6 @@
 <?php
 /**
  * User: cycle_3
- * Date: 2020/11/9
- * Time: 10:56
  */
 
 namespace app\member\controller\api;

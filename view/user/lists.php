@@ -46,7 +46,6 @@
         </div>
         <el-table
             :data="lists"
-            border
             style="width: 100%"
             @selection-change="handleSelectionChange"
         >
@@ -117,7 +116,7 @@
                 align="center"
                 label="模型名称">
                 <template slot-scope="scope">
-                    <div>TODO ！！！</div>
+                    <div>-</div>
                 </template>
             </el-table-column>
 
@@ -157,19 +156,19 @@
                 align="center"
                 label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="openDetail(scope.row.user_id)" type="success" size="mini">查看详情</el-button>
-                    <el-button @click="editUser(scope.row.user_id)" type="primary" size="mini">修改</el-button>
+                    <el-button @click="openDetail(scope.row.user_id)" type="text" size="mini">查看详情</el-button>
+                    <el-button @click="editUser(scope.row.user_id)" type="text" size="mini">修改</el-button>
 
                     <template v-if="scope.row.is_block == 1">
-                        <el-button @click="blockUser(scope.row.user_id,0,'')" type="success" size="mini">
+                        <el-button @click="blockUser(scope.row.user_id,0,'')" type="text" size="mini">
                             恢复
                         </el-button>
-                        <el-button @click="delUser(scope.row.user_id,'')" type="danger" size="mini">
+                        <el-button @click="delUser(scope.row.user_id,'')" type="text" size="mini" style="color:#F56C6C">
                             删除
                         </el-button>
                     </template>
-                    <el-button @click="blockUser(scope.row.user_id,1,'')" type="danger" v-if="scope.row.is_block == 0"
-                               size="mini">拉黑
+                    <el-button v-if="scope.row.is_block == 0" @click="blockUser(scope.row.user_id,1,'')" type="text"
+                               size="mini" style="color:#F56C6C">拉黑
                     </el-button>
                 </template>
             </el-table-column>

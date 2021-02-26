@@ -1,9 +1,4 @@
 <?php
-/**
- * Created by FHYI.
- * Date 2020/11/4
- * Time 11:19
- */
 
 namespace app\member\controller\api;
 
@@ -20,25 +15,26 @@ use app\common\util\Encrypt;
 class User extends BaseController
 {
     // 创建一个普通用户
-    // home/member/api.user/register
+    // /member/api.user/register
     public function register()
     {
         $username = input('username', ''); // 用户名
         $password = input('password', '');
 
         $MemberUserService = new MemberUserService();
-        $userId = $MemberUserService->userRegister($username, $password);
-        if ($userId) {
+        $res = $MemberUserService->userRegister($username, $password);
+        if ($res['status']) {
+            $userId = $res['data']['user_id'];
             return self::makeJsonReturn(true, [
                 'user_id' => $userId,
-                'token' => Encrypt::authcode((int) $userId, Encrypt::OPERATION_ENCODE,'ZTBCMS',86400)
-            ], '创建成功');
+                'token'   => Encrypt::authcode((int) $userId, Encrypt::OPERATION_ENCODE, 'ZTBCMS', 86400)
+            ], '注册成功');
         }
-        return self::makeJsonReturn(false, [], '创建失败');
+        return self::makeJsonReturn(false, [], $res['msg']);
     }
 
     // 第三方绑定
-    // home/member/api.user/bindApp
+    // /member/api.user/bindApp
     public function bindApp()
     {
         $userId = $this->request->post('user_id', '');
@@ -53,7 +49,7 @@ class User extends BaseController
     }
 
     // 第三方登录授权 获取用户凭证
-    // home/member/api.user/loginByBindOpenId
+    // /member/api.user/loginByBindOpenId
     public function loginByBindOpenId()
     {
         $openId = $this->request->post('open_id', null);

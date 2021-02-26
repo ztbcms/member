@@ -1,9 +1,4 @@
 <?php
-/**
- * Created by FHYI.
- * Date 2020/11/2
- * Time 15:29
- */
 
 namespace app\member\service;
 
@@ -62,26 +57,25 @@ class MemberUserService extends BaseService
      * @param string $username 用户名
      * @param string $password 明文密码
      * @param string $email 邮箱
-     * @return boolean
      */
-    public function userRegister($username, $password, $email = '')
+    function userRegister($username, $password, $email = '')
     {
         // 检查用户名
-        $ckName = $this->CheckUsername($username);
-        if ($ckName !== true) {
-            return false;
+        $res = $this->checkUsername($username);
+        if (!$res['status']) {
+            return $res;
         }
         // 检查邮箱
         if (!empty($email)) {
-            $ckEmail = $this->CheckEmail($email);
-            if ($ckEmail !== true) {
-                return false;
+            $res = $this->checkEmail($email);
+            if (!$res['status']) {
+                return $res;
             }
         }
         // 检查密码
-        $checkPassword = $this->checkPassword($password);
-        if ($checkPassword !== true) {
-            return false;
+        $res = $this->checkPassword($password);
+        if (!$res['status']) {
+            return $res;
         }
 
         $Member = new MemberUserModel();
@@ -100,10 +94,9 @@ class MemberUserService extends BaseService
         ];
         $userId = $Member->insertGetId($data);
         if ($userId) {
-            return $userId;
+            return self::createReturn(true, ['user_id' => $userId], '注册成功');
         }
-        $this->error = $Member->error ?: '注册失败！';
-        return false;
+        return self::createReturn(false, null, '注册失败');
     }
 
     /**
@@ -191,59 +184,36 @@ class MemberUserService extends BaseService
 
     /**
      * 检查用户名
-     * @param string $username 用户名
-     * @return boolean|int
+     *
+     * @param  string  $username  用户名
+     *
+     * @return array
      */
-    public function CheckUsername($username)
+    function checkUsername($username)
     {
         if (empty($username)) {
-            $this->error = '用户名不能为空！';
-            return false;
+            return self::createReturn(false, null, '用户名不能为空');
         }
-        $guestexp = '\xA1\xA1|\xAC\xA3|^Guest|^\xD3\xCE\xBF\xCD|\xB9\x43\xAB\xC8';
-        if (!preg_match("/\s+|^c:\\con\\con|[%,\*\"\s\<\>\&]|$guestexp/is", $username)) {
-            $find = MemberUserModel::where("username", $username)->count();
-            if ($find) {
-                $this->error = '该用户名已经存在！';
-                return false;
-            }
-            return true;
+        $find = MemberUserModel::where("username", $username)->find();
+        if ($find) {
+            return self::createReturn(false, null, '用户名已存在');
         }
-        $this->error = '用户名不合法！';
-        return false;
+        return self::createReturn(true, null, '验证通过');
     }
 
     /**
      * 检查密码
-     * @param string $email 邮箱地址
-     * @return boolean
+     *
+     * @param $password
+     *
+     * @return array
      */
     public function checkPassword($password)
     {
         if (empty($password)) {
-            $this->error = '密码不能为空！';
-            return false;
+            return self::createReturn(false, null, '密码不能为空');
         }
-        return true;
-    }
-
-    /**
-     * 检查 Email 地址
-     * @param string $email 邮箱地址
-     * @return boolean
-     */
-    public function CheckEmail($email)
-    {
-        if (strlen($email) > 6 && preg_match("/^[\w\-\.]+@[\w\-\.]+(\.\w+)+$/", $email)) {
-            $find = MemberUserModel::where("username", $email)->count();
-            if ($find) {
-                $this->error = '该 Email 已经被注册！';
-                return false;
-            }
-            return true;
-        }
-        $this->error = 'Email 格式有误！';
-        return false;
+        return self::createReturn(true, null, '验证通过');
     }
 
     /**
@@ -293,6 +263,21 @@ class MemberUserService extends BaseService
         $user['data'] = $user_data;
 
         return $user;
+    }
+
+    /**
+     * 检查 Email 地址
+     *
+     * @param  string  $email  邮箱地址
+     *
+     * @return array
+     */
+    function checkEmail($email)
+    {
+        if (strlen($email) > 6 && preg_match("/^[\w\-\.]+@[\w\-\.]+(\.\w+)+$/", $email)) {
+            return self::createReturn(true, null, '');
+        }
+        return self::createReturn(false, null, '邮箱格式有误');
     }
 
 
@@ -411,14 +396,17 @@ class MemberUserService extends BaseService
      * @param $password
      * @return array
      */
-    public function getLoginRegisterUser($username, $password){
+    function getLoginRegisterUser($username, $password){
         $MemberUserModel = new MemberUserModel();
         $memberFind = $MemberUserModel->where(['username'=>$username])->find();
         if($memberFind) {
             $userId = $memberFind['user_id'];
         } else {
-            $userId = $this->userRegister($username, $password);
-            if(!$userId) return self::createReturn(false,[],$this->error);
+            $res = $this->userRegister($username, $password);
+            if(!$res['status']) {
+                return $res;
+            }
+            $userId = $res['data']['user_id'];
         }
         $token = Encrypt::authcode((int) $userId, Encrypt::OPERATION_ENCODE,'ZTBCMS',86400);
         return self::createReturn(true,
