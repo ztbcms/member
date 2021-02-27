@@ -99,6 +99,24 @@ class MemberUserService extends BaseService
         return self::createReturn(false, null, '注册失败');
     }
 
+    function userLogin($username, $password, $ignore_password = false){
+        $memberModel = new MemberUserModel();
+        $member = $memberModel->where('username', $username)->find();
+        if(!$member){
+            return self::createReturn(false, null, '用户未注册');
+        }
+        $member = $member->toArray();
+        if(!$ignore_password){
+            $password = $this->encryption(0, $password, $member['encrypt']);
+            if($password != $member['password']){
+                return self::createReturn(false, null, '密码错误');
+            }
+        }
+        unset($member['password']);
+        unset($member['encrypt']);
+        return self::createReturn(true, $member, '登录成功');
+    }
+
     /**
      * 注册用户登录状态
      * 获取token
@@ -110,9 +128,7 @@ class MemberUserService extends BaseService
      */
     static function loginToken(int $userId, $openId = 0, $openAppId = 0, $appTypeName = 'Local')
     {
-        //写入session
         $token = \app\common\util\Encrypt::authcode($userId, '');
-        session(self::userUidKey, $token);
 
         $data = [
             'uid'           => $userId,
@@ -354,28 +370,6 @@ class MemberUserService extends BaseService
     public static function batchDelUser($userIds)
     {
         return MemberUserModel::whereIn('user_id', $userIds)->useSoftDelete('delete_time', time())->delete();
-    }
-
-    /**
-     * 注册用户登录状态
-     * @param array $userInfo 用户信息
-     */
-    static function registerLogin(array $userInfo)
-    {
-        //写入session
-        $token = Encrypt::authcode((int)$userInfo['id'], '');
-        session(self::userUidKey, $token);
-        UserTokenModel::insert([
-            'session_id'  => session_id(),
-            'token'       => $token,
-            'user_id'     => (int)$userInfo['id'],
-            'expire_time' => time() + 7 * 86400,
-            'create_time' => time()
-        ]);
-        //更新会员最新状态
-        self::loginStatus((int)$userInfo['id']);
-        //注册权限 TODO
-//        \Libs\System\RBAC::saveAccessList((int)$userInfo['id']);
     }
 
     /**

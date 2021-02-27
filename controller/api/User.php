@@ -6,6 +6,7 @@ use app\BaseController;
 use app\member\service\MemberConnectService;
 use app\member\service\MemberUserService;
 use app\common\util\Encrypt;
+use app\member\service\TokenService;
 
 /**
  * 用户接口
@@ -14,6 +15,23 @@ use app\common\util\Encrypt;
  */
 class User extends BaseController
 {
+    // 登录
+    // /member/api.login/register
+    function login()
+    {
+        $username = input('username', ''); // 用户名
+        $password = input('password', '');
+        $MemberUserService = new MemberUserService();
+        $res =  $MemberUserService->userLogin($username, $password);
+        if($res['status']){
+            return self::makeJsonReturn(true, [
+                'user_info' => $res['data'],
+                'token'   => TokenService::encode($res['data']['user_id'])
+            ], '登录');
+        }
+
+        return json($res);
+    }
     // 创建一个普通用户
     // /member/api.user/register
     public function register()
@@ -27,7 +45,7 @@ class User extends BaseController
             $userId = $res['data']['user_id'];
             return self::makeJsonReturn(true, [
                 'user_id' => $userId,
-                'token'   => Encrypt::authcode((int) $userId, Encrypt::OPERATION_ENCODE, 'ZTBCMS', 86400)
+                'token'   => TokenService::encode($userId)
             ], '注册成功');
         }
         return self::makeJsonReturn(false, [], $res['msg']);
@@ -66,21 +84,5 @@ class User extends BaseController
         return self::makeJsonReturn(false, [], '登录失败');
     }
 
-    /**
-     * 获取用户token
-     * @return \think\response\Json
-     */
-    public function createSimulationToken(){
-        //用户id
-        $user_id = input('user_id','0','trim');
 
-        //token有效期
-        $expiry = 86400;
-
-        $token = Encrypt::authcode((int) $user_id, Encrypt::OPERATION_ENCODE,'ZTBCMS',$expiry);
-        return json(self::createReturn(true,[
-            'token' => $token,
-            'expiry' => $expiry
-        ]));
-    }
 }

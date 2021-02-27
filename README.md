@@ -35,7 +35,7 @@
 
 |接口|说明|
 |-|-|-|
-|{{host}}/member/api.User/createSimulationToken|获取模拟token|
+|{{host}}/member/api.User/login|登录|
 |{{host}}/member/api.User/register|创建会员|
 
 #### 微信板块 (依赖wechat模块)
