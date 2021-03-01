@@ -11,6 +11,7 @@ use app\BaseController;
 use app\member\libs\ReturnCode;
 /**
  * 权限控制中间件
+ * @deprecated 
  * Class OperationLog
  * @package app\member\middleware
  */

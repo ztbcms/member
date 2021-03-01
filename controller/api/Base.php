@@ -18,20 +18,8 @@ class Base extends BaseController
 
     //引入中间件
     protected $middleware = [
-        //权限控制
-        \app\member\middleware\Authority::class
+        //用户认证
+        \app\member\middleware\MemberAuth::class
     ];
-
-
-    /**
-     * 初始化
-     */
-    protected function initialize()
-    {
-        parent::initialize();
-    }
-
-
-
 
 }

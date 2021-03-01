@@ -12,13 +12,19 @@ use think\facade\Config;
 
 class TokenService extends BaseService
 {
-    static function encode($content)
+    static function encode($content, $key = '')
     {
-        return Encrypt::authcode($content, Encrypt::OPERATION_ENCODE, Config::get('system.authcode'), Config::get('passport.token_expire'));
+        if(empty($key)){
+            $key = Config::get('system.authcode');
+        }
+        return Encrypt::authcode($content, Encrypt::OPERATION_ENCODE, $key, Config::get('passport.token_expire'));
     }
 
-    static function decode($result)
+    static function decode($result, $key = '')
     {
-        return Encrypt::authcode($result, Encrypt::OPERATION_DECODE, Config::get('system.authcode'));
+        if(empty($key)){
+            $key = Config::get('system.authcode');
+        }
+        return Encrypt::authcode($result, Encrypt::OPERATION_DECODE, $key);
     }
 }

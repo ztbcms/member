@@ -19,31 +19,27 @@
 4、第三方平台登录token记录表 member_connect_token
 5、第三方平台绑定用户表  member_bind
 
-提一个bug~
+一个bug:
 在安装模块时，不会写入 setting.inc.php 文件。
 
 #### 权限介绍
 
-~~~~php
-
- 直接继承 app\member\controller\api\Base.php 即可获得登录权限
- 具体的权限控制可以在中间件 app\member\middleware\Authority.php 中进行
-
-~~~~
+直接继承 app\member\controller\api\Base.php 即可获得登录权限
+具体的权限控制可以在中间件 app\member\middleware\Authority.php 中进行
 
 #### 对外接口
 
 |接口|说明|
 |-|-|-|
-|{{host}}/member/api.User/login|登录|
-|{{host}}/member/api.User/register|创建会员|
+|/member/api.User/login|登录|
+|/member/api.User/register|创建会员|
 
 #### 微信板块 (依赖wechat模块)
 
 |接口|说明|
 |-|-|-|
-|{{host}}/member/api.WeChat/getUserWeChatPhone|获取微信小程序手机号登录|
-|{{host}}/member/api.WeChat/getUserWeChat|获取微信小程序授权登录|
+|/member/api.WeChat/getUserWeChatPhone|获取微信小程序手机号登录|
+|/member/api.WeChat/getUserWeChat|获取微信小程序授权登录|
 
 
 

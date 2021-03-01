@@ -27,7 +27,7 @@ class User extends BaseController
             return self::makeJsonReturn(true, [
                 'user_info' => $res['data'],
                 'token'   => TokenService::encode($res['data']['user_id'])
-            ], '登录');
+            ], '登录成功');
         }
 
         return json($res);
