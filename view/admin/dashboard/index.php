@@ -136,30 +136,18 @@
         new Vue({
             el: '#app',
             data: {
-                systemInfo: [],
                 adminStatisticsInfo: {},
-                alert_message: [],
             },
             watch: {},
             filters: {},
             methods: {
                 getInfo: function () {
                     var that = this;
-                    $.ajax({
-                        url: "{:api_url('member/admin/getDashboardIndexInfo')}",
-                        data: {},
-                        dataType: 'json',
-                        type: 'post',
-                        success: function (res) {
-                            var data = res.data;
-                            that.adminStatisticsInfo = data.admin_statistics_info
-                        }
+                    that.httpGet("{:api_url('member/admin.Dashboard/index')}", {'_action': 'getDashboardIndexInfo'}, function(res){
+                        var data = res.data;
+                        that.adminStatisticsInfo = data.admin_statistics_info
                     })
-                },
-                gotoPage1: function () {
-                    window.open("{:api_url('member/Index/index')}")
-                },
-
+                }
             },
             mounted: function () {
                 this.getInfo();

@@ -17,10 +17,10 @@ return [
         //子菜单列表
         "child"    => [
             [
-                "route"  => "member/admin/dashboard",
+                "route"  => "member/admin.Dashboard/index",
                 "type"   => 1,
                 "status" => 1,
-                "name"   => "会员概览",
+                "name"   => "概览",
                 "remark" => "",
                 "child"  => []
             ],
