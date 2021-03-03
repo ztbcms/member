@@ -1,23 +1,21 @@
 <div id="app" v-cloak>
     <el-card>
         <el-form :inline="true" :model="searchForm">
-            <el-form-item label="注册日期">
-                <el-date-picker
-                        v-model="searchForm.datetime"
-                        type="datetimerange"
-                        range-separator="至"
-                        value-format="yyyy-MM-dd HH:mm:ss"
-                        start-placeholder="注册开始日期"
-                        end-placeholder="注册结束日期">
-                </el-date-picker>
+
+            <el-form-item label="用户ID">
+                <el-input v-model="searchForm.user_id" placeholder=""></el-input>
             </el-form-item>
 
-            <el-form-item label="">
-                <el-input v-model="searchForm.search" placeholder="用户名、用户id"></el-input>
+            <el-form-item label="用户名">
+                <el-input v-model="searchForm.username" placeholder=""></el-input>
             </el-form-item>
 
-            <el-form-item label="">
-                <el-input v-model="searchForm.tag_name" placeholder="标签"></el-input>
+            <el-form-item label="电话">
+                <el-input v-model="searchForm.phone" placeholder=""></el-input>
+            </el-form-item>
+
+            <el-form-item label="邮箱">
+                <el-input v-model="searchForm.email" placeholder=""></el-input>
             </el-form-item>
 
         </el-form>
@@ -25,11 +23,11 @@
             <el-button type="primary" @click="search" size="mini">查询</el-button>
             <el-button @click="add()" type="primary" size="mini">添加会员</el-button>
         </div>
-        <el-tabs @tab-click="handleClickTabs">
-            <el-tab-pane label="全部"></el-tab-pane>
-            <el-tab-pane label="待审核"></el-tab-pane>
-            <el-tab-pane label="审核不通过"></el-tab-pane>
-            <el-tab-pane label="已拉黑"></el-tab-pane>
+        <el-tabs v-model="searchForm.tab" >
+            <el-tab-pane label="全部" name="0"></el-tab-pane>
+            <el-tab-pane label="待审核"  name="1"></el-tab-pane>
+            <el-tab-pane label="审核不通过" name="2"></el-tab-pane>
+            <el-tab-pane label="已拉黑" name="3"></el-tab-pane>
         </el-tabs>
         <el-table
             :data="lists"
@@ -175,22 +173,12 @@
             el: "#app",
             data: {
                 searchForm: {
-                    datetime: "",
-                    search: "",
-                    is_block: "",
-                    checked: "",
-                    tag_name: "",
+                    user_id: "",
+                    username: "",
+                    phone: "",
+                    email: "",
+                    tab: "0",
                 },
-                statusOptions: [
-                    {
-                        label: '是',
-                        value: '1'
-                    },
-                    {
-                        label: '否',
-                        value: '0'
-                    },
-                ],
                 defaultImage: '/statics/images/member/nophoto.gif',
                 multipleSelection: [],
                 selectUserIds: [],
@@ -200,12 +188,17 @@
                 pageCount: 0,
                 currentPage: 1
             },
+            watch: {
+               "searchForm.tab": function (){
+                   this.getList()
+                }
+            },
             mounted: function () {
-                this.getList();
+                this.getList()
             },
             methods: {
                 // 绑定详情
-                openDetail:function(user_id){
+                openDetail: function(user_id){
                     layer.open({
                         type: 2,
                         title: '绑定详情',
@@ -260,21 +253,17 @@
                     this.getList();
                 },
                 getList: function () {
-                    var _this = this;
-                    $.ajax({
-                        url: "{:api_url('/member/admin.Member/getUserList')}",
-                        data: _this.searchForm,
-                        dataType: 'json',
-                        type: 'get',
-                        success: function (res) {
-                            var data = res.data;
-                            _this.lists = data.data;
-                            _this.totalCount = data.total;
-                            _this.pageSize = data.per_page;
-                            _this.pageCount = data.last_page;
-                            _this.currentPage = data.current_page;
-                        }
+                    var that = this
+                    var data = this.searchForm
+                    data['_action'] = 'getList'
+                    this.httpGet("{:api_url('/member/admin.Member/index')}", data, function(res){
+                        var data = res.data
+                        that.lists = data.items
+                        that.totalCount = data.total_items
+                        that.pageSize = data.limit
+                        that.pageCount = data.page
                     })
+
                 },
                 // 拉黑/恢复
                 blockUser: function (userId, status, batch) {

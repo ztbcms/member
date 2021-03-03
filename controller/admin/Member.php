@@ -10,19 +10,56 @@ use app\member\model\MemberTagBindModel;
 use app\member\model\MemberTagModel;
 use app\member\model\MemberUserModel;
 use app\member\service\MemberUserService;
+use think\Request;
 
 class Member extends AdminController
 {
     /**
      * 会员列表
      */
-    function index()
+    function index(Request $request)
     {
+        $page = $request->param('page', 1);
+        $limit = $request->param('limit', 15);
+        $action = $request->get('_action');
+        if($request->isGet() && $action == 'getList'){
+            $param = $this->request->param();
+            $where = [];
+            if (isset($param['user_id']) && !empty($param['user_id'])) {
+                $where[] = ['user_id', '=', $param['user_id']];
+            }
+            if (isset($param['username']) && !empty($param['username'])) {
+                $where[] = ['username', '=', $param['username']];
+            }
+            if (isset($param['phone']) && !empty($param['phone'])) {
+                $where[] = ['phone', '=', $param['phone']];
+            }
+            if (isset($param['email']) && !empty($param['email'])) {
+                $where[] = ['email', '=', $param['email']];
+            }
+            if (isset($param['tab']) && !empty($param['tab'])) {
+                switch ($param['tab']){
+                    case 1:
+                        $where[] = ['check_status', '=', 0];
+                        break;
+                    case 2:
+                        $where[] = ['check_status', '=', 2];
+                        break;
+                    case 3:
+                        $where[] = ['is_block', '=', 1];
+                        break;
+                }
+            }
+
+            $res = MemberUserService::getList($where, $page, $limit);
+            return json($res);
+        }
         return view();
     }
 
     /**
      * 获取用户列表
+     * @deprecated
      * @return \think\response\Json
      * @throws \think\db\exception\DbException
      */

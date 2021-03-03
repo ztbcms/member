@@ -114,26 +114,17 @@ class User extends AdminController
     public function addUser()
     {
         $post = $this->request->post();
-        // 创建主信息
         $MemberUserService = new MemberUserService();
         Db::startTrans();
-        if ($post['password_confirm'] != $post['password']) return self::makeJsonReturn(false, '', '两次密码不一致');
-        $userId = $MemberUserService->userRegister($post['username'], $post['password'], $post['email']);
-        if (!$userId) {
+        if ($post['password_confirm'] != $post['password']) {
+            return self::makeJsonReturn(false, '', '两次密码不一致');
+        }
+        $res = $MemberUserService->userRegister($post['username'], $post['password'], $post['email']);
+        if (!$res['status']) {
             Db::rollback();
-            return self::makeJsonReturn(false, '', $MemberUserService->getError() ?: '创建失败');
+            return self::makeJsonReturn(false, '', $res['msg']);
         }
-        // 添加附表信息
-        if (!empty($post['info']) && !empty($post['modelid'])) {
-            // 保存模型id
-            MemberUserModel::where('user_id', $userId)->save(['modelid' => $post['modelid']]);
-            // 保存模型字段
-            $info = [];
-            foreach ($post['info'] as $item) {
-                $info[$item['field']] = $item['value'];
-            }
-            $this->addMemberData($userId, $post['modelid'], $info);
-        }
+        $userId = $res['data']['user_id'];
         // 添加标签
         if (!empty($post['tag_ids'])) {
             MemberTagBindService::bindUserTag($userId, $post['tag_ids']);

@@ -18,21 +18,19 @@ use think\facade\Db;
  */
 class MemberUserService extends BaseService
 {
-    //存储用户uid的Key
-    const userUidKey = 'spf_userid';
 
     /**
      * 获取用户列表
      * @param array $where
      * @param int $limit
-     * @return \think\Paginator
-     * @throws \think\db\exception\DbException
      */
-    static function getList($where = [], $limit = 15)
+    static function getList($where = [],$page = 1, $limit = 15)
     {
-        return MemberUserModel::where($where)
+        $data = MemberUserModel::where($where)
             ->order('create_time', 'desc')
-            ->paginate($limit);
+            ->page($page)->limit($limit)->select();
+        $total = MemberUserModel::where($where)->count();
+        return self::createReturnList(false, $data, $page, $limit, $total, ceil($total / $limit));
     }
 
     /**
@@ -87,7 +85,6 @@ class MemberUserService extends BaseService
             "password"    => $password,
             "email"       => $email,
             "encrypt"     => $encrypt,
-            "amount"      => 0,
             "create_time" => time(),
             "reg_date"    => time(),
             "reg_ip"      => request()->ip(),

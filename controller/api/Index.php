@@ -6,6 +6,7 @@
 namespace app\member\controller\api;
 
 use app\Request;
+use Firebase\JWT\JWT;
 
 /**
  * demo
@@ -23,6 +24,11 @@ class Index extends Base
         return json(self::createReturn(true,[
             'userInfo' => $request->userInfo
         ]));
+    }
+
+    function test(){
+        $res = JWT::encode(['user_id' => 1, 'name' => 'jayin'], 'ztbcms');
+        var_dump($res);
     }
 
 
