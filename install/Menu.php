@@ -81,13 +81,6 @@ return [
                                 "remark" => "",
                             ],
                             [
-                                "route"  => "member/user/auditUser",
-                                "type"   => 1,
-                                "status" => 0,
-                                "name"   => "审核会员",
-                                "remark" => "",
-                            ],
-                            [
                                 "route"  => "member/user/cancelAuditUser",
                                 "type"   => 1,
                                 "status" => 0,
@@ -167,8 +160,8 @@ return [
             ],
             [
                 "route"  => "member/setting/index",
-                "type"   => 0,
-                "status" => 0,
+                "type"   => 1,
+                "status" => 1,
                 "name"   => "设置",
                 "remark" => "",
                 "child"  => [
