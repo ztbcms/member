@@ -7,6 +7,7 @@ namespace app\member\service;
 
 
 use app\common\service\BaseService;
+use app\member\model\MemberModel;
 
 class MemberService extends BaseService
 {
@@ -23,20 +24,13 @@ class MemberService extends BaseService
     }
 
     // 拉黑
-    function blockMember($user_id, $is_block)
+    static function blockMember($user_id, $is_block)
     {
-
-
-        $userIds = $this->request->post('user_id', 0);
-        $isBlock = $this->request->post('is_block', 0);
-        if (empty($userIds)) {
-            return self::makeJsonReturn(false, '', '请选择');
+        $count = MemberModel::where('user_id', $user_id)->save(['is_block' => $is_block]);
+        if ($count > 0) {
+            return self::createReturn(true, null, '操作成功');
         }
-        $res = MemberUserService::blockUser($userIds, $isBlock);
-        if ($res) {
-            return self::makeJsonReturn(true, '', '操作成功');
-        }
-        return self::makeJsonReturn(false, '', '操作失败');
+        return self::createReturn(false, null, '操作失败');
     }
 
     // 取消拉黑

@@ -281,7 +281,7 @@
                         userIds.push(userId)
                     }
                     $.ajax({
-                        url: "{:api_url('/member/user/blockUser')}",
+                        url: "{:api_url('/member/admin.Member/blockMember')}",
                         data: {
                             user_id: userIds,
                             is_block: status,

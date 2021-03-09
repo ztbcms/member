@@ -9,6 +9,7 @@ use app\common\controller\AdminController;
 use app\member\model\MemberTagBindModel;
 use app\member\model\MemberTagModel;
 use app\member\model\MemberUserModel;
+use app\member\service\MemberService;
 use app\member\service\MemberUserService;
 use think\Request;
 
@@ -97,18 +98,40 @@ class Member extends AdminController
      * 拉黑、启用用户
      * @return \think\response\Json
      */
-    public function blockUser()
+    function blockMember()
     {
-        $userIds = $this->request->post('user_id', 0);
+        $user_id = $this->request->post('user_id', 0);
         $isBlock = $this->request->post('is_block', 0);
-        if (empty($userIds)) {
-            return self::makeJsonReturn(false, '', '请选择');
+        if (empty($user_id)) {
+            return self::makeJsonReturn(false, null, '参数异常');
         }
-        $res = MemberUserService::blockUser($userIds, $isBlock);
-        if ($res) {
-            return self::makeJsonReturn(true, '', '操作成功');
+        return json(MemberService::blockMember($user_id, $isBlock));
+    }
+
+    /**
+     * 批量 拉黑、启用用户
+     * @return \think\response\Json
+     */
+    function batchBlockMember(){
+        $user_ids = $this->request->post('user_ids', []);
+        $isBlock = $this->request->post('is_block', 0);
+        if (empty($user_ids)) {
+            return self::makeJsonReturn(false, null, '参数异常');
         }
-        return self::makeJsonReturn(false, '', '操作失败');
+
+        $total = 0;
+        foreach ($user_ids as $userId){
+            $res = MemberService::blockMember($userId, $isBlock);
+            if($res['status']){
+                $total++;
+            }
+        }
+
+        if($total == count($user_ids)){
+            return self::makeJsonReturn(true, null, '操作成功');
+        } else {
+            return self::makeJsonReturn(false, null, '参数异常');
+        }
     }
 
     /**

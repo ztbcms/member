@@ -7,6 +7,7 @@ use app\common\service\BaseService;
 use app\member\libs\util\Encrypt;
 use app\member\model\MemberBindModel;
 use app\member\model\MemberConnectTokenModel;
+use app\member\model\MemberModel;
 use app\member\model\MemberOpenModel;
 use app\member\model\MemberUserModel;
 use think\facade\Db;
@@ -325,20 +326,19 @@ class MemberUserService extends BaseService
 
     /**
      * 拉黑，启用用户批量
-     * @param $userIds
+     * @param $userIds array
      * @param $isBlock
-     * @return bool
      */
-    public static function blockUser($userIds, $isBlock)
+    static function blockUser($userIds, $isBlock)
     {
         $count = 0;
         foreach ($userIds as $userId) {
-            $count += MemberUserModel::where('user_id', $userId)->save(['is_block' => $isBlock]);
+            $count += MemberModel::where('user_id', $userId)->save(['is_block' => $isBlock]);
         }
         if ($count > 0) {
-            return true;
+            return self::createReturn(true, null, '操作成功');
         }
-        return false;
+        return self::createReturn(false, null, '操作失败');
     }
 
     /**
