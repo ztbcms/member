@@ -54,6 +54,10 @@ class Member extends AdminController
 
             $res = MemberUserService::getList($where, $page, $limit);
             return json($res);
+        } elseif ($request->isPost() && $request->param('_action') == 'blockMember'){
+            return $this->blockMember();
+        } elseif ($request->isPost() && $request->param('_action') == 'batchBlockMember'){
+            return $this->batchBlockMember();
         }
         return view();
     }
@@ -98,7 +102,7 @@ class Member extends AdminController
      * 拉黑、启用用户
      * @return \think\response\Json
      */
-    function blockMember()
+    private function blockMember()
     {
         $user_id = $this->request->post('user_id', 0);
         $isBlock = $this->request->post('is_block', 0);
@@ -112,7 +116,7 @@ class Member extends AdminController
      * 批量 拉黑、启用用户
      * @return \think\response\Json
      */
-    function batchBlockMember(){
+    private function batchBlockMember(){
         $user_ids = $this->request->post('user_ids', []);
         $isBlock = $this->request->post('is_block', 0);
         if (empty($user_ids)) {

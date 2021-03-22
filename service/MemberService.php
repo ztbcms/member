@@ -33,10 +33,6 @@ class MemberService extends BaseService
         return self::createReturn(false, null, '操作失败');
     }
 
-    // 取消拉黑
-    function unblockMember()
-    {
-    }
 
     // 密码重置
     function resetMemberPassword()

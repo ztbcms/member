@@ -138,11 +138,11 @@
                     <el-button @click="openDetail(scope.row.user_id)" type="text" size="mini">查看</el-button>
                     <el-button @click="editUser(scope.row.user_id)" type="text" size="mini">编辑</el-button>
 
-                    <el-button v-if="scope.row.is_block == 1" @click="blockMember(scope.row.user_id,0, '', false)" type="text" size="mini"  style="color:#F56C6C">取消拉黑</el-button>
-                    <el-button v-if="scope.row.is_block == 0" @click="blockMember(scope.row.user_id,1, '', false)" type="text" size="mini" style="color:#F56C6C">拉黑</el-button>
+                    <el-button v-if="scope.row.is_block == 1" @click="blockMember(scope.row.user_id, 0)" type="text" size="mini"  style="color:#F56C6C">取消拉黑</el-button>
+                    <el-button v-if="scope.row.is_block == 0" @click="blockMember(scope.row.user_id, 1)" type="text" size="mini" style="color:#F56C6C">拉黑</el-button>
 
-                    <el-button v-if="scope.row.check_status == 0" @click="batchUpdateNoAudit(scope.row.user_id,'')" type="text" size="mini"  style="color:#F56C6C">审核通过</el-button>
-                    <el-button v-if="scope.row.check_status == 0" @click="batchUpdateAudit(scope.row.user_id,'')" type="text" size="mini" style="color:#F56C6C">审核不通过</el-button>
+                    <el-button v-if="scope.row.check_status == 0" @click="auditMember(scope.row.user_id, 1)" type="text" size="mini"  style="color:#F56C6C">审核通过</el-button>
+                    <el-button v-if="scope.row.check_status == 0" @click="auditMember(scope.row.user_id, 0)" type="text" size="mini" style="color:#F56C6C">审核不通过</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -150,8 +150,8 @@
         <div style="margin-top: 6px;">
             <el-button type="primary" @click="batchUpdateAudit('',true)" size="mini">批量审核</el-button>
             <el-button type="primary" @click="batchUpdateNoAudit('',true)" size="mini">取消审核</el-button>
-            <el-button type="danger" @click="blockMember('',1,true)" size="mini">拉黑</el-button>
-            <el-button type="danger" @click="blockMember('',0,true)" size="mini">取消拉黑</el-button>
+            <el-button type="danger" @click="blockMember(0,1)" size="mini">拉黑</el-button>
+            <el-button type="danger" @click="blockMember(0,0)" size="mini">取消拉黑</el-button>
         </div>
 
         <div style="text-align: center;margin-top: 20px">
@@ -266,20 +266,20 @@
 
                 },
                 // 拉黑/恢复
-                blockMember: function (userId, is_block, batch) {
+                blockMember: function (userId, is_block) {
                     var that = this
                     var data = {}
-                    var request_url = "{:api_url('/member/admin.Member/blockMember')}"
+                    var request_url = "{:api_url('/member/admin.Member/index')}"
                     // 批量
-                    if (batch) {
+                    if (userId === 0) {
                         if (this.selectUserIds.length <= 0) {
                             layer.msg('请选择')
                             return
                         }
-                        data = {user_ids: this.selectUserIds, is_block: is_block}
-                        request_url = "{:api_url('/member/admin.Member/batchBlockMember')}"
+                        data = {'_action': 'batchBlockMember', user_ids: this.selectUserIds, is_block: is_block}
+                        request_url = "{:api_url('/member/admin.Member/index')}"
                     } else {
-                        data = {user_id: userId, is_block: is_block}
+                        data = {'_action': 'blockMember', user_id: userId, is_block: is_block}
                     }
                     this.httpPost(request_url, data, function (res) {
                         if (res.status) {
@@ -288,6 +288,7 @@
                         layer.msg(res.msg)
                     })
                 },
+
                 // 审核
                 batchUpdateAudit: function (userId, batch) {
                     var _this = this;
@@ -307,7 +308,7 @@
                         $.ajax({
                             url: "{:api_url('/member/user/auditUser')}",
                             data: {
-                                user_id: userIds,
+                                user_id: userIds
                             },
                             dataType: 'json',
                             type: 'post',
@@ -355,38 +356,6 @@
                     }, function () {
                         // 取消
                     });
-                },
-                // 删除用户
-                delUser: function (userId, batch) {
-                    var _this = this;
-                    var userIds = [];
-                    // 批量
-                    if (batch == true) {
-                        userIds = this.selectUserIds;
-                        if (userIds.length == 0) {
-                            layer.msg('请选择')
-                            return false;
-                        }
-                    } else {
-                        // 单次
-                        userIds.push(userId)
-                    }
-                    layer.confirm('确定要删除吗？', {}, function () {
-                        $.ajax({
-                            url: "{:api_url('/member/user/delUser')}",
-                            data: {
-                                user_id: userIds,
-                            },
-                            dataType: 'json',
-                            type: 'post',
-                            success: function (res) {
-                                if (res.status) {
-                                    _this.getList()
-                                }
-                                layer.msg(res.msg)
-                            }
-                        })
-                    })
                 }
             }
         });
