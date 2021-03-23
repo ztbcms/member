@@ -57,7 +57,7 @@ CREATE TABLE `cms_member` (
   `username` varchar(64) NOT NULL DEFAULT '' COMMENT '用户名',
   `password` varchar(32) NOT NULL DEFAULT '' COMMENT '密码',
   `encrypt` varchar(6) NOT NULL DEFAULT '' COMMENT '随机码',
-  `check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '审核状态 0待审核1通过2不通过',
+  `audit_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '审核状态 0待审核1通过2不通过',
   `sex` tinyint(4) NOT NULL DEFAULT '0' COMMENT '性别,1男,2女,0未知',
   `nickname` varchar(20) NOT NULL DEFAULT '' COMMENT '昵称',
   `avatar` varchar(200) NOT NULL DEFAULT '' COMMENT '会员头像',

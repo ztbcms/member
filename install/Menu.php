@@ -80,27 +80,6 @@ return [
                                 "name"   => "编辑会员",
                                 "remark" => "",
                             ],
-                            [
-                                "route"  => "member/user/cancelAuditUser",
-                                "type"   => 1,
-                                "status" => 0,
-                                "name"   => "取消审核会员",
-                                "remark" => "",
-                            ],
-                            [
-                                "route"  => "member/user/blockUser",
-                                "type"   => 1,
-                                "status" => 0,
-                                "name"   => "拉黑会员",
-                                "remark" => "",
-                            ],
-                            [
-                                "route"  => "member/user/delUser",
-                                "type"   => 1,
-                                "status" => 0,
-                                "name"   => "删除会员",
-                                "remark" => "",
-                            ]
                         ]
                     ],
 

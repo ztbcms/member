@@ -20,10 +20,10 @@ class MemberModel extends Model
     const IS_BLOCK_NO = 0;
 
     // 待审核
-    const CHECK_STATUS_WIATING = 0;
+    const AUDIT_STATUS_WIATING = 0;
     // 审核通过
-    const CHECK_STATUS_PASS = 1;
+    const AUDIT_STATUS_PASS = 1;
     // 审核不通过
-    const CHECK_STATUS_UNPASS = 2;
+    const AUDIT_STATUS_UNPASS = 2;
 
 }
