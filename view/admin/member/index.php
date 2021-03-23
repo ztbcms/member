@@ -68,12 +68,7 @@
             >
             </el-table-column>
 
-            <el-table-column
-                min-width="100"
-                prop="tags_name"
-                align="center"
-                label="标签">
-            </el-table-column>
+
 
             <el-table-column
                 min-width="80"
@@ -91,21 +86,6 @@
             >
             </el-table-column>
 
-            <el-table-column
-                min-width="80"
-                align="center"
-                label="模型名称">
-                <template slot-scope="scope">
-                    <div>-</div>
-                </template>
-            </el-table-column>
-
-            <el-table-column
-                min-width="100"
-                prop="point"
-                align="center"
-                label="积分点数">
-            </el-table-column>
 
             <el-table-column
                     align="center"
@@ -124,7 +104,7 @@
                     align="center"
                     label="拉黑">
                 <template slot-scope="scope">
-                    <span v-if="scope.row.is_block ==0">正常</span>
+                    <span v-if="scope.row.is_block ==0" style="color:#67C23A">正常</span>
                     <span v-else style="color:#F56C6C">已拉黑</span>
                 </template>
             </el-table-column>
