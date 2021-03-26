@@ -146,6 +146,9 @@ class Member extends AdminController
         return self::makeJsonReturn(false, null, '操作失败');
     }
 
+    // TODO 删除会员
+    private function deleteMember(){}
+
     /**
      * 批量审核会员
      *
@@ -171,6 +174,14 @@ class Member extends AdminController
             return self::makeJsonReturn(false, null, '操作失败');
         }
     }
+
+    // 添加会员
+    function addMember(){}
+
+    // 编辑会员
+    function editMember(){}
+
+
 
 
 }

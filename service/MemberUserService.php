@@ -14,7 +14,7 @@ use think\facade\Db;
 
 /**
  * 会员
- * @deprecated 
+ * @deprecated
  * Class MemberUserService
  * @package app\member\service
  */
