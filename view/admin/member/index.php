@@ -40,7 +40,6 @@
                 label="全选">
             </el-table-column>
 
-
             <el-table-column
                 align="center"
                 prop="user_id"
@@ -68,8 +67,6 @@
             >
             </el-table-column>
 
-
-
             <el-table-column
                 min-width="80"
                 prop="email"
@@ -85,7 +82,6 @@
                     label="电话"
             >
             </el-table-column>
-
 
             <el-table-column
                     align="center"
@@ -164,7 +160,7 @@
                 selectUserIds: [],
                 lists: [],
                 totalCount: 0,
-                pageSize: 10,
+                pageSize: 15,
                 pageCount: 0,
                 currentPage: 1
             },
@@ -177,26 +173,15 @@
                 this.getList()
             },
             methods: {
-                // 绑定详情
-                openDetail: function(user_id){
-                    layer.open({
-                        type: 2,
-                        title: '绑定详情',
-                        content: "{:api_url('/member/bind/bindDetail')}" + '?user_id=' + user_id,
-                        area: ['80%', '80%'],
-                        end: function () {  //回调函数
-                        }
-                    })
-                },
                 // 添加页面
                 add: function () {
                     var that = this;
                     layer.open({
                         type: 2,
-                        title: '添加',
-                        content: "{:api_url('/member/user/add')}",
-                        area: ['80%', '90%'],
-                        end: function () {  //回调函数
+                        title: '添加会员',
+                        content: "{:api_url('/member/admin.member/addMember')}",
+                        area: ['60%', '80%'],
+                        end: function () {
                             that.getList()
                         }
                     })
@@ -206,10 +191,10 @@
                     var that = this;
                     layer.open({
                         type: 2,
-                        title: '编辑',
-                        content: "{:api_url('/member/user/edit')}" + '?user_id=' + user_id,
-                        area: ['80%', '90%'],
-                        end: function () {  //回调函数
+                        title: '编辑会员',
+                        content: "{:api_url('/member/admin.member/editMember')}" + '?user_id=' + user_id,
+                        area: ['60%', '80%'],
+                        end: function () {
                             that.getList()
                         }
                     })
@@ -223,13 +208,13 @@
                     })
                     this.selectUserIds = selectUserIds;
                 },
+                currentPageChange: function (e) {
+                    this.currentPage = e;
+                    this.getList();
+                },
                 // 搜索
                 search: function () {
                     this.currentPage = 1;
-                    this.getList();
-                },
-                currentPageChange: function (e) {
-                    this.currentPage = e;
                     this.getList();
                 },
                 getList: function () {
@@ -243,7 +228,6 @@
                         that.pageSize = data.limit
                         that.pageCount = data.page
                     })
-
                 },
                 // 拉黑/恢复
                 blockMember: function (userId, is_block) {
@@ -267,7 +251,6 @@
                         layer.msg(res.msg)
                     })
                 },
-
                 // 审核
                 auditMember: function (userId, audit_status) {
                     var that = this

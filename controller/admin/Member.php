@@ -7,11 +7,7 @@ namespace app\member\controller\admin;
 
 use app\common\controller\AdminController;
 use app\member\model\MemberModel;
-use app\member\model\MemberTagBindModel;
-use app\member\model\MemberTagModel;
-use app\member\model\MemberUserModel;
 use app\member\service\MemberService;
-use app\member\service\MemberUserService;
 use think\Request;
 
 class Member extends AdminController
@@ -41,7 +37,8 @@ class Member extends AdminController
     }
 
     // 获取列表
-    private function getList(){
+    private function getList()
+    {
         $page = $this->request->param('page', 1);
         $limit = $this->request->param('limit', 15);
         $param = $this->request->param();
@@ -73,7 +70,7 @@ class Member extends AdminController
         }
 
         $data = MemberModel::where($where)
-            ->order('create_time', 'desc')
+            ->order('reg_time', 'desc')
             ->page($page)->limit($limit)->select();
         $total = MemberModel::where($where)->count();
         $ret = [
@@ -147,7 +144,9 @@ class Member extends AdminController
     }
 
     // TODO 删除会员
-    private function deleteMember(){}
+    private function deleteMember()
+    {
+    }
 
     /**
      * 批量审核会员
@@ -176,12 +175,63 @@ class Member extends AdminController
     }
 
     // 添加会员
-    function addMember(){}
+    function addMember()
+    {
+        if ($this->request->isPost() && $this->request->param('_action') === 'addMember') {
+            $data = $this->request->post();
+            if (!isset($data['username']) || empty($data['username'])) {
+                return json(self::createReturn(false, null, '用户名不能为空'));
+            }
+            if (!isset($data['nickname']) || empty($data['nickname'])) {
+                return json(self::createReturn(false, null, '呢称不能为空'));
+            }
+            if (!isset($data['role_id']) || empty($data['role_id'])) {
+                return json(self::createReturn(false, null, '角色不能为空'));
+            }
+            if (empty($data['password']) || $data['password'] !== $data['password_confirm']) {
+                return json(self::createReturn(false, null, '密码不一致'));
+            }
+            $res = MemberService::addOrEditMember($data);
+            return json($res);
+        }
+        return view('addOrEditMember');
+    }
 
     // 编辑会员
-    function editMember(){}
-
-
+    function editMember()
+    {
+        // 编辑
+        if ($this->request->isPost() && $this->request->param('_action') === 'editMember') {
+            $data = $this->request->post();
+            if (!isset($data['username']) || empty($data['username'])) {
+                return json(self::createReturn(false, null, '用户名不能为空'));
+            }
+            if (!isset($data['nickname']) || empty($data['nickname'])) {
+                return json(self::createReturn(false, null, '呢称不能为空'));
+            }
+            if (!isset($data['role_id']) || empty($data['role_id'])) {
+                return json(self::createReturn(false, null, '角色不能为空'));
+            }
+            if (!empty($data['password'])) {
+                if ($data['password'] !== $data['pwdconfirm']) {
+                    return json(self::createReturn(false, null, '密码不一致'));
+                }
+            }
+            $res = MemberService::addOrEditMember($data);
+            return json($res);
+        }
+        // 详情
+        if ($this->request->isGet() && $this->request->param('_action') === 'getDetail') {
+            $user_id = $this->request->param('user_id');
+            $memberModel = new MemberModel();
+            $res = $memberModel->where('user_id', $user_id)->withoutField('reg_ip,reg_time,update_time,encrypt,password')->find();
+            if (!$res) {
+                return self::makeJsonReturn(false, null, '找不到用户');
+            }
+            return self::makeJsonReturn(true, $res->toArray());
+        }
+        return view('addOrEditMember');
+    }
 
 
 }
