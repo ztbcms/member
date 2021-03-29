@@ -29,13 +29,14 @@
                             <el-input v-model="form.phone"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="会员模型">
+                        <el-form-item label="角色">
                             <el-select v-model="form.role_id">
+                                </el-option>
                                 <el-option
-                                    v-for="item in modelList"
-                                    :key="item.modelid"
+                                    v-for="item in roleList"
+                                    :key="item.id"
                                     :label="item.name"
-                                    :value="item.modelid">
+                                    :value="item.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -64,35 +65,36 @@
         new Vue({
             el: '#app',
             data: {
-                modelList: [],
                 form: {
                     user_id: '',
                     username: '',
-                    role_id: '1',
+                    role_id: '',
                     email: '',
                     phone: '',
                     password: '',
                     password_confirm: '',
                 },
+                roleList: []
             },
             watch: {},
             filters: {},
-            computed: {},
+            computed: {
+                request_url: function(){
+                    return this.form.user_id ? "{:api_Url('/member/admin.member/editMember')}" : "{:api_Url('/member/admin.member/addMember')}"
+                }
+            },
             methods: {
                 selectChange: function (val) {
                     console.log(val)
                 },
                 onSubmit: function () {
                     var form = this.form
-                    var request_url = ''
                     if(this.form.user_id){
                         form['_action'] = 'editMember'
-                        request_url = "{:api_Url('/member/admin.member/editMember')}"
                     } else {
                         form['_action'] = 'addMember'
-                        request_url = "{:api_Url('/member/admin.member/addMember')}"
                     }
-                    this.httpPost(request_url, form, function (res) {
+                    this.httpPost(this.request_url, form, function (res) {
                         layer.msg(res.msg);
                         if (res.status) {
                             // 关闭窗口
@@ -118,9 +120,19 @@
                             layer.msg(res.msg);
                         }
                     })
+                },
+                //获取所有角色
+                getRoleList: function () {
+                    var that = this
+                    this.httpGet(this.request_url, {_action: 'getRoleList'}, function(res){
+                        if (res.status) {
+                            that.roleList = res.data
+                        }
+                    })
                 }
             },
             mounted: function () {
+                this.getRoleList()
                 this.form.user_id = this.getUrlQuery('user_id')
                 if (this.form.user_id) {
                     this.getDetail()

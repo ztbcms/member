@@ -7,6 +7,7 @@ namespace app\member\controller\admin;
 
 use app\common\controller\AdminController;
 use app\member\model\MemberModel;
+use app\member\model\MemberRoleModel;
 use app\member\service\MemberService;
 use think\Request;
 
@@ -177,6 +178,9 @@ class Member extends AdminController
     // 添加会员
     function addMember()
     {
+        if ($this->request->isGet() && $this->request->param('_action') === 'getRoleList') {
+            return $this->getRoleList();
+        }
         if ($this->request->isPost() && $this->request->param('_action') === 'addMember') {
             $data = $this->request->post();
             if (!isset($data['username']) || empty($data['username'])) {
@@ -200,6 +204,9 @@ class Member extends AdminController
     // 编辑会员
     function editMember()
     {
+        if ($this->request->isGet() && $this->request->param('_action') === 'getRoleList') {
+            return $this->getRoleList();
+        }
         // 编辑
         if ($this->request->isPost() && $this->request->param('_action') === 'editMember') {
             $data = $this->request->post();
@@ -231,6 +238,22 @@ class Member extends AdminController
             return self::makeJsonReturn(true, $res->toArray());
         }
         return view('addOrEditMember');
+    }
+
+
+    /**
+     * 获取角色列表
+     *
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    private function getRoleList()
+    {
+        $RoleModel = new MemberRoleModel();
+        $list = $RoleModel->where('status', MemberRoleModel::STATUS_YES)->select()->toArray() ?: [];
+        return json(self::createReturn(true, $list));
     }
 
 

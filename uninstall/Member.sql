@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS `cms_member`;
+DROP TABLE IF EXISTS `cms_member_role`;
 DROP TABLE IF EXISTS `cms_member_favorite`;
 DROP TABLE IF EXISTS `cms_member_online`;
 DROP TABLE IF EXISTS `cms_member_content`;

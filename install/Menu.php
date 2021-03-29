@@ -25,6 +25,14 @@ return [
                 "child"  => []
             ],
             [
+                "route"  => "member/admin.Member/index",
+                "type"   => 1,
+                "status" => 1,
+                "name"   => "会员管理",
+                "remark" => "",
+                "child"  => []
+            ],
+            [
                 "route"  => "member/user/lists",
                 "type"   => 1,
                 "status" => 1,
@@ -94,48 +102,11 @@ return [
                 ]
             ],
             [
-                "route"  => "member/tag/lists",
+                "route"  => "member/admin.Role/index",
                 "type"   => 1,
                 "status" => 1,
-                "name"   => "会员标签",
+                "name"   => "角色管理",
                 "remark" => "",
-                "child"  => [
-                    [
-                        "route"  => "member/tag/getList",
-                        "type"   => 1,
-                        "status" => 0,
-                        "name"   => "获取会员标签列表",
-                        "remark" => "",
-                    ],
-                    [
-                        "route"  => "member/tag/addEdit",
-                        "type"   => 1,
-                        "status" => 0,
-                        "name"   => "添加编辑会员标签",
-                        "remark" => "",
-                    ],
-                    [
-                        "route"  => "member/tag/getDetail",
-                        "type"   => 1,
-                        "status" => 0,
-                        "name"   => "获取会员标签详情",
-                        "remark" => "",
-                    ],
-                    [
-                        "route"  => "member/tag/delTag",
-                        "type"   => 1,
-                        "status" => 0,
-                        "name"   => "删除会员标签",
-                        "remark" => "",
-                    ],
-                    [
-                        "route"  => "member/tag/updateField",
-                        "type"   => 1,
-                        "status" => 0,
-                        "name"   => "更新会员标签字段",
-                        "remark" => "",
-                    ],
-                ]
             ],
             [
                 "route"  => "member/setting/index",

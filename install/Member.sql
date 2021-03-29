@@ -61,7 +61,6 @@ CREATE TABLE `cms_member_role` (
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
   `listorder` int(3) NOT NULL DEFAULT '0' COMMENT '排序字段',
   PRIMARY KEY (`id`),
-  KEY `parentId` (`parentid`),
   KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色信息列表';
 
