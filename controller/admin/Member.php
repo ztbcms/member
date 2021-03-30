@@ -25,6 +25,8 @@ class Member extends AdminController
         $action = $request->get('_action');
         if ($request->isGet() && $action == 'getList') {
             return $this->getList();
+        } elseif ($request->isGet() && $request->param('_action') == 'getRoleList') {
+            return $this->getRoleList();
         } elseif ($request->isPost() && $request->param('_action') == 'blockMember') {
             return $this->blockMember();
         } elseif ($request->isPost() && $request->param('_action') == 'batchBlockMember') {
@@ -56,6 +58,9 @@ class Member extends AdminController
         if (isset($param['email']) && !empty($param['email'])) {
             $where[] = ['email', '=', $param['email']];
         }
+        if (isset($param['role_id']) && !empty($param['role_id'])) {
+            $where[] = ['role_id', '=', $param['role_id']];
+        }
         if (isset($param['tab']) && !empty($param['tab'])) {
             switch ($param['tab']) {
                 case 1:
@@ -70,12 +75,34 @@ class Member extends AdminController
             }
         }
 
+        $roleModel = new MemberRoleModel();
+        $roleList = $roleModel->getEnableRoleList();
+        $roleMap = [];
+        foreach ($roleList as $item){
+            $roleMap[$item['id']] = $item;
+        }
         $data = MemberModel::where($where)
             ->order('reg_time', 'desc')
-            ->page($page)->limit($limit)->select();
+            ->page($page)->limit($limit)->select()->toArray();
+        $list = [];
+        foreach ($data as $item){
+            $list [] = [
+                'user_id'           => $item['user_id'],
+                'avatar'       => $item['avatar'],
+                'username'     => $item['username'],
+                'phone'        => $item['phone'],
+                'email'        => $item['email'],
+                'reg_ip'       => $item['reg_ip'],
+                'reg_time'     => date('Y-m-d H:i:s', $item['reg_time']),
+                'sex'          => $item['sex'],
+                'is_block'     => $item['is_block'],
+                'audit_status' => $item['audit_status'],
+                'role_name'    => isset($roleMap[$item['user_id']]) ? $roleMap[$item['user_id']]['name'] : ''
+            ];
+        }
         $total = MemberModel::where($where)->count();
         $ret = [
-            'items'       => $data,
+            'items'       => $list,
             'page'        => intval($page),
             'limit'       => intval($limit),
             'total_items' => intval($total),

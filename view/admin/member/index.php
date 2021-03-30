@@ -18,6 +18,18 @@
                 <el-input v-model="searchForm.email" placeholder=""></el-input>
             </el-form-item>
 
+            <el-form-item label="角色">
+                <el-select v-model="searchForm.role_id">
+                    </el-option>
+                    <el-option
+                            v-for="item in roleList"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+
         </el-form>
         <div>
             <el-button type="primary" @click="search" size="mini">查询</el-button>
@@ -45,6 +57,13 @@
                 prop="user_id"
                 label="用户ID"
                 min-width="60">
+            </el-table-column>
+
+            <el-table-column
+                    align="center"
+                    prop="role_name"
+                    label="角色"
+                    min-width="60">
             </el-table-column>
 
             <el-table-column
@@ -162,14 +181,21 @@
                 totalCount: 0,
                 pageSize: 15,
                 pageCount: 0,
-                currentPage: 1
+                currentPage: 1,
+                roleList: []
             },
             watch: {
                "searchForm.tab": function (){
                    this.getList()
                 }
             },
+            computed: {
+                request_url: function(){
+                    return "{:api_Url('/member/admin.member/index')}"
+                }
+            },
             mounted: function () {
+                this.getRoleList()
                 this.getList()
             },
             methods: {
@@ -217,11 +243,12 @@
                     this.currentPage = 1;
                     this.getList();
                 },
+                // 获取列表
                 getList: function () {
                     var that = this
                     var data = this.searchForm
                     data['_action'] = 'getList'
-                    this.httpGet("{:api_url('/member/admin.Member/index')}", data, function(res){
+                    this.httpGet(this.request_url, data, function(res){
                         var data = res.data
                         that.lists = data.items
                         that.totalCount = data.total_items
@@ -233,7 +260,6 @@
                 blockMember: function (userId, is_block) {
                     var that = this
                     var data = {}
-                    var request_url = "{:api_url('/member/admin.Member/index')}"
                     // 批量
                     if (userId === 0) {
                         if (this.selectUserIds.length <= 0) {
@@ -244,7 +270,7 @@
                     } else {
                         data = {'_action': 'blockMember', user_id: userId, is_block: is_block}
                     }
-                    this.httpPost(request_url, data, function (res) {
+                    this.httpPost(this.request_url, data, function (res) {
                         if (res.status) {
                             that.getList()
                         }
@@ -255,7 +281,6 @@
                 auditMember: function (userId, audit_status) {
                     var that = this
                     var data = {}
-                    var request_url = "{:api_url('/member/admin.Member/index')}"
                     // 批量
                     if (userId === 0) {
                         if (this.selectUserIds.length === 0) {
@@ -266,11 +291,20 @@
                     } else {
                         data = {'_action': 'auditMember', user_id: userId, audit_status: audit_status}
                     }
-                    this.httpPost(request_url, data, function (res) {
+                    this.httpPost(this.request_url, data, function (res) {
                         if (res.status) {
                             that.getList()
                         }
                         layer.msg(res.msg)
+                    })
+                },
+                //获取所有角色
+                getRoleList: function () {
+                    var that = this
+                    this.httpGet(this.request_url, {_action: 'getRoleList'}, function(res){
+                        if (res.status) {
+                            that.roleList = res.data
+                        }
                     })
                 }
             }
