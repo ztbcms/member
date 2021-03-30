@@ -1,33 +1,3 @@
-DROP TABLE IF EXISTS `cms_member_connect_token`;
-CREATE TABLE `cms_member_connect_token` (
-  `token_id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` mediumint(8) NOT NULL COMMENT '用户ID',
-  `open_id` varchar(32) NOT NULL COMMENT '授权标识',
-  `access_token` varchar(255) NOT NULL COMMENT 'access_token',
-  `open_app_id` int(11) NOT NULL COMMENT '应用id',
-  `app_type_name` varchar(255) DEFAULT NULL COMMENT '应用名称',
-  `expires_in` int(10) NOT NULL COMMENT 'token过期时间',
-  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
-  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
-  `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
-  PRIMARY KEY (`token_id`) USING BTREE,
-  KEY `openid` (`open_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='登录授权';
-
-
-DROP TABLE IF EXISTS `cms_member_open`;
-CREATE TABLE `cms_member_open` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `app_type` varchar(255) DEFAULT NULL COMMENT 'APP类型',
-  `app_key` text,
-  `app_secret` text,
-  `create_time` int(11) DEFAULT NULL,
-  `update_time` int(11) DEFAULT NULL,
-  `delete_time` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='第三方平台管理表';
-
-
 DROP TABLE IF EXISTS `cms_member`;
 CREATE TABLE `cms_member` (
   `user_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户id',
@@ -64,18 +34,28 @@ CREATE TABLE `cms_member_role` (
   KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色信息列表';
 
-DROP TABLE IF EXISTS `cms_member_bind`;
-CREATE TABLE `cms_member_bind` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
-  `user_id` int(11) DEFAULT NULL COMMENT '用户id',
-  `bind_type` varchar(255) DEFAULT NULL COMMENT '绑定第三方类型',
-  `bind_open_id` varchar(255) DEFAULT NULL COMMENT '绑定第三方的用户 open_id',
+DROP TABLE IF EXISTS `cms_member_oauth_client`;
+CREATE TABLE `cms_member_oauth_client` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `app_key` varchar (255),
+  `app_secret` varchar (255),
+  `create_time` int(11) DEFAULT NULL,
+  `update_time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='授权客户端';
+
+DROP TABLE IF EXISTS `cms_member_oauth_token`;
+CREATE TABLE `cms_member_oauth_token` (
+  `token_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` mediumint(8) NOT NULL COMMENT '用户ID',
+  `access_token` varchar(255) NOT NULL COMMENT 'access_token',
+  `client_id` int(11) NOT NULL COMMENT '所属客户端ID',
+  `expires_in` int(10) NOT NULL COMMENT '过期时间',
   `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
   `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
-  `delete_time` int(11) DEFAULT NULL COMMENT '删除时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员第三方绑定表';
-
+  PRIMARY KEY (`token_id`) USING BTREE,
+  KEY `openid` (`open_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='令牌';
 
 
 

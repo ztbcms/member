@@ -1,11 +1,4 @@
 DROP TABLE IF EXISTS `cms_member`;
 DROP TABLE IF EXISTS `cms_member_role`;
-DROP TABLE IF EXISTS `cms_member_favorite`;
-DROP TABLE IF EXISTS `cms_member_online`;
-DROP TABLE IF EXISTS `cms_member_content`;
-DROP TABLE IF EXISTS `cms_member_connect_token`;
-DROP TABLE IF EXISTS `cms_member_group`;
-DROP TABLE IF EXISTS `cms_member_bind`;
-DROP TABLE IF EXISTS `cms_member_tag`;
-DROP TABLE IF EXISTS `cms_member_tag_bind`;
-DROP TABLE IF EXISTS `cms_member_open`;
+DROP TABLE IF EXISTS `cms_member_oauth_client`;
+DROP TABLE IF EXISTS `cms_member_oauth_token`;
