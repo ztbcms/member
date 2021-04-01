@@ -6,6 +6,11 @@
 
 namespace app\member\libs\util;
 
+/**
+ * Class Encrypt
+ * @deprecated
+ * @package app\member\libs\util
+ */
 class Encrypt
 {
 

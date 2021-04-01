@@ -5,18 +5,6 @@
 2、目录：/member/controller/api 中提供了示例接口：
     列举了较常用的方法：创建用户，进行第三方平台绑定，通过第三方进行登录
     
-    
-
-新增表：
-1、标签关联表 member_tag_bind
-2、标签表  member_tag
-3、第三方平台应用表 member_open
-4、第三方平台登录token记录表 member_connect_token
-5、第三方平台绑定用户表  member_bind
-
-一个bug:
-在安装模块时，不会写入 setting.inc.php 文件。
-
 #### 权限介绍
 
 直接继承 app\member\controller\api\Base.php 即可获得登录权限
