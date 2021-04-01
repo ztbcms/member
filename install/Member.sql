@@ -34,28 +34,5 @@ CREATE TABLE `cms_member_role` (
   KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色信息列表';
 
-DROP TABLE IF EXISTS `cms_member_oauth_client`;
-CREATE TABLE `cms_member_oauth_client` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `app_key` varchar (255),
-  `app_secret` varchar (255),
-  `create_time` int(11) DEFAULT NULL,
-  `update_time` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='授权客户端';
-
-DROP TABLE IF EXISTS `cms_member_oauth_token`;
-CREATE TABLE `cms_member_oauth_token` (
-  `token_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` mediumint(8) NOT NULL COMMENT '用户ID',
-  `access_token` varchar(255) NOT NULL COMMENT 'access_token',
-  `client_id` int(11) NOT NULL COMMENT '所属客户端ID',
-  `expires_in` int(10) NOT NULL COMMENT '过期时间',
-  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
-  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`token_id`) USING BTREE,
-  KEY `openid` (`open_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='令牌';
-
 
 

@@ -6,13 +6,11 @@
 namespace app\member\controller\admin;
 
 use app\common\controller\AdminController;
-use app\member\model\MemberUserModel;
+use app\member\model\MemberModel;
 use think\facade\View;
 
 class Dashboard extends AdminController
 {
-    public $noNeedPermission = ['getDashboardIndexInfo'];
-
     /**
      * 概览页
      *
@@ -25,13 +23,13 @@ class Dashboard extends AdminController
         $action = $request->get('_action');
         if ($request->isGet() && $action == 'getDashboardIndexInfo') {
             // 总数
-            $totalMember = MemberUserModel::count();
+            $totalMember = MemberModel::count();
 
             // 今日新用户
-            $todayNewMember = MemberUserModel::whereDay('reg_date', 'today')->count();
+            $todayNewMember = MemberModel::whereDay('reg_time', 'today')->count();
 
             // 7天内增长用户数
-            $lastSeventDayNewMember = MemberUserModel::whereWeek('reg_date', 'today')->count();
+            $lastSeventDayNewMember = MemberModel::whereWeek('reg_time', 'today')->count();
 
             $adminStatisticsInfo = [
                 'total_member'               => $totalMember,
