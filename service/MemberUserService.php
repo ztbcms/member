@@ -5,7 +5,6 @@ namespace app\member\service;
 use app\common\service\BaseService;
 use app\member\libs\Uiversal;
 use app\member\model\MemberModel;
-use app\member\model\MemberUserModel;
 use think\facade\Db;
 
 /**
@@ -24,10 +23,10 @@ class MemberUserService extends BaseService
      */
     static function getList($where = [], $page = 1, $limit = 15)
     {
-        $data = MemberUserModel::where($where)
+        $data = MemberModel::where($where)
             ->order('create_time', 'desc')
             ->page($page)->limit($limit)->select();
-        $total = MemberUserModel::where($where)->count();
+        $total = MemberModel::where($where)->count();
         return self::createReturnList(false, $data, $page, $limit, $total, ceil($total / $limit));
     }
 
@@ -38,7 +37,7 @@ class MemberUserService extends BaseService
      */
     static function getDetail($userId)
     {
-        $user = MemberUserModel::where('user_id', $userId)->findOrEmpty();
+        $user = MemberModel::where('user_id', $userId)->findOrEmpty();
         if (!$user->isEmpty()) {
             // 查询标签
             $user['tag_ids'] = MemberTagBindService::getUserTagIds($userId);
@@ -74,7 +73,7 @@ class MemberUserService extends BaseService
             return $res;
         }
 
-        $Member = new MemberUserModel();
+        $Member = new MemberModel();
         // 密码加密
         $encrypt = genRandomString(6);
         $password = $this->encryption(0, $password, $encrypt);
@@ -96,7 +95,7 @@ class MemberUserService extends BaseService
 
     function userLogin($username, $password, $ignore_password = false)
     {
-        $memberModel = new MemberUserModel();
+        $memberModel = new MemberModel();
         $member = $memberModel->where('username', $username)->find();
         if (!$member) {
             return self::createReturn(false, null, '用户未注册');
@@ -157,7 +156,7 @@ class MemberUserService extends BaseService
      */
     public function userEdit($username, $oldpw, $newpw = '', $email = '', $ignoreoldpw = 0, $data = array())
     {
-        $memberModel = new MemberUserModel();
+        $memberModel = new MemberModel();
         //验证旧密码是否正确
         if ($ignoreoldpw == 0) {
             $info = $memberModel->where("username", $username)->find();
@@ -206,7 +205,7 @@ class MemberUserService extends BaseService
         if (empty($username)) {
             return self::createReturn(false, null, '用户名不能为空');
         }
-        $find = MemberUserModel::where("username", $username)->find();
+        $find = MemberModel::where("username", $username)->find();
         if ($find) {
             return self::createReturn(false, null, '用户名已存在');
         }
@@ -249,7 +248,7 @@ class MemberUserService extends BaseService
         } else {
             $map['username'] = $identifier;
         }
-        $UserModel = new MemberUserModel();
+        $UserModel = new MemberModel();
         $user = $UserModel->where($map)->findOrEmpty();
         if ($user->isEmpty()) {
             $this->error = '该用户不存在！';
@@ -339,7 +338,7 @@ class MemberUserService extends BaseService
     {
         $count = 0;
         foreach ($userIds as $userId) {
-            $count += MemberUserModel::where('user_id', $userId)->save(['checked' => $status]);
+            $count += MemberModel::where('user_id', $userId)->save(['checked' => $status]);
         }
         if ($count > 0) {
             return true;
@@ -354,7 +353,7 @@ class MemberUserService extends BaseService
      */
     public static function batchDelUser($userIds)
     {
-        return MemberUserModel::whereIn('user_id', $userIds)->useSoftDelete('delete_time', time())->delete();
+        return MemberModel::whereIn('user_id', $userIds)->useSoftDelete('delete_time', time())->delete();
     }
 
     /**
@@ -368,16 +367,17 @@ class MemberUserService extends BaseService
         if (empty($source) || empty($source_type)) {
             return createReturn(false, '', '抱歉，来源我们不建议为空');
         }
-        $MemberUserModel = new MemberUserModel();
-        $member = $MemberUserModel
+        $MemberModel = new MemberModel();
+        $member = $MemberModel
             ->where('username', '=', $phone)
             ->findOrEmpty();
+
         if ($member->isEmpty()) {
             //随机码
             $encrypt = (new Uiversal())->genRandomString(6);
             $member->username = $phone;
             $member->phone = $phone;
-            $member->password = $MemberUserModel->encryption('', $phone, $encrypt);
+            $member->password = $MemberModel->encryption('', $phone, $encrypt);
             $member->encrypt = $encrypt;
             $member->audit_status = 0;
             $member->sex = 0;
@@ -394,7 +394,7 @@ class MemberUserService extends BaseService
         return createReturn(true,
             [
                 'user_id' => $member->user_id,
-                'token' => $MemberUserModel->getToken($member->user_id)
+                'token' => $MemberModel->getToken($member->user_id)
             ]
         );
     }

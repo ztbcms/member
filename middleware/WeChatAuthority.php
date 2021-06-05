@@ -5,7 +5,7 @@
 
 namespace app\member\middleware;
 
-use app\member\model\MemberUserModel;
+use app\member\model\MemberModel;
 use app\BaseController;
 use app\member\libs\ReturnCode;
 
@@ -73,8 +73,8 @@ class WeChatAuthority
         if($token) {
             $getUserId = Cache($token);
             if($getUserId) {
-                $MemberUserModel = new MemberUserModel();
-                $memberFind = $MemberUserModel->where('user_id',$getUserId)->findOrEmpty();
+                $MemberModel = new MemberModel();
+                $memberFind = $MemberModel->where('user_id',$getUserId)->findOrEmpty();
                 if(!$memberFind->isEmpty()) {
                     $res['userInfo'] = $memberFind;
                     $res['userId'] = $memberFind['user_id'];

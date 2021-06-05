@@ -171,10 +171,6 @@ class Member extends AdminController
         return self::makeJsonReturn(false, null, '操作失败');
     }
 
-    // TODO 删除会员
-    private function deleteMember()
-    {
-    }
 
     /**
      * 批量审核会员

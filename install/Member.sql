@@ -36,5 +36,54 @@ CREATE TABLE `cms_member_role` (
   KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色信息列表';
 
+DROP TABLE IF EXISTS `cms_member_record_integration`;
+CREATE TABLE `cms_member_record_integration`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) NOT NULL DEFAULT 0 COMMENT '上一条记录id，方便排除错误记录',
+  `to` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录流入者,一般为唯一ID',
+  `to_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录流入者者类型',
+  `from` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录流出者,一般为唯一ID',
+  `from_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录流出者类型',
+  `target` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录来源者,一般为唯一ID',
+  `target_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录来源者类型',
+  `income` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '收入',
+  `pay` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '支出',
+  `balance` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '余额',
+  `detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '记录详情',
+  `status` int(11) NOT NULL DEFAULT 0 COMMENT '状态，0位正常，1无效，2冻结',
+  `create_time` int(11) NOT NULL DEFAULT 0 COMMENT '创建时间戳',
+  `update_time` int(11) NOT NULL DEFAULT 0 COMMENT '更新时间戳',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '备注信息',
+  `to_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录流入者名称',
+  `from_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录流出者名称',
+  `target_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录来源名称',
+  `delete_time` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 64 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+DROP TABLE IF EXISTS `cms_member_record_trade`;
+CREATE TABLE `cms_member_record_trade`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) NOT NULL DEFAULT 0 COMMENT '上一条记录id，方便排除错误记录',
+  `to` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录流入者,一般为唯一ID',
+  `to_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录流入者者类型',
+  `from` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录流出者,一般为唯一ID',
+  `from_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录流出者类型',
+  `target` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录来源者,一般为唯一ID',
+  `target_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录来源者类型',
+  `income` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '收入',
+  `pay` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '支出',
+  `balance` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '余额',
+  `detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '记录详情',
+  `status` int(11) NOT NULL DEFAULT 0 COMMENT '状态，0位正常，1无效，2冻结',
+  `create_time` int(11) NOT NULL DEFAULT 0 COMMENT '创建时间戳',
+  `update_time` int(11) NOT NULL DEFAULT 0 COMMENT '更新时间戳',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '备注信息',
+  `to_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录流入者名称',
+  `from_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录流出者名称',
+  `target_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录来源名称',
+  `delete_time` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 62 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 

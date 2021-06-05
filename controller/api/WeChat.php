@@ -8,7 +8,7 @@
 namespace app\member\controller\api;
 
 use app\BaseController;
-use app\member\model\MemberUserModel;
+use app\member\model\MemberModel;
 use app\member\service\MemberUserService;
 use app\wechat\service\MiniService;
 
@@ -55,8 +55,8 @@ class WeChat extends BaseController
         $MiniService = new MiniService($appid);
         $res = $MiniService->getOpenid($code);
         if($res['status']) {
-            $MemberUserModel = new MemberUserModel();
-            $memberDetails = $MemberUserModel
+            $MemberModel = new MemberModel();
+            $memberDetails = $MemberModel
                 ->where('source','=',$res['data']['openid'])
                 ->where('source_type','=','open_id')
                 ->findOrEmpty();
