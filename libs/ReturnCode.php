@@ -8,9 +8,13 @@
 
 namespace app\member\libs;
 
+/**
+ * 用户通用信息
+ * Class ReturnCode
+ * @package app\member\libs
+ */
 class ReturnCode {
 
     const NO_LOGIN = '401';  //未登录
-
 
 }

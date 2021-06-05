@@ -8,6 +8,7 @@
 namespace app\member\model;
 
 use app\cms\model\ModelModel;
+use app\member\libs\Uiversal;
 use think\facade\Db;
 use think\Model;
 
@@ -30,49 +31,49 @@ class MemberUserModel extends Model
     // 取消拉黑
     const NO_BLOCK = 0;
 
-    protected $append = [
-        'tags_name'
-    ];
 
     /**
-     * 获取用户标签名称
-     * @param $val
-     * @param $data
+     * 对明文密码，进行加密，返回加密后的密码
+     * @param string $identifier 为数字时，表示uid，其他为用户名
+     * @param string $pass 明文密码，不能为空
+     * @return string 返回加密后的密码
+     */
+    public function encryption($identifier, $pass, $verify = "")
+    {
+        $v = array();
+        if (is_numeric($identifier)) {
+            $v["id"] = $identifier;
+        } else {
+            $v["username"] = $identifier;
+        }
+        $pass = md5($pass . md5($verify));
+        return $pass;
+    }
+
+    /**
+     * 获取用户登录token
+     * @param int $userid
+     * @param string $salt
      * @return string
      */
-    public function getTagsNameAttr($val, $data)
+    public function getToken($userid = 0,$salt = 'demo_cms_token')
     {
-        $tagIds = MemberTagBindModel::where('user_id', $data['user_id'])->column('tag_id');
-        $tagName = MemberTagModel::whereIn('tag_id', $tagIds)->column('tag_name');
-        return implode(',',$tagName);
-    }
-
-    /**
-     * 会员配置缓存
-     * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     */
-    public function member_cache() {
-        $data = Db::name('module')->where('module','Member')->value('setting');
-        $setting = unserialize($data);
-        cache("Member_Config", $setting);
-        $this->member_model_cahce();
-        return $data;
-    }
-
-    /**
-     * 会员模型缓存
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     */
-    public function member_model_cahce() {
-        $data = ModelModel::getModelAll(2);
-        cache("Model_Member", $data);
-        return $data;
+        $info = $this
+            ->where(['user_id' => $userid])
+            ->field('username,user_id,encrypt')
+            ->findOrEmpty();
+        if($info->isEmpty()) {
+            return '';
+        } else {
+            //存在用户的情况下
+            $guid = (new Uiversal())->getGuidV4();
+            // 当前时间戳 (精确到毫秒)
+            $timeStamp = microtime(true);
+            // 自定义一个盐
+            $token = md5("{$info['user_id']}_{$info['username']}_{$info['encrypt']}_{$timeStamp}_{$guid}_{$salt}");
+            Cache($token, $info['user_id'], 86400 * 7);
+            return $token;
+        }
     }
 
 }

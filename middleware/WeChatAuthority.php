@@ -5,18 +5,19 @@
 
 namespace app\member\middleware;
 
-use app\member\libs\util\Encrypt;
 use app\member\model\MemberUserModel;
 use app\BaseController;
 use app\member\libs\ReturnCode;
+
 /**
  * 权限控制中间件
  * @deprecated
  * Class OperationLog
  * @package app\member\middleware
  */
-class Authority
+class WeChatAuthority
 {
+
     /**
      * 进入请求
      * @param $request
@@ -25,8 +26,8 @@ class Authority
      */
     public function handle($request, \Closure $next)
     {
-        $memberRes = self::getTokenInfo();
 
+        $memberRes = $this->getTokenInfo();
         $jurisdiction_array = [
             '0' => '/home/member/api.index/index',
         ];
@@ -70,11 +71,11 @@ class Authority
         $res['userInfo'] = [];
         $res['userId'] = 0;
         if($token) {
-            $getUserId = Encrypt::authcode($token, Encrypt::OPERATION_DECODE,'ZTBCMS');
+            $getUserId = Cache($token);
             if($getUserId) {
                 $MemberUserModel = new MemberUserModel();
-                $memberFind = $MemberUserModel->where('user_id',$getUserId)->find();
-                if(!empty($memberFind)) {
+                $memberFind = $MemberUserModel->where('user_id',$getUserId)->findOrEmpty();
+                if(!$memberFind->isEmpty()) {
                     $res['userInfo'] = $memberFind;
                     $res['userId'] = $memberFind['user_id'];
                 }

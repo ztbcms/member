@@ -8,6 +8,7 @@
 namespace app\member\controller\api;
 
 use app\BaseController;
+use app\member\model\MemberUserModel;
 use app\member\service\MemberUserService;
 use app\wechat\service\MiniService;
 
@@ -24,23 +25,19 @@ class WeChat extends BaseController
      * @param $appid
      * @return \think\response\Json
      */
-    public function getUserWeChatPhone(){
+    public function getUserWeChatPhone()
+    {
         $code = input('post.code', '', 'trim');
         $iv = input('post.iv', '', 'trim');
         $encryptedData = input('encryptedData', '', 'trim');
-        $appid = input('appid','','trim');
+        $appid = input('appid', '', 'trim');
         $MiniService = new MiniService($appid);
         $res = $MiniService->getPhoneNumberByCode($code, $iv, $encryptedData);
-        if($res['status']) {
+        if ($res['status']) {
             //当获取手机号成功的情况，注册账号
             $phoneData = $res['data'];
             $MemberUserService = new MemberUserService();
-            $res = $MemberUserService->getLoginRegisterUser($phoneData['phoneNumber'], $phoneData['open_id']);
-            if($res['data']['user_id']) {
-                //更新用户数据
-                $phoneData['phone'] = $phoneData['phoneNumber'];
-                $MemberUserService->sysUserInfo($res['data']['user_id'],$phoneData);
-            }
+            $res = $MemberUserService->getUserPhoneToken($phoneData['phoneNumber'], $phoneData['open_id'], 'open_id');
             return json($res);
         } else {
             return json($res);
@@ -48,29 +45,28 @@ class WeChat extends BaseController
     }
 
     /**
-     * 微信小程序获取授权登录
+     * 微信小程序获取授权登录 (更新用户数据)
      * @return \think\response\Json
      */
     public function getUserWeChat(){
         $code = input('post.code', '', 'trim');
-        $iv = input('post.iv','','trim');
-        $encryptedData = input('post.encrypted_data','','trim');
-        $appid = input('appid','','trim');
+        $userInfo = input('post.userInfo', '', 'trim');
+        $appid = input('appid', '', 'trim');
         $MiniService = new MiniService($appid);
-        $res = $MiniService->getUserInfoByCode($code, $iv, $encryptedData);
+        $res = $MiniService->getOpenid($code);
         if($res['status']) {
-            //获取微信授权登录
-            $weChatData = $res['data'];
-            $MemberUserService = new MemberUserService();
-            $res = $MemberUserService->getLoginRegisterUser($weChatData['open_id'], $weChatData['open_id']);
-            if($res['data']['user_id']) {
-                //更新用户数据
-                $weChatData['sex'] = $weChatData['gender'];
-                $weChatData['userpic'] = $weChatData['avatar_url'];
-                $weChatData['nickname'] = $weChatData['nick_name'];
-                $MemberUserService->sysUserInfo($res['data']['user_id'],$weChatData);
+            $MemberUserModel = new MemberUserModel();
+            $memberDetails = $MemberUserModel
+                ->where('source','=',$res['data']['openid'])
+                ->where('source_type','=','open_id')
+                ->findOrEmpty();
+            if(!$memberDetails->isEmpty()) {
+                $memberDetails->nickname = $userInfo['nickName'] ?? '';
+                $memberDetails->sex = $userInfo['gender'] ?? '';
+                $memberDetails->avatar = $userInfo['avatarUrl'] ?? '';
+                $memberDetails->update_time = time();
+                $memberDetails->save();
             }
-            return json($res);
         }
         return json($res);
     }

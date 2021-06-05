@@ -2,13 +2,9 @@
 
 namespace app\member\service;
 
-use app\common\model\UserModel;
 use app\common\service\BaseService;
-use app\member\libs\util\Encrypt;
-use app\member\model\MemberBindModel;
-use app\member\model\MemberConnectTokenModel;
+use app\member\libs\Uiversal;
 use app\member\model\MemberModel;
-use app\member\model\MemberOpenModel;
 use app\member\model\MemberUserModel;
 use think\facade\Db;
 
@@ -26,7 +22,7 @@ class MemberUserService extends BaseService
      * @param array $where
      * @param int $limit
      */
-    static function getList($where = [],$page = 1, $limit = 15)
+    static function getList($where = [], $page = 1, $limit = 15)
     {
         $data = MemberUserModel::where($where)
             ->order('create_time', 'desc')
@@ -83,13 +79,13 @@ class MemberUserService extends BaseService
         $encrypt = genRandomString(6);
         $password = $this->encryption(0, $password, $encrypt);
         $data = [
-            "username"    => $username,
-            "password"    => $password,
-            "email"       => $email,
-            "encrypt"     => $encrypt,
+            "username" => $username,
+            "password" => $password,
+            "email" => $email,
+            "encrypt" => $encrypt,
             "create_time" => time(),
-            "reg_date"    => time(),
-            "reg_ip"      => request()->ip(),
+            "reg_date" => time(),
+            "reg_ip" => request()->ip(),
         ];
         $userId = $Member->insertGetId($data);
         if ($userId) {
@@ -98,16 +94,17 @@ class MemberUserService extends BaseService
         return self::createReturn(false, null, '注册失败');
     }
 
-    function userLogin($username, $password, $ignore_password = false){
+    function userLogin($username, $password, $ignore_password = false)
+    {
         $memberModel = new MemberUserModel();
         $member = $memberModel->where('username', $username)->find();
-        if(!$member){
+        if (!$member) {
             return self::createReturn(false, null, '用户未注册');
         }
         $member = $member->toArray();
-        if(!$ignore_password){
+        if (!$ignore_password) {
             $password = $this->encryption(0, $password, $member['encrypt']);
-            if($password != $member['password']){
+            if ($password != $member['password']) {
                 return self::createReturn(false, null, '密码错误');
             }
         }
@@ -130,16 +127,16 @@ class MemberUserService extends BaseService
         $token = \app\common\util\Encrypt::authcode($userId, '');
 
         $data = [
-            'uid'           => $userId,
-            'open_id'       => $openId,
-            'open_app_id'   => $openAppId,
-            'access_token'  => $token,
+            'uid' => $userId,
+            'open_id' => $openId,
+            'open_app_id' => $openAppId,
+            'access_token' => $token,
             'app_type_name' => $appTypeName,
-            'expires_in'    => time() + 7 * 86400,
-            'create_time'   => time()
+            'expires_in' => time() + 7 * 86400,
+            'create_time' => time()
         ];
         $res = MemberConnectTokenModel::create($data);
-        if($res) {
+        if ($res) {
             return $token;
         }
         return false;
@@ -200,7 +197,7 @@ class MemberUserService extends BaseService
     /**
      * 检查用户名
      *
-     * @param  string  $username  用户名
+     * @param  string $username 用户名
      *
      * @return array
      */
@@ -283,7 +280,7 @@ class MemberUserService extends BaseService
     /**
      * 检查 Email 地址
      *
-     * @param  string  $email  邮箱地址
+     * @param  string $email 邮箱地址
      *
      * @return array
      */
@@ -313,16 +310,6 @@ class MemberUserService extends BaseService
         }
         $pass = md5($pass . md5($verify));
         return $pass;
-    }
-
-    /**
-     * 删除头像
-     * @param $userId
-     * @return bool
-     */
-    public static function delAvatar($userId)
-    {
-        return MemberUserModel::where('user_id', $userId)->save(['userpic' => null]);
     }
 
     /**
@@ -371,59 +358,45 @@ class MemberUserService extends BaseService
     }
 
     /**
-     * 更新登录状态信息
-     * @param string $userId
-     * @return boolean|array
+     * 获取用户token
+     * @param $phone
+     * @param string $open_id
+     * @param string $recommend_id
      */
-    public static function loginStatus($userId)
+    public function getUserPhoneToken($phone = 0, $source = '',$source_type = '')
     {
-        $data['last_login_time'] = time();
-        $data['last_login_ip'] = request()->ip();
-        return UserModel::where('id', $userId)->save($data);
-    }
-
-    /**
-     * 登录或者注册用户
-     * @param $username
-     * @param $password
-     * @return array
-     */
-    function getLoginRegisterUser($username, $password){
-        $MemberUserModel = new MemberUserModel();
-        $memberFind = $MemberUserModel->where(['username'=>$username])->find();
-        if($memberFind) {
-            $userId = $memberFind['user_id'];
-        } else {
-            $res = $this->userRegister($username, $password);
-            if(!$res['status']) {
-                return $res;
-            }
-            $userId = $res['data']['user_id'];
+        if (empty($source) || empty($source_type)) {
+            return createReturn(false, '', '抱歉，来源我们不建议为空');
         }
-        $token = Encrypt::authcode((int) $userId, Encrypt::OPERATION_ENCODE,'ZTBCMS',86400);
-        return self::createReturn(true,
+        $MemberUserModel = new MemberUserModel();
+        $member = $MemberUserModel
+            ->where('username', '=', $phone)
+            ->findOrEmpty();
+        if ($member->isEmpty()) {
+            //随机码
+            $encrypt = (new Uiversal())->genRandomString(6);
+            $member->username = $phone;
+            $member->phone = $phone;
+            $member->password = $MemberUserModel->encryption('', $phone, $encrypt);
+            $member->encrypt = $encrypt;
+            $member->audit_status = 0;
+            $member->sex = 0;
+            $member->reg_time = time();
+            $member->reg_ip = $_SERVER["REMOTE_ADDR"];
+            $member->is_block = 0;
+            $member->role_id = 0;
+            $member->source = $source;
+            $member->source_type = $source_type;
+        }
+        $member->update_time = time();
+        $member->save();
+
+        return createReturn(true,
             [
-                'user_id' => $userId,
-                'token' => $token
+                'user_id' => $member->user_id,
+                'token' => $MemberUserModel->getToken($member->user_id)
             ]
         );
-    }
-
-    /**
-     * 更新用户数据
-     * @param string $user_id
-     * @param array $data
-     * @return array
-     */
-    public function sysUserInfo($user_id = '',$data = []){
-        $MemberUserModel = new MemberUserModel();
-        $save = [];
-        if(isset($data['sex'])) $save['sex'] = $data['sex'];  //性别
-        if(isset($data['nickname'])) $save['nickname'] = $data['nickname']; //用户昵称
-        if(isset($data['userpic'])) $save['userpic'] = $data['userpic']; //头像
-        if(isset($data['phone'])) $save['phone'] = $data['phone']; //手机号
-        if(!empty($save)) $MemberUserModel->where(['user_id'=>$user_id])->update($save);
-        return self::createReturn(true);
     }
 
 }

@@ -13,13 +13,13 @@ use think\App;
  * Class Base
  * @package app\member\controller\api
  */
-class Base extends BaseController
+class WeChatBase extends BaseController
 {
 
     //引入中间件
     protected $middleware = [
         //用户认证
-        \app\member\middleware\MemberAuth::class
+        \app\member\middleware\WeChatAuthority::class
     ];
 
 }
