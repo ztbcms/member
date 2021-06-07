@@ -126,6 +126,13 @@ class Home extends WeChatBase
         ));
     }
 
-
+    /**
+     * 同步用户等级
+     * @return \think\response\Json
+     */
+    public function sysMemberGrade(){
+        (new \app\member\model\MemberGradeModel())->sysMemberGrade(input('user_id'));
+        return json(self::createReturn(true));
+    }
 
 }

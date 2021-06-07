@@ -16,5 +16,7 @@ namespace app\member\libs;
 class ReturnCode {
 
     const NO_LOGIN = '401';  //未登录
+    const YES_BLOCK = '402';  //用户已经被拉黑了
+    const NO_AUDIT = '403'; //用户未通过审核
 
 }

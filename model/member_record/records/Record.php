@@ -83,4 +83,17 @@ class Record extends Base
             ->paginate($limit);
     }
 
+    /**
+     * 获取支出的总量
+     * @param $model
+     * @return int
+     */
+    public function baseUseTotal($model){
+        return $model
+            ->where('to','=',$this->getTo())
+            ->where('to_type','=',$this->getToType())
+            ->where('pay','>',0)
+            ->sum('pay') ?: 0;
+    }
+
 }

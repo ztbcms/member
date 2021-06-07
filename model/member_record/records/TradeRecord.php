@@ -69,4 +69,13 @@ class TradeRecord extends Record
         $RecordTradeModel = new MemberRecordTradeModel();
         return $this->baseLog($RecordTradeModel,$limit);
     }
+
+    /**
+     * 获取支出总量
+     * @return int
+     */
+    public function useTotal(){
+        $RecordTradeModel = new MemberRecordTradeModel();
+        return $this->baseUseTotal($RecordTradeModel);
+    }
 }

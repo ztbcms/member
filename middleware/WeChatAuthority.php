@@ -5,6 +5,7 @@
 
 namespace app\member\middleware;
 
+use app\member\model\MemberConfigModel;
 use app\member\model\MemberModel;
 use app\BaseController;
 use app\member\libs\ReturnCode;
@@ -29,7 +30,7 @@ class WeChatAuthority
 
         $memberRes = $this->getTokenInfo();
         $jurisdiction_array = [
-            '0' => '/home/member/api.index/index',
+            '0' => 'member/api.home/sysMemberGrade'
         ];
         $AuthorizationCode = false;
         foreach ($jurisdiction_array as $key => $val) {
@@ -41,7 +42,20 @@ class WeChatAuthority
         if (!$AuthorizationCode) {
             if (!$memberRes['userId']) {
                 //未进行登录操作
-                return BaseController::makeJsonReturn(false, [], '对不起，您需要进行登录操作',ReturnCode::NO_LOGIN);
+                return BaseController::makeJsonReturn(false, [], '抱歉，您需要进行登录操作',ReturnCode::NO_LOGIN);
+            }
+
+            $MemberConfigModel = new MemberConfigModel();
+            $block_switch = $MemberConfigModel->getMembefConfig('block_switch');
+            if($block_switch == 1) {
+                //开启了审核按钮
+                return BaseController::makeJsonReturn(false, [], '抱歉，您已经被后台拉黑了',ReturnCode::YES_BLOCK);
+            }
+
+            $audit_switch = $MemberConfigModel->getMembefConfig('audit_switch');
+            if($audit_switch == 1) {
+                //开启了审核按钮
+                return BaseController::makeJsonReturn(false, [], '抱歉，您暂未通过审核',ReturnCode::NO_AUDIT);
             }
         }
 

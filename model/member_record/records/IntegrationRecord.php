@@ -74,4 +74,12 @@ class IntegrationRecord extends Record
         return $this->baseLog($MemberRecordIntegrationModel,$limit);
     }
 
+    /**
+     * 获取支出总量
+     * @return int
+     */
+    public function useTotal(){
+        $MemberRecordIntegrationModel = new MemberRecordIntegrationModel();
+        return $this->baseUseTotal($MemberRecordIntegrationModel);
+    }
 }

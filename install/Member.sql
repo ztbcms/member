@@ -17,6 +17,7 @@ CREATE TABLE `cms_member` (
   `role_id` int(11) NULL DEFAULT 0 COMMENT '角色',
   `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户来源',
   `source_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户来源类型 如 open_id',
+  `grade_id` int(11) UNSIGNED NULL DEFAULT 0 COMMENT '用户等级',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`),
   KEY `email` (`email`(20)),
@@ -59,7 +60,7 @@ CREATE TABLE `cms_member_record_integration`  (
   `target_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录来源名称',
   `delete_time` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 64 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = MyISAM AUTO_INCREMENT = 65 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员积分表' ROW_FORMAT = DYNAMIC;
 
 DROP TABLE IF EXISTS `cms_member_record_trade`;
 CREATE TABLE `cms_member_record_trade`  (
@@ -84,6 +85,39 @@ CREATE TABLE `cms_member_record_trade`  (
   `target_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '记录来源名称',
   `delete_time` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 62 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = MyISAM AUTO_INCREMENT = 63 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员余额表' ROW_FORMAT = DYNAMIC;
+
+DROP TABLE IF EXISTS `cms_member_grade`;
+CREATE TABLE `cms_member_grade`  (
+  `member_grade_id` int(15) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `member_grade_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '等级名称',
+  `meet_integration` int(10) NULL DEFAULT NULL COMMENT '满足积分',
+  `meet_trade` int(10) NULL DEFAULT NULL COMMENT '满足余额',
+  `member_sort` int(10) UNSIGNED NULL DEFAULT NULL COMMENT '权重 （执行的条件按从小到大排序）',
+  `discount` decimal(5, 2) UNSIGNED NULL DEFAULT 0.00 COMMENT '折扣',
+  `is_display` int(1) UNSIGNED NULL DEFAULT 1 COMMENT '是否开启 （0关闭  1开启）',
+  `create_time` int(11) NOT NULL DEFAULT 0 COMMENT '创建时间戳',
+  `update_time` int(11) NOT NULL DEFAULT 0 COMMENT '更新时间戳',
+  `delete_time` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
+  PRIMARY KEY (`member_grade_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员等级表' ROW_FORMAT = Dynamic;
+
+
+DROP TABLE IF EXISTS `cms_member_config`;
+CREATE TABLE `cms_member_config`  (
+  `member_config_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `create_time` int(11) NOT NULL DEFAULT 0 COMMENT '创建时间戳',
+  `update_time` int(11) NOT NULL DEFAULT 0 COMMENT '更新时间戳',
+  `delete_time` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
+  `varname` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `info` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  PRIMARY KEY (`member_config_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员配置表' ROW_FORMAT = Dynamic;
+
+INSERT INTO `cms_member_config` VALUES (1, 1623044937, 1623044937, 0, '会员审核开关', 'audit_switch', '0');
+INSERT INTO `cms_member_config` VALUES (2, 1623044937, 1623044937, 0, '拉黑审核开关', 'block_switch', '0');
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 
