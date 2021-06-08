@@ -5,7 +5,6 @@
 
 namespace app\member\model;
 
-use app\member\libs\Uiversal;
 use think\Model;
 
 class MemberModel extends Model
@@ -24,6 +23,24 @@ class MemberModel extends Model
     const AUDIT_STATUS_PASS = 1;
     // 审核不通过
     const AUDIT_STATUS_UNPASS = 2;
+
+    /**
+     * 获取身份名称
+     * @return \think\model\relation\HasOne
+     */
+    public function roleName(){
+        return $this->hasOne(MemberRoleModel::class,'id','role_id')
+            ->field('id,name as role_name')->bind(['role_name']);
+    }
+
+    /**
+     * 获取等级名称
+     * @return \think\model\relation\HasOne
+     */
+    public function gradeName(){
+        return $this->hasOne(MemberGradeModel::class,'grade_id','member_grade_id')
+            ->field('member_grade_id,member_grade_name as grade_name')->bind(['grade_name']);
+    }
 
     /**
      * 对明文密码，进行加密，返回加密后的密码

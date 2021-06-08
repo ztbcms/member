@@ -10,7 +10,7 @@
                         </el-form-item>
 
                         <el-form-item label="用户名">
-                            <el-input v-model="form.username"></el-input>
+                            <el-input :disabled="form.user_id > 0" v-model="form.username"></el-input>
                         </el-form-item>
 
                         <el-form-item label="密码">

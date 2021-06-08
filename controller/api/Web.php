@@ -6,7 +6,7 @@
 namespace app\member\controller\api;
 
 use app\BaseController;
-use app\member\service\MemberUserService;
+use app\member\service\MemberService;
 
 /**
  * 网站登录模块
@@ -24,7 +24,7 @@ class Web extends BaseController
     {
         $username = input('username','','trim');
         $password = input('password','','trim');
-        $res = MemberUserService::membeRegister($username,$password,$username,'web');
+        $res = MemberService::membeRegister($username,$password,$username,'web');
         return json($res);
     }
 
@@ -36,7 +36,7 @@ class Web extends BaseController
     {
         $username = input('username','','trim');
         $password = input('password','','trim');
-        $res = MemberUserService::memberLogin($username,$password);
+        $res = MemberService::memberLogin($username,$password);
         return json($res);
     }
 

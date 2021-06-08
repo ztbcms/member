@@ -8,27 +8,27 @@
     <el-card>
         <el-form :inline="true" :model="searchForm">
 
-            <el-form-item label="用户ID">
-                <el-input v-model="searchForm.user_id" size="mini" placeholder=""></el-input>
+            <el-form-item label="用户ID ：">
+                <el-input v-model="searchForm.user_id" placeholder=""></el-input>
             </el-form-item>
 
-            <el-form-item label="用户名">
-                <el-input v-model="searchForm.username" size="mini" placeholder=""></el-input>
+            <el-form-item label="用户名 ：">
+                <el-input v-model="searchForm.username" placeholder=""></el-input>
             </el-form-item>
 
-            <el-form-item label="电话">
-                <el-input v-model="searchForm.phone" size="mini" placeholder=""></el-input>
+            <el-form-item label="电话 ：">
+                <el-input v-model="searchForm.phone" placeholder=""></el-input>
             </el-form-item>
 
             <br>
 
-            <el-form-item label="邮箱">
-                <el-input v-model="searchForm.email" size="mini" placeholder=""></el-input>
+            <el-form-item label="邮箱 ：">
+                <el-input v-model="searchForm.email" placeholder=""></el-input>
             </el-form-item>
 
-            <el-form-item label="角色">
-                <el-select size="mini" v-model="searchForm.role_id">
-                    </el-option>
+            <el-form-item label="角色 ：">
+                <el-select v-model="searchForm.role_id">
+                    <el-option label="全部" value=""></el-option>
                     <el-option
                             v-for="item in roleList"
                             :key="item.id"
@@ -39,8 +39,8 @@
             </el-form-item>
 
             <el-form-item label="">
-                <el-button type="primary" @click="search" size="mini">查询</el-button>
-                <el-button @click="add()" type="primary" size="mini">新增用户</el-button>
+                <el-button type="primary" @click="search">查询</el-button>
+                <el-button @click="add()" type="success">新增用户</el-button>
             </el-form-item>
         </el-form>
 
@@ -72,9 +72,23 @@
 
             <el-table-column
                     align="center"
-                    prop="role_name"
                     label="角色"
                     min-width="60">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.role_name">{{ scope.row.role_name }}</span>
+                    <span v-else>无角色</span>
+                </template>
+            </el-table-column>
+
+            <el-table-column
+                    align="center"
+                    prop="grade_name"
+                    label="等级"
+                    min-width="60">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.grade_name">{{ scope.row.grade_name }}</span>
+                    <span v-else>无等级</span>
+                </template>
             </el-table-column>
 
             <el-table-column
@@ -197,6 +211,7 @@
                     phone: "",
                     email: "",
                     tab: "0",
+                    role_id : ''
                 },
                 defaultImage: '/statics/images/member/nophoto.gif',
                 multipleSelection: [],
@@ -273,11 +288,10 @@
                     var data = this.searchForm
                     data['_action'] = 'getList'
                     this.httpGet(this.request_url, data, function (res) {
-                        var data = res.data
-                        that.lists = data.items
-                        that.totalCount = data.total_items
-                        that.pageSize = data.limit
-                        that.pageCount = data.page
+                        that.lists = res.data.data;
+                        that.totalCount = res.data.total;
+                        that.page = res.data.page;
+                        that.page_count = res.data.per_page;
                     })
                 },
                 // 拉黑/恢复

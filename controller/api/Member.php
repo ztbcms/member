@@ -36,10 +36,11 @@ class Member extends MemberBase
      */
     public function incomeTrade()
     {
+        $user_id = input('user_id');
         //模拟获取推荐用户下单奖励
         $TradeRecord = new TradeRecord(
             TradeRecord::INCREASE,
-            '1', 'user_id',
+            $user_id, 'user_id',
             '123456', 'order_sn',
             '2', 'recommend_user_id',
             '500', '推荐用户下单奖励'
@@ -53,10 +54,11 @@ class Member extends MemberBase
      */
     public function payTrade()
     {
+        $user_id = input('user_id');
         //模拟获取推荐用户下单奖励
         $TradeRecord = new TradeRecord(
             TradeRecord::PAY,
-            '1', 'user_id',
+            $user_id, 'user_id',
             '789789', 'order_sn',
             '', '',
             '10', '购物商品订单'
@@ -70,8 +72,9 @@ class Member extends MemberBase
      */
     public function tradeBalance()
     {
+        $user_id = input('user_id');
         $TradeRecord = new TradeRecord(
-            '', '1', 'user_id'
+            '', $user_id, 'user_id'
         );
         return json(self::createReturn(true,
             [
@@ -86,10 +89,11 @@ class Member extends MemberBase
      */
     public function incomeIntegration()
     {
+        $user_id = input('user_id');
         //模拟获取推荐用户下单奖励
         $IntegrationRecord = new IntegrationRecord(
             TradeRecord::INCREASE,
-            '1', 'user_id',
+            $user_id, 'user_id',
             '123456', 'order_sn',
             '2', 'recommend_user_id',
             '500', '推荐用户下单奖励'
@@ -103,10 +107,11 @@ class Member extends MemberBase
      */
     public function payIntegration()
     {
+        $user_id = input('user_id');
         //模拟获取推荐用户下单奖励
         $IntegrationRecord = new IntegrationRecord(
             TradeRecord::PAY,
-            '1', 'user_id',
+            $user_id, 'user_id',
             '789789', 'order_sn',
             '', '',
             '10', '购物商品订单'
@@ -120,8 +125,9 @@ class Member extends MemberBase
      */
     public function tradeIntegration()
     {
+        $user_id = input('user_id');
         $IntegrationRecord = new IntegrationRecord(
-            '', '1', 'user_id'
+            '', $user_id, 'user_id'
         );
         return json(self::createReturn(true,
             [

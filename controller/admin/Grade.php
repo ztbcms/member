@@ -78,7 +78,7 @@ class Grade extends AdminController
                 ->findOrEmpty();
             return json(createReturn(true, $details, '操作成功'));
         }
-        return view();
+        return view('addOrEditGrade');
     }
 
 }

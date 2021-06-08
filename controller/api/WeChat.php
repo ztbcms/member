@@ -9,6 +9,7 @@ namespace app\member\controller\api;
 
 use app\BaseController;
 use app\member\model\MemberModel;
+use app\member\service\MemberService;
 use app\member\service\MemberUserService;
 use app\wechat\service\MiniService;
 
@@ -36,7 +37,7 @@ class WeChat extends BaseController
         if ($res['status']) {
             //当获取手机号成功的情况，注册账号
             $phoneData = $res['data'];
-            $res = MemberUserService::memberLoginRegister(
+            $res = MemberService::memberLoginRegister(
                 $phoneData['phoneNumber'],$phoneData['phoneNumber'], $phoneData['open_id'], 'open_id'
             );
             return json($res);

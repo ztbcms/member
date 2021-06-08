@@ -66,7 +66,7 @@ class Token extends AdminController
             $list = $MemberModel->select();
             return json(self::createReturn(true,$list));
         }
-        return view();
+        return view('addOrEditToken');
     }
 
 }
