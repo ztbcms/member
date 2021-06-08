@@ -78,6 +78,7 @@ class MemberGradeModel extends Model
         $MemberConfigModel = new MemberConfigModel();
         $grade_trigger = $MemberConfigModel->getMembefConfig('grade_trigger')['data'];
 
+
         $where[] = ['is_display','=',1];
         if($grade_trigger == 1) {
             //消费积分达到设置积分即可
@@ -101,9 +102,11 @@ class MemberGradeModel extends Model
         $member = $MemberModel
             ->where('user_id','=',$user_id)
             ->findOrEmpty();
-        $member->grade_id = $member_grade_id;
-        $member->update_time = time();
-        $member->save();
+        if(!$member->isEmpty()) {
+            $member->grade_id = $member_grade_id;
+            $member->update_time = time();
+            $member->save();
+        }
         return createReturn(true,[],'同步成功');
     }
 

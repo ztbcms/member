@@ -45,7 +45,7 @@ class Member extends MemberBase
             '2', 'recommend_user_id',
             '500', '推荐用户下单奖励'
         );
-        return json(self::createReturn($TradeRecord->createRrcord()));
+        return json(self::createReturn(true,$TradeRecord->createRrcord()));
     }
 
     /**
@@ -63,7 +63,7 @@ class Member extends MemberBase
             '', '',
             '10', '购物商品订单'
         );
-        return json(self::createReturn($TradeRecord->createRrcord()));
+        return json(self::createReturn(true,$TradeRecord->createRrcord()));
     }
 
     /**
@@ -98,7 +98,7 @@ class Member extends MemberBase
             '2', 'recommend_user_id',
             '500', '推荐用户下单奖励'
         );
-        return json(self::createReturn($IntegrationRecord->createRrcord()));
+        return json(self::createReturn(true,$IntegrationRecord->createRrcord()));
     }
 
     /**
@@ -116,7 +116,7 @@ class Member extends MemberBase
             '', '',
             '10', '购物商品订单'
         );
-        return json(self::createReturn($IntegrationRecord->createRrcord()));
+        return json(self::createReturn(true,$IntegrationRecord->createRrcord()));
     }
 
     /**
@@ -144,5 +144,4 @@ class Member extends MemberBase
     {
         return json((new \app\member\model\MemberGradeModel())->sysMemberGrade(input('user_id')));
     }
-
 }
