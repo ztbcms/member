@@ -1,8 +1,7 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
-
-        <div class="filter-container">
-            <h3>角色管理</h3>
+        <div slot="header" class="clearfix">
+            <span>角色管理</span>
         </div>
 
         <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('member', 'admin.Role', 'addRole')){ ?>

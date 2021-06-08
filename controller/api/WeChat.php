@@ -30,14 +30,15 @@ class WeChat extends BaseController
         $code = input('post.code', '', 'trim');
         $iv = input('post.iv', '', 'trim');
         $encryptedData = input('encryptedData', '', 'trim');
-        $appid = input('appid', '', 'trim');
+        $appid = input('appid', 'wxf24734e633b168ec', 'trim');
         $MiniService = new MiniService($appid);
         $res = $MiniService->getPhoneNumberByCode($code, $iv, $encryptedData);
         if ($res['status']) {
             //当获取手机号成功的情况，注册账号
             $phoneData = $res['data'];
-            $MemberUserService = new MemberUserService();
-            $res = $MemberUserService->getUserPhoneToken($phoneData['phoneNumber'], $phoneData['open_id'], 'open_id');
+            $res = MemberUserService::memberLoginRegister(
+                $phoneData['phoneNumber'],$phoneData['phoneNumber'], $phoneData['open_id'], 'open_id'
+            );
             return json($res);
         } else {
             return json($res);
@@ -51,7 +52,7 @@ class WeChat extends BaseController
     public function getUserWeChat(){
         $code = input('post.code', '', 'trim');
         $userInfo = input('post.userInfo', '', 'trim');
-        $appid = input('appid', '', 'trim');
+        $appid = input('appid', 'wxf24734e633b168ec', 'trim');
         $MiniService = new MiniService($appid);
         $res = $MiniService->getOpenid($code);
         if($res['status']) {

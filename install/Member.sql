@@ -117,6 +117,7 @@ CREATE TABLE `cms_member_config`  (
 
 INSERT INTO `cms_member_config` VALUES (1, 1623044937, 1623044937, 0, '会员审核开关', 'audit_switch', '0');
 INSERT INTO `cms_member_config` VALUES (2, 1623044937, 1623044937, 0, '拉黑审核开关', 'block_switch', '0');
+INSERT INTO `cms_member_config` VALUES (3, 1623044937, 1623044937, 0, '升级触发条件', 'grade_trigger', '2');
 
 SET FOREIGN_KEY_CHECKS = 1;
 

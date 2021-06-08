@@ -11,10 +11,10 @@ use think\model\concern\SoftDelete;
 class MemberConfigModel extends Model
 {
 
+    use SoftDelete;
+
     protected $name = 'member_config';
     protected $pk = 'member_config_id';
-
-    use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
 
@@ -29,13 +29,14 @@ class MemberConfigModel extends Model
         foreach ($list as $k => $v) {
             $details[$v->info] = $v->value;
         }
-        return $details;
+        return createReturn(true,$details);
     }
+
 
     /**
      * 保存配置
      * @param array $post
-     * @return bool
+     * @return array
      */
     public function submit($post = [])
     {
@@ -50,19 +51,20 @@ class MemberConfigModel extends Model
             $details->update_time = time();
             $details->save();
         }
-        return true;
+        return createReturn(true);
     }
+
 
     /**
      * 获取配置
      * @param string $info
-     * @return string
+     * @return array
      */
     public function getMembefConfig($info = ''){
         $value = $this
             ->where('info','=',$info)
             ->value('value') ?: '';
-        return $value;
+        return createReturn(true,$value);
     }
 
 }

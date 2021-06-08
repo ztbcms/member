@@ -5,8 +5,8 @@
 
 namespace app\member\controller\api;
 
-use app\member\model\member_record\records\IntegrationRecord;
-use app\member\model\member_record\records\TradeRecord;
+use app\member\model\record\records\IntegrationRecord;
+use app\member\model\record\records\TradeRecord;
 use app\Request;
 
 /**
@@ -14,7 +14,7 @@ use app\Request;
  * Class Home
  * @package app\member\controller\api
  */
-class Home extends WeChatBase
+class Member extends MemberBase
 {
 
     /**
@@ -39,10 +39,10 @@ class Home extends WeChatBase
         //模拟获取推荐用户下单奖励
         $TradeRecord = new TradeRecord(
             TradeRecord::INCREASE,
-            '1','user_id',
-            '123456','order_sn',
-            '2','recommend_user_id',
-            '500','推荐用户下单奖励'
+            '1', 'user_id',
+            '123456', 'order_sn',
+            '2', 'recommend_user_id',
+            '500', '推荐用户下单奖励'
         );
         return json(self::createReturn($TradeRecord->createRrcord()));
     }
@@ -51,14 +51,15 @@ class Home extends WeChatBase
      * 减少用户余额
      * @return \think\response\Json
      */
-    public function payTrade(){
+    public function payTrade()
+    {
         //模拟获取推荐用户下单奖励
         $TradeRecord = new TradeRecord(
             TradeRecord::PAY,
-            '1','user_id',
-            '789789','order_sn',
-            '','',
-            '10','购物商品订单'
+            '1', 'user_id',
+            '789789', 'order_sn',
+            '', '',
+            '10', '购物商品订单'
         );
         return json(self::createReturn($TradeRecord->createRrcord()));
     }
@@ -67,14 +68,15 @@ class Home extends WeChatBase
      * 获取用户余额
      * @return \think\response\Json
      */
-    public function tradeBalance(){
+    public function tradeBalance()
+    {
         $TradeRecord = new TradeRecord(
-            '', '1','user_id'
+            '', '1', 'user_id'
         );
         return json(self::createReturn(true,
-           [
-               'balance' => $TradeRecord->balance()
-           ]
+            [
+                'balance' => $TradeRecord->balance()
+            ]
         ));
     }
 
@@ -87,10 +89,10 @@ class Home extends WeChatBase
         //模拟获取推荐用户下单奖励
         $IntegrationRecord = new IntegrationRecord(
             TradeRecord::INCREASE,
-            '1','user_id',
-            '123456','order_sn',
-            '2','recommend_user_id',
-            '500','推荐用户下单奖励'
+            '1', 'user_id',
+            '123456', 'order_sn',
+            '2', 'recommend_user_id',
+            '500', '推荐用户下单奖励'
         );
         return json(self::createReturn($IntegrationRecord->createRrcord()));
     }
@@ -99,14 +101,15 @@ class Home extends WeChatBase
      * 减少用户积分
      * @return \think\response\Json
      */
-    public function payIntegration(){
+    public function payIntegration()
+    {
         //模拟获取推荐用户下单奖励
         $IntegrationRecord = new IntegrationRecord(
             TradeRecord::PAY,
-            '1','user_id',
-            '789789','order_sn',
-            '','',
-            '10','购物商品订单'
+            '1', 'user_id',
+            '789789', 'order_sn',
+            '', '',
+            '10', '购物商品订单'
         );
         return json(self::createReturn($IntegrationRecord->createRrcord()));
     }
@@ -115,9 +118,10 @@ class Home extends WeChatBase
      * 获取用户积分
      * @return \think\response\Json
      */
-    public function tradeIntegration(){
+    public function tradeIntegration()
+    {
         $IntegrationRecord = new IntegrationRecord(
-            '', '1','user_id'
+            '', '1', 'user_id'
         );
         return json(self::createReturn(true,
             [
@@ -130,9 +134,9 @@ class Home extends WeChatBase
      * 同步用户等级
      * @return \think\response\Json
      */
-    public function sysMemberGrade(){
-        (new \app\member\model\MemberGradeModel())->sysMemberGrade(input('user_id'));
-        return json(self::createReturn(true));
+    public function sysMemberGrade()
+    {
+        return json((new \app\member\model\MemberGradeModel())->sysMemberGrade(input('user_id')));
     }
 
 }

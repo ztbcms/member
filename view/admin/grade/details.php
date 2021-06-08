@@ -1,3 +1,9 @@
+<style>
+    .prompt {
+        font-size: 12px;
+    }
+</style>
+
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
         <div slot="header" class="clearfix">
@@ -13,7 +19,7 @@
                                       placeholder="等级名称">
                             </el-input>
                             <br>
-                            <span>例如：大众会员、黄金会员、铂金会员、钻石会员</span>
+                            <span class="prompt">例如：大众会员、黄金会员、铂金会员、钻石会员</span>
                         </el-form-item>
 
                         <el-form-item label="需要满足的积分" required>
@@ -21,7 +27,7 @@
                                       placeholder="需要满足的积分">
                             </el-input>
                             <br>
-                            <span>用户的实际消费n积分后，自动升级</span>
+                            <span class="prompt">用户的实际消费n积分后，自动升级</span>
                         </el-form-item>
 
                         <el-form-item label="需要满足的金额" required>
@@ -29,7 +35,7 @@
                                       placeholder="需要满足的金额">
                             </el-input>
                             <br>
-                            <span>用户的实际消费金额满n元后，自动升级</span>
+                            <span class="prompt">用户的实际消费金额满n元后，自动升级</span>
                         </el-form-item>
 
                         <el-form-item label="权重" required>
@@ -37,7 +43,7 @@
                                       placeholder="权重">
                             </el-input>
                             <br>
-                            <span>会员等级的权重，数字越大 等级越高</span>
+                            <span class="prompt">会员等级的权重，数字越大 等级越高</span>
                         </el-form-item>
 
                         <el-form-item label="等级权益" required>
@@ -46,7 +52,7 @@
                             </el-input>
                             <span>折</span>
                             <br>
-                            <span>折扣率范围0-10，9.5代表9.5折，0代表不折扣</span>
+                            <span class="prompt">折扣率范围0-10，9.5代表9.5折，0代表不折扣</span>
                         </el-form-item>
 
                         <el-form-item label="是否开启" required>

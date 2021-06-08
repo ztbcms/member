@@ -65,14 +65,7 @@ class Grade extends AdminController
                     ->check($post);
 
                 $MemberGradeModel = new MemberGradeModel();
-                $member_grade_id = $MemberGradeModel->submit($post);
-                if ($member_grade_id) {
-                    return json(createReturn(true, [
-                        'member_grade_id' => $member_grade_id
-                    ], '操作成功'));
-                } else {
-                    return json(createReturn(false, '', $MemberGradeModel->getZtbMessage() ?: '操作失败'));
-                }
+                return json($MemberGradeModel->submit($post));
             } catch (ValidateException $e) {
                 return json(createReturn(false, '', $e->getError()));
             }

@@ -3,14 +3,14 @@
  * Author: cycle_3
  */
 
-namespace app\member\model\member_record\records;
+namespace app\member\model\record\records;
 
 /**
  * 公共使用的方法
  * Class Base
  * @package app\member\model\member_record\records
  */
-abstract class Base
+abstract class RecordsBase
 {
 
     //添加

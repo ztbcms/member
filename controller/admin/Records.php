@@ -7,8 +7,8 @@ namespace app\member\controller\admin;
 
 use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
-use app\member\model\member_record\records\IntegrationRecord;
-use app\member\model\member_record\records\TradeRecord;
+use app\member\model\record\records\IntegrationRecord;
+use app\member\model\record\records\TradeRecord;
 
 /**
  * 记录管理

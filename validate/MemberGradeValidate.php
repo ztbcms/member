@@ -23,8 +23,8 @@ class MemberGradeValidate extends Validate
 
     protected $message  =   [
         'member_grade_name.require'     => '抱歉，等级名称不能为空',
-        'meet_integration.require'     => '抱歉，积分只能填写数字',
-        'meet_trade.require'     => '抱歉，余额只能填写数字',
+        'meet_integration.number'     => '抱歉，积分只能填写数字',
+        'meet_trade.number'     => '抱歉，余额只能填写数字',
     ];
 
     protected $scene = [

@@ -7,22 +7,21 @@ namespace app\member\middleware;
 
 use app\member\model\MemberConfigModel;
 use app\member\model\MemberModel;
-use app\BaseController;
 use app\member\libs\ReturnCode;
+use app\member\model\MemberTokenModel;
 
 /**
  * 权限控制中间件
- * @deprecated
  * Class OperationLog
  * @package app\member\middleware
  */
-class WeChatAuthority
+class MemberAuthority
 {
 
     /**
      * 进入请求
      * @param $request
-     * @param  \Closure  $next
+     * @param  \Closure $next
      * @return mixed
      */
     public function handle($request, \Closure $next)
@@ -42,20 +41,20 @@ class WeChatAuthority
         if (!$AuthorizationCode) {
             if (!$memberRes['userId']) {
                 //未进行登录操作
-                return BaseController::makeJsonReturn(false, [], '抱歉，您需要进行登录操作',ReturnCode::NO_LOGIN);
+                return json(createReturn(false, [], '抱歉，您需要进行登录操作', ReturnCode::NO_LOGIN));
             }
 
             $MemberConfigModel = new MemberConfigModel();
-            $block_switch = $MemberConfigModel->getMembefConfig('block_switch');
-            if($block_switch == 1) {
+            $block_switch = $MemberConfigModel->getMembefConfig('block_switch')['data'];
+            if ($block_switch == 1) {
                 //开启了审核按钮
-                return BaseController::makeJsonReturn(false, [], '抱歉，您已经被后台拉黑了',ReturnCode::YES_BLOCK);
+                return json(createReturn(false, [], '抱歉，您已经被后台拉黑了', ReturnCode::YES_BLOCK));
             }
 
-            $audit_switch = $MemberConfigModel->getMembefConfig('audit_switch');
-            if($audit_switch == 1) {
+            $audit_switch = $MemberConfigModel->getMembefConfig('audit_switch')['data'];
+            if ($audit_switch == 1) {
                 //开启了审核按钮
-                return BaseController::makeJsonReturn(false, [], '抱歉，您暂未通过审核',ReturnCode::NO_AUDIT);
+                return json(createReturn(false, [], '抱歉，您暂未通过审核', ReturnCode::NO_AUDIT));
             }
         }
 
@@ -66,7 +65,7 @@ class WeChatAuthority
 
     /**
      * 请求返回回调
-     * @param  \think\Response  $response
+     * @param  \think\Response $response
      */
     public function end(\think\Response $response)
     {
@@ -84,12 +83,12 @@ class WeChatAuthority
         $token = isset($_SERVER[$headerKey]) ? $_SERVER[$headerKey] : '';
         $res['userInfo'] = [];
         $res['userId'] = 0;
-        if($token) {
-            $getUserId = Cache($token);
-            if($getUserId) {
+        if ($token) {
+            $getUserId = (new MemberTokenModel())->decodeToken($token);
+            if ($getUserId) {
                 $MemberModel = new MemberModel();
-                $memberFind = $MemberModel->where('user_id',$getUserId)->findOrEmpty();
-                if(!$memberFind->isEmpty()) {
+                $memberFind = $MemberModel->where('user_id', $getUserId)->findOrEmpty();
+                if (!$memberFind->isEmpty()) {
                     $res['userInfo'] = $memberFind;
                     $res['userId'] = $memberFind['user_id'];
                 }

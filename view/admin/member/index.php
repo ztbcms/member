@@ -53,7 +53,6 @@
         <el-table
                 :data="lists"
                 style="width: 100%"
-                border
                 fit
                 highlight-current-row
                 @selection-change="handleSelectionChange"

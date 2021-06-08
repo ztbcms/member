@@ -53,6 +53,14 @@ return [
                 "name"   => "会员设置",
                 "remark" => "",
             ]
+            ,
+            [
+                "route"  => "member/admin.Token/index",
+                "type"   => 1,
+                "status" => 1,
+                "name"   => "登录凭证",
+                "remark" => "",
+            ]
         ]
     ]
 ];

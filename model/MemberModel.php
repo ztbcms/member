@@ -13,7 +13,6 @@ class MemberModel extends Model
     protected $name = 'member';
     protected $pk = 'user_id';
 
-
     // 拉黑
     const IS_BLOCK_YES = 1;
     // 未拉黑
@@ -28,45 +27,38 @@ class MemberModel extends Model
 
     /**
      * 对明文密码，进行加密，返回加密后的密码
-     * @param string $identifier 为数字时，表示uid，其他为用户名
      * @param string $pass 明文密码，不能为空
+     * @param string $verify
      * @return string 返回加密后的密码
      */
-    public function encryption($identifier, $pass, $verify = "")
+    public function encryption($pass = '', $verify = "")
     {
-        $v = array();
-        if (is_numeric($identifier)) {
-            $v["id"] = $identifier;
-        } else {
-            $v["username"] = $identifier;
-        }
         $pass = md5($pass . md5($verify));
         return $pass;
     }
 
     /**
-     * 获取用户登录token
-     * @param int $userid
-     * @param string $salt
-     * @return string
+     * 产生一个指定长度的随机字符串,并返回给用户
+     * @param int $len 产生字符串的长度
+     * @return string 随机字符串
      */
-    public function getToken($userid = 0,$salt = 'demo_cms_token')
+    public function genRandomString($len = 6)
     {
-        $info = $this
-            ->where(['user_id' => $userid])
-            ->field('username,user_id,encrypt')
-            ->findOrEmpty();
-        if($info->isEmpty()) {
-            return '';
-        } else {
-            //存在用户的情况下
-            $guid = (new Uiversal())->getGuidV4();
-            // 当前时间戳 (精确到毫秒)
-            $timeStamp = microtime(true);
-            // 自定义一个盐
-            $token = md5("{$info['user_id']}_{$info['username']}_{$info['encrypt']}_{$timeStamp}_{$guid}_{$salt}");
-            Cache($token, $info['user_id'], 86400 * 7);
-            return $token;
+        $chars = array(
+            "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
+            "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
+            "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G",
+            "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
+            "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2",
+            "3", "4", "5", "6", "7", "8", "9",
+        );
+        $charsLen = count($chars) - 1;
+        // 将数组打乱
+        shuffle($chars);
+        $output = "";
+        for ($i = 0; $i < $len; $i++) {
+            $output .= $chars[mt_rand(0, $charsLen)];
         }
+        return $output;
     }
 }

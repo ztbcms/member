@@ -3,7 +3,7 @@
  * Author: cycle_3
  */
 
-namespace app\member\model\member_record;
+namespace app\member\model\record;
 
 use think\Model;
 use think\model\concern\SoftDelete;
@@ -16,10 +16,10 @@ use think\model\concern\SoftDelete;
 class MemberRecordIntegrationModel extends Model
 {
 
+    use SoftDelete;
+
     protected $name = 'member_record_integration';
     protected $pk = 'id';
-
-    use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
 
