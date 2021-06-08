@@ -25,4 +25,9 @@
 |/member/api.WeChat/getUserWeChat|获取微信小程序授权登录|
 
 
+#### 文档说明 （具体调用可参照文档说明）
+
+https://www.apizza.net/project/e939c46895885fa81c56cd46b92e0be8/browse
+
+
 
