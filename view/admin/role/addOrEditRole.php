@@ -60,7 +60,7 @@
                 onSubmit: function () {
                     var that = this;
                     var url = "{:api_url('/member/admin.Role/addRole')}"
-                    if(this.form.id){
+                    if (this.form.id) {
                         url = "{:api_url('/member/admin.Role/editRole')}"
                     }
                     $.ajax({
@@ -115,7 +115,7 @@
             mounted: function () {
                 this.getRoleList();
                 this.form.id = this.getUrlQuery('id')
-                if(this.form.id){
+                if (this.form.id) {
                     this.getDetail(this.form.id)
                 }
             }

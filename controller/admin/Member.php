@@ -11,6 +11,11 @@ use app\member\model\MemberRoleModel;
 use app\member\service\MemberService;
 use think\Request;
 
+/**
+ * 会员管理
+ * Class Member
+ * @package app\member\controller\admin
+ */
 class Member extends AdminController
 {
     /**
@@ -42,73 +47,52 @@ class Member extends AdminController
     // 获取列表
     private function getList()
     {
-        $page = $this->request->param('page', 1);
-        $limit = $this->request->param('limit', 15);
-        $param = $this->request->param();
         $where = [];
-        if (isset($param['user_id']) && !empty($param['user_id'])) {
-            $where[] = ['user_id', '=', $param['user_id']];
+        $user_id = input('user_id');
+        if ($user_id) {
+            $where[] = ['user_id', '=', $user_id];
         }
-        if (isset($param['username']) && !empty($param['username'])) {
-            $where[] = ['username', '=', $param['username']];
+
+        $username = input('username');
+        if ($username) {
+            $where[] = ['username', 'like', $username];
         }
-        if (isset($param['phone']) && !empty($param['phone'])) {
-            $where[] = ['phone', '=', $param['phone']];
+
+        $phone = input('phone');
+        if ($phone) {
+            $where[] = ['phone', 'like', $phone];
         }
-        if (isset($param['email']) && !empty($param['email'])) {
-            $where[] = ['email', '=', $param['email']];
+
+        $email = input('email');
+        if ($email) {
+            $where[] = ['email', 'like', $email];
         }
-        if (isset($param['role_id']) && !empty($param['role_id'])) {
-            $where[] = ['role_id', '=', $param['role_id']];
+
+        $role_id = input('role_id');
+        if ($role_id) {
+            $where[] = ['role_id', '=', $role_id];
         }
-        if (isset($param['tab']) && !empty($param['tab'])) {
-            switch ($param['tab']) {
-                case 1:
-                    $where[] = ['audit_status', '=', 0];
-                    break;
-                case 2:
-                    $where[] = ['audit_status', '=', 2];
-                    break;
-                case 3:
+
+        $tab = input('tab');
+        if ($tab == 1) {
+            $where[] = ['audit_status', '=', 0];
+        } else {
+            if ($tab) {
+                $where[] = ['audit_status', '=', 2];
+            } else {
+                if ($tab) {
                     $where[] = ['is_block', '=', 1];
-                    break;
+                }
             }
         }
 
-        $roleModel = new MemberRoleModel();
-        $roleList = $roleModel->getEnableRoleList();
-        $roleMap = [];
-        foreach ($roleList as $item){
-            $roleMap[$item['id']] = $item;
-        }
-        $data = MemberModel::where($where)
-            ->order('reg_time', 'desc')
-            ->page($page)->limit($limit)->select()->toArray();
-        $list = [];
-        foreach ($data as $item){
-            $list [] = [
-                'user_id'           => $item['user_id'],
-                'avatar'       => $item['avatar'],
-                'username'     => $item['username'],
-                'phone'        => $item['phone'],
-                'email'        => $item['email'],
-                'reg_ip'       => $item['reg_ip'],
-                'reg_time'     => date('Y-m-d H:i:s', $item['reg_time']),
-                'sex'          => $item['sex'],
-                'is_block'     => $item['is_block'],
-                'audit_status' => $item['audit_status'],
-                'role_name'    => isset($roleMap[$item['user_id']]) ? $roleMap[$item['user_id']]['name'] : ''
-            ];
-        }
-        $total = MemberModel::where($where)->count();
-        $ret = [
-            'items'       => $list,
-            'page'        => intval($page),
-            'limit'       => intval($limit),
-            'total_items' => intval($total),
-            'total_pages' => intval(ceil($total / $limit)),
-        ];
-        return json(self::createReturn(true, $ret));
+        $MemberModel = new MemberModel();
+        $list = $MemberModel
+            ->where($where)
+            ->with(['role_name', 'grade_name'])
+            ->order('reg_time desc')
+            ->paginate(input('limit'));
+        return json(self::createReturn(true, $list));
     }
 
     /**
@@ -118,12 +102,7 @@ class Member extends AdminController
      */
     private function blockMember()
     {
-        $user_id = $this->request->post('user_id', 0);
-        $isBlock = $this->request->post('is_block', 0);
-        if (empty($user_id)) {
-            return self::makeJsonReturn(false, null, '参数异常');
-        }
-        return json(MemberService::blockMember($user_id, $isBlock));
+        return json(MemberService::blockMember(input('user_id'), input('is_block')));
     }
 
     /**
@@ -133,23 +112,11 @@ class Member extends AdminController
      */
     private function batchBlockMember()
     {
-        $user_ids = $this->request->post('user_ids', []);
-        $isBlock = $this->request->post('is_block', 0);
-        if (empty($user_ids)) {
-            return self::makeJsonReturn(false, null, '参数异常');
-        }
-        $total = 0;
+        $user_ids = input('user_ids', []);
         foreach ($user_ids as $userId) {
-            $res = MemberService::blockMember($userId, $isBlock);
-            if ($res['status']) {
-                $total++;
-            }
+            MemberService::blockMember($userId, input('is_block', 0));
         }
-        if ($total == count($user_ids)) {
-            return self::makeJsonReturn(true, null, '操作成功');
-        } else {
-            return self::makeJsonReturn(false, null, '操作失败');
-        }
+        return self::makeJsonReturn(true, [], '操作成功');
     }
 
     /**
@@ -159,21 +126,12 @@ class Member extends AdminController
      */
     private function auditMember()
     {
-        $user_id = $this->request->post('user_id', 0);
-        $audit_status = $this->request->post('audit_status', 0);
+        $user_id = input('user_id');
         if (empty($user_id)) {
             return self::makeJsonReturn(false, '', '请选择会员');
         }
-        $res = MemberService::auditMember($user_id, $audit_status);
-        if ($res) {
-            return self::makeJsonReturn(true, null, '操作成功');
-        }
-        return self::makeJsonReturn(false, null, '操作失败');
-    }
-
-    // TODO 删除会员
-    private function deleteMember()
-    {
+        MemberService::auditMember($user_id, input('audit_status'));
+        return self::makeJsonReturn(true, [], '操作成功');
     }
 
     /**
@@ -208,23 +166,13 @@ class Member extends AdminController
         if ($this->request->isGet() && $this->request->param('_action') === 'getRoleList') {
             return $this->getRoleList();
         }
+
         if ($this->request->isPost() && $this->request->param('_action') === 'addMember') {
-            $data = $this->request->post();
-            if (!isset($data['username']) || empty($data['username'])) {
-                return json(self::createReturn(false, null, '用户名不能为空'));
-            }
-            if (!isset($data['nickname']) || empty($data['nickname'])) {
-                return json(self::createReturn(false, null, '呢称不能为空'));
-            }
-            if (!isset($data['role_id']) || empty($data['role_id'])) {
-                return json(self::createReturn(false, null, '角色不能为空'));
-            }
-            if (empty($data['password']) || $data['password'] !== $data['password_confirm']) {
-                return json(self::createReturn(false, null, '密码不一致'));
-            }
-            $res = MemberService::addOrEditMember($data);
+            $post = input('post.');
+            $res = MemberService::addOrEditMember($post);
             return json($res);
         }
+
         return view('addOrEditMember');
     }
 
@@ -234,35 +182,23 @@ class Member extends AdminController
         if ($this->request->isGet() && $this->request->param('_action') === 'getRoleList') {
             return $this->getRoleList();
         }
+
         // 编辑
         if ($this->request->isPost() && $this->request->param('_action') === 'editMember') {
-            $data = $this->request->post();
-            if (!isset($data['username']) || empty($data['username'])) {
-                return json(self::createReturn(false, null, '用户名不能为空'));
-            }
-            if (!isset($data['nickname']) || empty($data['nickname'])) {
-                return json(self::createReturn(false, null, '呢称不能为空'));
-            }
-            if (!isset($data['role_id']) || empty($data['role_id'])) {
-                return json(self::createReturn(false, null, '角色不能为空'));
-            }
-            if (!empty($data['password'])) {
-                if ($data['password'] !== $data['pwdconfirm']) {
-                    return json(self::createReturn(false, null, '密码不一致'));
-                }
-            }
-            $res = MemberService::addOrEditMember($data);
+            $post = input('post.');
+            $res = MemberService::addOrEditMember($post);
             return json($res);
         }
+
         // 详情
         if ($this->request->isGet() && $this->request->param('_action') === 'getDetail') {
-            $user_id = $this->request->param('user_id');
+            $user_id = input('user_id', '0', 'trim');
             $memberModel = new MemberModel();
-            $res = $memberModel->where('user_id', $user_id)->withoutField('reg_ip,reg_time,update_time,encrypt,password')->find();
-            if (!$res) {
-                return self::makeJsonReturn(false, null, '找不到用户');
-            }
-            return self::makeJsonReturn(true, $res->toArray());
+            $res = $memberModel
+                ->where('user_id', $user_id)
+                ->withoutField('reg_ip,reg_time,update_time,encrypt,password')
+                ->findOrEmpty();
+            return self::makeJsonReturn(true, $res);
         }
         return view('addOrEditMember');
     }
@@ -279,7 +215,9 @@ class Member extends AdminController
     private function getRoleList()
     {
         $RoleModel = new MemberRoleModel();
-        $list = $RoleModel->where('status', MemberRoleModel::STATUS_YES)->select()->toArray() ?: [];
+        $list = $RoleModel
+            ->where('status', MemberRoleModel::STATUS_YES)
+            ->select();
         return json(self::createReturn(true, $list));
     }
 

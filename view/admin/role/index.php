@@ -1,15 +1,14 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
-
-        <div class="filter-container">
-            <h3>角色管理</h3>
+        <div slot="header" class="clearfix">
+            <span>角色管理</span>
         </div>
 
-        <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('member', 'admin.Role', 'addRole')){ ?>
-        <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 15px;" size="small" type="primary"
-                   @click="roleAdd('')">
-            添加角色
-        </el-button>
+        <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('member', 'admin.Role', 'addRole')) { ?>
+            <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 15px;" size="small" type="primary"
+                       @click="roleAdd('')">
+                添加角色
+            </el-button>
         <?php } ?>
 
         <el-table
@@ -48,14 +47,17 @@
                 <template slot-scope="scope">
                         <span>
 
-                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('member', 'admin.Role', 'editRole')){ ?>
-                            <el-button type="text" size="mini" @click="roleEdit(scope.row.id)">
+                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('member',
+                                'admin.Role', 'editRole')) { ?>
+                                <el-button type="text" size="mini" @click="roleEdit(scope.row.id)">
                                 修改
                             </el-button>
                             <?php } ?>
 
-                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('member', 'admin.Role', 'deleteRole')){ ?>
-                            <el-button type="text" size="mini" @click="handleDelete(scope.row.id)" style="color:#F56C6C">
+                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('member',
+                                'admin.Role', 'deleteRole')) { ?>
+                                <el-button type="text" size="mini" @click="handleDelete(scope.row.id)"
+                                           style="color:#F56C6C">
                                 删除
                             </el-button>
                             <?php } ?>
@@ -148,7 +150,7 @@
                     url += '?id=' + id;
                     this.__openWindow(url, '编辑角色');
                 },
-                __openWindow:function(url, title) {
+                __openWindow: function (url, title) {
                     var that = this;
                     layer.open({
                         type: 2,
@@ -173,14 +175,14 @@
                 },
                 toDelete: function (id) {
                     var that = this;
-                    that.httpPost("{:api_url('/member/admin.Role/deleteRole')}",  {id: id}, function(res){
+                    that.httpPost("{:api_url('/member/admin.Role/deleteRole')}", {id: id}, function (res) {
                         if (res.status) {
                             that.$message.success(res.msg);
                             that.getList();
                         } else {
                             that.$message.error(res.msg);
                         }
-                    } )
+                    })
                 },
             },
             mounted: function () {

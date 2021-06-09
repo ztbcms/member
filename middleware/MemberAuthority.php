@@ -5,18 +5,19 @@
 
 namespace app\member\middleware;
 
-use app\member\libs\util\Encrypt;
-use app\member\model\MemberUserModel;
-use app\BaseController;
+use app\member\model\MemberConfigModel;
+use app\member\model\MemberModel;
 use app\member\libs\ReturnCode;
+use app\member\model\MemberTokenModel;
+
 /**
  * 权限控制中间件
- * @deprecated
  * Class OperationLog
  * @package app\member\middleware
  */
-class Authority
+class MemberAuthority
 {
+
     /**
      * 进入请求
      * @param $request
@@ -25,10 +26,10 @@ class Authority
      */
     public function handle($request, \Closure $next)
     {
-        $memberRes = self::getTokenInfo();
 
+        $memberRes = $this->getTokenInfo();
         $jurisdiction_array = [
-            '0' => '/home/member/api.index/index',
+            '0' => 'member/api.home/sysMemberGrade'
         ];
         $AuthorizationCode = false;
         foreach ($jurisdiction_array as $key => $val) {
@@ -40,7 +41,20 @@ class Authority
         if (!$AuthorizationCode) {
             if (!$memberRes['userId']) {
                 //未进行登录操作
-                return BaseController::makeJsonReturn(false, [], '对不起，您需要进行登录操作',ReturnCode::NO_LOGIN);
+                return json(createReturn(false, [], '抱歉，您需要进行登录操作', ReturnCode::NO_LOGIN));
+            }
+
+            $MemberConfigModel = new MemberConfigModel();
+            $block_switch = $MemberConfigModel->getMembefConfig('block_switch')['data'];
+            if ($block_switch == 1) {
+                //开启了审核按钮
+                return json(createReturn(false, [], '抱歉，您已经被后台拉黑了', ReturnCode::YES_BLOCK));
+            }
+
+            $audit_switch = $MemberConfigModel->getMembefConfig('audit_switch')['data'];
+            if ($audit_switch == 1) {
+                //开启了审核按钮
+                return json(createReturn(false, [], '抱歉，您暂未通过审核', ReturnCode::NO_AUDIT));
             }
         }
 
@@ -69,12 +83,12 @@ class Authority
         $token = isset($_SERVER[$headerKey]) ? $_SERVER[$headerKey] : '';
         $res['userInfo'] = [];
         $res['userId'] = 0;
-        if($token) {
-            $getUserId = Encrypt::authcode($token, Encrypt::OPERATION_DECODE,'ZTBCMS');
-            if($getUserId) {
-                $MemberUserModel = new MemberUserModel();
-                $memberFind = $MemberUserModel->where('user_id',$getUserId)->find();
-                if(!empty($memberFind)) {
+        if ($token) {
+            $getUserId = (new MemberTokenModel())->decodeToken($token);
+            if ($getUserId) {
+                $MemberModel = new MemberModel();
+                $memberFind = $MemberModel->where('user_id', $getUserId)->findOrEmpty();
+                if (!$memberFind->isEmpty()) {
                     $res['userInfo'] = $memberFind;
                     $res['userId'] = $memberFind['user_id'];
                 }

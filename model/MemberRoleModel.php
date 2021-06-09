@@ -29,7 +29,8 @@ class MemberRoleModel extends Model
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    function getEnableRoleList(){
+    function getEnableRoleList()
+    {
         $RoleModel = new MemberRoleModel();
         return $RoleModel->where('status', MemberRoleModel::STATUS_YES)->select()->toArray() ?: [];
     }

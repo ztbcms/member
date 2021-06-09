@@ -143,7 +143,7 @@
             methods: {
                 getInfo: function () {
                     var that = this;
-                    that.httpGet("{:api_url('member/admin.Dashboard/index')}", {'_action': 'getDashboardIndexInfo'}, function(res){
+                    that.httpGet("{:api_url('member/admin.Dashboard/index')}", {'_action': 'getDashboardIndexInfo'}, function (res) {
                         var data = res.data;
                         that.adminStatisticsInfo = data.admin_statistics_info
                     })

@@ -38,6 +38,28 @@ return [
                 "status" => 1,
                 "name"   => "角色管理",
                 "remark" => "",
+            ],
+            [
+                "route"  => "member/admin.Grade/index",
+                "type"   => 1,
+                "status" => 1,
+                "name"   => "等级管理",
+                "remark" => "",
+            ],
+            [
+                "route"  => "member/admin.Config/index",
+                "type"   => 1,
+                "status" => 1,
+                "name"   => "会员设置",
+                "remark" => "",
+            ]
+            ,
+            [
+                "route"  => "member/admin.Token/index",
+                "type"   => 1,
+                "status" => 1,
+                "name"   => "登录凭证",
+                "remark" => "",
             ]
         ]
     ]
