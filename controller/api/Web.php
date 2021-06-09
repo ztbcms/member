@@ -22,9 +22,9 @@ class Web extends BaseController
      */
     public function register()
     {
-        $username = input('username','','trim');
-        $password = input('password','','trim');
-        $res = MemberService::membeRegister($username,$password,$username,'web');
+        $username = input('username', '', 'trim');
+        $password = input('password', '', 'trim');
+        $res = MemberService::membeRegister($username, $password, $username, 'web');
         return json($res);
     }
 
@@ -34,12 +34,11 @@ class Web extends BaseController
      */
     public function login()
     {
-        $username = input('username','','trim');
-        $password = input('password','','trim');
-        $res = MemberService::memberLogin($username,$password);
+        $username = input('username', '', 'trim');
+        $password = input('password', '', 'trim');
+        $res = MemberService::memberLogin($username, $password);
         return json($res);
     }
-
 
 
 }

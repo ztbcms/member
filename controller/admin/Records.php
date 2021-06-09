@@ -29,8 +29,11 @@ class Records extends AdminController
             $adminInfo = (new AdminUserService)->getInfo();
             $model = input('model', '', 'trim');
             $type = input('type', '', 'trim');
-            if ($type == 'income') $types = IntegrationRecord::INCREASE;
-            else  $types = IntegrationRecord::PAY;
+            if ($type == 'income') {
+                $types = IntegrationRecord::INCREASE;
+            } else {
+                $types = IntegrationRecord::PAY;
+            }
             $to = input('user_id', '0', 'trim');
             $amount = input('val', '0', 'trim');
             $remark = input('remark', '', 'trim');
@@ -43,15 +46,17 @@ class Records extends AdminController
                     $amount, $remark
                 );
                 $IntegrationRecord->createRrcord();
-            } else if ($model == 'trade') {
-                //余额管理
-                $TradeRecord = new TradeRecord(
-                    $types, $to, 'user_id',
-                    '', '',
-                    $adminInfo['id'], 'admin_id',
-                    $amount, $remark
-                );
-                $TradeRecord->createRrcord();
+            } else {
+                if ($model == 'trade') {
+                    //余额管理
+                    $TradeRecord = new TradeRecord(
+                        $types, $to, 'user_id',
+                        '', '',
+                        $adminInfo['id'], 'admin_id',
+                        $amount, $remark
+                    );
+                    $TradeRecord->createRrcord();
+                }
             }
             return self::createReturn(true, '', '操作成功');
         }
@@ -67,20 +72,22 @@ class Records extends AdminController
         $_action = input('_action', '', 'trim');
         if ($_action == 'list') {
             $model = input('model', '', 'trim');
-            $user_id = input('user_id','','trim');
+            $user_id = input('user_id', '', 'trim');
             $list = [];
             if ($model == 'integration') {
                 //积分管理
                 $list = (new IntegrationRecord(
-                    '',$user_id, 'user_id'
+                    '', $user_id, 'user_id'
                 ))->log(input('limit'));
-            } else if ($model == 'trade') {
-                //余额记录
-                $list =  (new TradeRecord(
-                    '',$user_id, 'user_id'))
-                    ->log(input('limit'));
+            } else {
+                if ($model == 'trade') {
+                    //余额记录
+                    $list = (new TradeRecord(
+                        '', $user_id, 'user_id'))
+                        ->log(input('limit'));
+                }
             }
-            return json(self::createReturn(true,$list));
+            return json(self::createReturn(true, $list));
         }
         return view();
     }

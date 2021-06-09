@@ -18,7 +18,7 @@ class RecordCommon extends RecordsBase
     public function createRrcord()
     {
 
-        $last_vaild_record =  Db::name($this->getTableName())
+        $last_vaild_record = Db::name($this->getTableName())
             ->where('to', '=', $this->getTo())
             ->where('to_type', '=', $this->getToType())
             ->order('id desc')->value('id') ?: 0;
@@ -74,10 +74,11 @@ class RecordCommon extends RecordsBase
      * @param $limit
      * @return mixed
      */
-    public function log($limit){
+    public function log($limit)
+    {
         return Db::name($this->getTableName())
-            ->where('to','=',$this->getTo())
-            ->where('to_type','=',$this->getToType())
+            ->where('to', '=', $this->getTo())
+            ->where('to_type', '=', $this->getToType())
             ->order('id desc')
             ->paginate($limit);
     }
@@ -87,11 +88,12 @@ class RecordCommon extends RecordsBase
      * @param $model
      * @return int
      */
-    public function useTotal(){
+    public function useTotal()
+    {
         return Db::name($this->getTableName())
-            ->where('to','=',$this->getTo())
-            ->where('to_type','=',$this->getToType())
-            ->where('pay','>',0)
+            ->where('to', '=', $this->getTo())
+            ->where('to_type', '=', $this->getToType())
+            ->where('pay', '>', 0)
             ->sum('pay') ?: 0;
     }
 

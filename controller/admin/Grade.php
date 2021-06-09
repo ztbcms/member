@@ -24,27 +24,31 @@ class Grade extends AdminController
      */
     public function index()
     {
-        $_action = input('_action','','trim');
-        if($_action == 'list') {
+        $_action = input('_action', '', 'trim');
+        if ($_action == 'list') {
             //列表
             $where = [];
-            $member_grade_name = input('member_grade_name','','trim');
-            if($member_grade_name) $where[] = ['member_grade_name','like','%'.$member_grade_name.'%'];
+            $member_grade_name = input('member_grade_name', '', 'trim');
+            if ($member_grade_name) {
+                $where[] = ['member_grade_name', 'like', '%'.$member_grade_name.'%'];
+            }
 
             $MemberGradeModel = new MemberGradeModel();
             $list = $MemberGradeModel
                 ->where($where)
                 ->order('member_sort desc,member_grade_id desc')
                 ->paginate(input('limit'));
-            return json(self::createReturn(true,$list));
-        } else if($_action == 'delete') {
-            //删除
-            $member_grade_id = input('member_grade_id','','trim');
-            $MemberGradeModel = new MemberGradeModel();
-            $MemberGradeModel
-                ->where('member_grade_id','=',$member_grade_id)
-                ->findOrEmpty()->delete();
-            return json(self::createReturn(true,'操作成功'));
+            return json(self::createReturn(true, $list));
+        } else {
+            if ($_action == 'delete') {
+                //删除
+                $member_grade_id = input('member_grade_id', '', 'trim');
+                $MemberGradeModel = new MemberGradeModel();
+                $MemberGradeModel
+                    ->where('member_grade_id', '=', $member_grade_id)
+                    ->findOrEmpty()->delete();
+                return json(self::createReturn(true, '操作成功'));
+            }
         }
         return view();
     }
@@ -55,8 +59,8 @@ class Grade extends AdminController
      */
     public function details()
     {
-        $_action = input('_action','','trim');
-        if($_action == 'submit') {
+        $_action = input('_action', '', 'trim');
+        if ($_action == 'submit') {
             //提交内容
             try {
                 $post = input('post.');
@@ -69,14 +73,16 @@ class Grade extends AdminController
             } catch (ValidateException $e) {
                 return json(createReturn(false, '', $e->getError()));
             }
-        } else if($_action == 'details') {
-            //获取等级详情
-            $member_grade_id = input('member_grade_id','','trim');
-            $MemberGradeModel = new MemberGradeModel();
-            $details = $MemberGradeModel
-                ->where('member_grade_id','=',$member_grade_id)
-                ->findOrEmpty();
-            return json(createReturn(true, $details, '操作成功'));
+        } else {
+            if ($_action == 'details') {
+                //获取等级详情
+                $member_grade_id = input('member_grade_id', '', 'trim');
+                $MemberGradeModel = new MemberGradeModel();
+                $details = $MemberGradeModel
+                    ->where('member_grade_id', '=', $member_grade_id)
+                    ->findOrEmpty();
+                return json(createReturn(true, $details, '操作成功'));
+            }
         }
         return view('addOrEditGrade');
     }

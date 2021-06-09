@@ -28,8 +28,9 @@ class MemberModel extends Model
      * 获取身份名称
      * @return \think\model\relation\HasOne
      */
-    public function roleName(){
-        return $this->hasOne(MemberRoleModel::class,'id','role_id')
+    public function roleName()
+    {
+        return $this->hasOne(MemberRoleModel::class, 'id', 'role_id')
             ->field('id,name as role_name')->bind(['role_name']);
     }
 
@@ -37,26 +38,27 @@ class MemberModel extends Model
      * 获取等级名称
      * @return \think\model\relation\HasOne
      */
-    public function gradeName(){
-        return $this->hasOne(MemberGradeModel::class,'grade_id','member_grade_id')
+    public function gradeName()
+    {
+        return $this->hasOne(MemberGradeModel::class, 'grade_id', 'member_grade_id')
             ->field('member_grade_id,member_grade_name as grade_name')->bind(['grade_name']);
     }
 
     /**
      * 对明文密码，进行加密，返回加密后的密码
-     * @param string $pass 明文密码，不能为空
-     * @param string $verify
+     * @param  string  $pass  明文密码，不能为空
+     * @param  string  $verify
      * @return string 返回加密后的密码
      */
     public function encryption($pass = '', $verify = "")
     {
-        $pass = md5($pass . md5($verify));
+        $pass = md5($pass.md5($verify));
         return $pass;
     }
 
     /**
      * 产生一个指定长度的随机字符串,并返回给用户
-     * @param int $len 产生字符串的长度
+     * @param  int  $len  产生字符串的长度
      * @return string 随机字符串
      */
     public function genRandomString($len = 6)

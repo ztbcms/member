@@ -33,10 +33,10 @@
                             <el-select v-model="form.role_id">
                                 </el-option>
                                 <el-option
-                                    v-for="item in roleList"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id">
+                                        v-for="item in roleList"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -79,7 +79,7 @@
             watch: {},
             filters: {},
             computed: {
-                request_url: function(){
+                request_url: function () {
                     return this.form.user_id ? "{:api_Url('/member/admin.member/editMember')}" : "{:api_Url('/member/admin.member/addMember')}"
                 }
             },
@@ -89,7 +89,7 @@
                 },
                 onSubmit: function () {
                     var form = this.form
-                    if(this.form.user_id){
+                    if (this.form.user_id) {
                         form['_action'] = 'editMember'
                     } else {
                         form['_action'] = 'addMember'
@@ -113,7 +113,7 @@
                         user_id: this.form.user_id,
                         _action: 'getDetail'
                     }
-                    this.httpGet("{:api_Url('/member/admin.member/editMember')}",  form, function(res){
+                    this.httpGet("{:api_Url('/member/admin.member/editMember')}", form, function (res) {
                         if (res.status) {
                             that.form = res.data
                         } else {
@@ -124,7 +124,7 @@
                 //获取所有角色
                 getRoleList: function () {
                     var that = this
-                    this.httpGet(this.request_url, {_action: 'getRoleList'}, function(res){
+                    this.httpGet(this.request_url, {_action: 'getRoleList'}, function (res) {
                         if (res.status) {
                             that.roleList = res.data
                         }

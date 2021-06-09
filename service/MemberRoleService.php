@@ -24,9 +24,9 @@ class MemberRoleService extends BaseService
     function addOrEditRole($roleData)
     {
         $data = [
-            'name'     => $roleData['name'],
-            'remark'   => $roleData['remark'],
-            'status'   => $roleData['status'],
+            'name'   => $roleData['name'],
+            'remark' => $roleData['remark'],
+            'status' => $roleData['status'],
         ];
 
         $roleModel = new MemberRoleModel();
@@ -69,7 +69,7 @@ class MemberRoleService extends BaseService
             return self::createReturn(false, null, '该角色下有成员，无法删除');
         }
         $res = $roleModel->where('id', $role_id)->delete();
-        if($res){
+        if ($res) {
             return self::createReturn(true, null, '操作成功');
         }
         return self::createReturn(false, null, '操作失败');

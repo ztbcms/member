@@ -68,18 +68,18 @@
         window.__app = new Vue({
             el: '#app',
             data: {
-                activeName : 'login',
+                activeName: 'login',
                 id: "",
                 form: {
-                    'block_switch' : '0',
-                    'audit_switch' : '0',
-                    'grade_trigger' : '2'
+                    'block_switch': '0',
+                    'audit_switch': '0',
+                    'grade_trigger': '2'
                 }
             },
             watch: {},
             filters: {},
             methods: {
-                handleClick : function(tab, event) {
+                handleClick: function (tab, event) {
 
                 },
                 onSubmit: function () {

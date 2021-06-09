@@ -28,10 +28,14 @@ class Token extends AdminController
             //列表
             $where = [];
             $user_id = input('user_id', '', 'trim');
-            if ($user_id) $where[] = ['user_id', 'like', '%' . $user_id . '%'];
+            if ($user_id) {
+                $where[] = ['user_id', 'like', '%'.$user_id.'%'];
+            }
 
             $access_token = input('access_token', '', 'trim');
-            if ($access_token) $where[] = ['access_token', 'like', '%' . $access_token . '%'];
+            if ($access_token) {
+                $where[] = ['access_token', 'like', '%'.$access_token.'%'];
+            }
 
             $MemberTokenModel = new MemberTokenModel();
             $list = $MemberTokenModel
@@ -39,13 +43,15 @@ class Token extends AdminController
                 ->order('create_time desc')
                 ->paginate();
             return json(self::createReturn(true, $list));
-        } else if ($action == 'delete') {
-            //删除
-            $MemberTokenModel = new MemberTokenModel();
-            $MemberTokenModel
-                ->where('access_token_id', '=', input('access_token_id'))
-                ->findOrEmpty()->delete();
-            return json(self::createReturn(true, '', '删除成功'));
+        } else {
+            if ($action == 'delete') {
+                //删除
+                $MemberTokenModel = new MemberTokenModel();
+                $MemberTokenModel
+                    ->where('access_token_id', '=', input('access_token_id'))
+                    ->findOrEmpty()->delete();
+                return json(self::createReturn(true, '', '删除成功'));
+            }
         }
         return view();
     }
@@ -61,10 +67,12 @@ class Token extends AdminController
             return json(self::createReturn(true, [
                 'token' => (new MemberTokenModel())->getToken(input('user_id'))
             ], '生成成功'));
-        } else if($action == 'member') {
-            $MemberModel = new MemberModel();
-            $list = $MemberModel->select();
-            return json(self::createReturn(true,$list));
+        } else {
+            if ($action == 'member') {
+                $MemberModel = new MemberModel();
+                $list = $MemberModel->select();
+                return json(self::createReturn(true, $list));
+            }
         }
         return view('addOrEditToken');
     }

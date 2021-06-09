@@ -63,7 +63,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $table_name
+     * @param  string  $table_name
      */
     public function setTableName($table_name)
     {
@@ -79,7 +79,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $id
+     * @param  string  $id
      */
     public function setId($id)
     {
@@ -95,7 +95,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $parent_id
+     * @param  string  $parent_id
      */
     public function setParentId($parent_id)
     {
@@ -111,7 +111,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $to
+     * @param  string  $to
      */
     public function setTo($to)
     {
@@ -127,7 +127,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $to_type
+     * @param  string  $to_type
      */
     public function setToType($to_type)
     {
@@ -143,7 +143,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $from
+     * @param  string  $from
      */
     public function setFrom($from)
     {
@@ -159,7 +159,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $from_type
+     * @param  string  $from_type
      */
     public function setFromType($from_type)
     {
@@ -175,7 +175,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $target
+     * @param  string  $target
      */
     public function setTarget($target)
     {
@@ -191,7 +191,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $target_type
+     * @param  string  $target_type
      */
     public function setTargetType($target_type)
     {
@@ -207,7 +207,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $income
+     * @param  string  $income
      */
     public function setIncome($income)
     {
@@ -223,7 +223,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $pay
+     * @param  string  $pay
      */
     public function setPay($pay)
     {
@@ -239,7 +239,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $balance
+     * @param  string  $balance
      */
     public function setBalance($balance)
     {
@@ -255,7 +255,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $detail
+     * @param  string  $detail
      */
     public function setDetail($detail)
     {
@@ -271,7 +271,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $status
+     * @param  string  $status
      */
     public function setStatus($status)
     {
@@ -287,7 +287,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $create_time
+     * @param  string  $create_time
      */
     public function setCreateTime($create_time)
     {
@@ -303,7 +303,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $update_time
+     * @param  string  $update_time
      */
     public function setUpdateTime($update_time)
     {
@@ -319,7 +319,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $remark
+     * @param  string  $remark
      */
     public function setRemark($remark)
     {
@@ -335,7 +335,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $to_name
+     * @param  string  $to_name
      */
     public function setToName($to_name)
     {
@@ -351,7 +351,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $from_name
+     * @param  string  $from_name
      */
     public function setFromName($from_name)
     {
@@ -367,7 +367,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $target_name
+     * @param  string  $target_name
      */
     public function setTargetName($target_name)
     {
@@ -383,7 +383,7 @@ abstract class RecordsBase
     }
 
     /**
-     * @param string $delete_time
+     * @param  string  $delete_time
      */
     public function setDeleteTime($delete_time)
     {

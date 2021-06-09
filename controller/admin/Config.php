@@ -23,16 +23,18 @@ class Config extends AdminController
     function index()
     {
         $_action = input('_action', '', 'trim');
-        if($_action == 'details') {
+        if ($_action == 'details') {
             //获取详情
             $MemberConfigModel = new MemberConfigModel();
             $details = $MemberConfigModel->getDetails();
             return json($details);
-        } else if($_action == 'submit'){
-            //提交内容
-            $post = input('post.');
-            $MemberConfigModel = new MemberConfigModel();
-            return json($MemberConfigModel->submit($post));
+        } else {
+            if ($_action == 'submit') {
+                //提交内容
+                $post = input('post.');
+                $MemberConfigModel = new MemberConfigModel();
+                return json($MemberConfigModel->submit($post));
+            }
         }
         return view();
     }

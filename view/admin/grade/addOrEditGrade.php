@@ -23,7 +23,7 @@
                         </el-form-item>
 
                         <el-form-item label="需要满足的积分" required>
-                            <el-input type="number"  v-model="form.meet_integration" size="small" style="width: 400px;"
+                            <el-input type="number" v-model="form.meet_integration" size="small" style="width: 400px;"
                                       placeholder="需要满足的积分">
                             </el-input>
                             <br>
@@ -31,7 +31,7 @@
                         </el-form-item>
 
                         <el-form-item label="需要满足的金额" required>
-                            <el-input type="number"  v-model="form.meet_trade" size="small" style="width: 400px;"
+                            <el-input type="number" v-model="form.meet_trade" size="small" style="width: 400px;"
                                       placeholder="需要满足的金额">
                             </el-input>
                             <br>
@@ -80,13 +80,13 @@
             data: {
                 id: "",
                 form: {
-                    member_grade_id : "{:input('member_grade_id')}",
-                    member_grade_name : '',
-                    meet_integration : '0',
-                    meet_trade : '0',
-                    member_sort : '50',
-                    discount : '',
-                    is_display : '1'
+                    member_grade_id: "{:input('member_grade_id')}",
+                    member_grade_name: '',
+                    meet_integration: '0',
+                    meet_trade: '0',
+                    member_sort: '50',
+                    discount: '',
+                    is_display: '1'
                 }
             },
             watch: {},

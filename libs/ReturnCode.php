@@ -13,7 +13,8 @@ namespace app\member\libs;
  * Class ReturnCode
  * @package app\member\libs
  */
-class ReturnCode {
+class ReturnCode
+{
 
     const NO_LOGIN = '401';  //未登录
     const YES_BLOCK = '402';  //用户已经被拉黑了

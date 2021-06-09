@@ -15,21 +15,21 @@ use think\Validate;
 class MemberGradeValidate extends Validate
 {
 
-    protected $rule =   [
+    protected $rule = [
         'member_grade_name' => 'require',
-        'meet_integration' => 'number',
-        'meet_trade' => 'number',
+        'meet_integration'  => 'number',
+        'meet_trade'        => 'number',
     ];
 
-    protected $message  =   [
-        'member_grade_name.require'     => '抱歉，等级名称不能为空',
-        'meet_integration.number'     => '抱歉，积分只能填写数字',
-        'meet_trade.number'     => '抱歉，余额只能填写数字',
+    protected $message = [
+        'member_grade_name.require' => '抱歉，等级名称不能为空',
+        'meet_integration.number'   => '抱歉，积分只能填写数字',
+        'meet_trade.number'         => '抱歉，余额只能填写数字',
     ];
 
     protected $scene = [
-        'submit'  =>  [
-            'member_grade_name','meet_integration','meet_trade'
+        'submit' => [
+            'member_grade_name', 'meet_integration', 'meet_trade'
         ],
     ];
 

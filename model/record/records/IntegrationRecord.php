@@ -24,12 +24,15 @@ class IntegrationRecord extends RecordCommon
      */
     public function __construct(
         $types = self::INCREASE,
-        $to = 0, $to_type = '',
-        $from = '', $from_type = '',
-        $target = '',$target_type = '',
-        $amount = 0, $remark = ''
-    )
-    {
+        $to = 0,
+        $to_type = '',
+        $from = '',
+        $from_type = '',
+        $target = '',
+        $target_type = '',
+        $amount = 0,
+        $remark = ''
+    ) {
         $this->setTableName('member_record_integration');
         $this->setTo($to);
         $this->setToType($to_type);
@@ -37,7 +40,7 @@ class IntegrationRecord extends RecordCommon
         $this->setFromType($from_type);
         $this->setTarget($target);
         $this->setTargetType($target_type);
-        if($types == self::INCREASE) {
+        if ($types == self::INCREASE) {
             $this->setIncome($amount);
         } else {
             $this->setPay($amount);

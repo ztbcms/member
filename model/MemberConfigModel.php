@@ -29,21 +29,21 @@ class MemberConfigModel extends Model
         foreach ($list as $k => $v) {
             $details[$v->info] = $v->value;
         }
-        return createReturn(true,$details);
+        return createReturn(true, $details);
     }
 
 
     /**
      * 保存配置
-     * @param array $post
+     * @param  array  $post
      * @return array
      */
     public function submit($post = [])
     {
         unset($post['_action']);
         foreach ($post as $k => $v) {
-            $details = $this->where('info','=',$k)->findOrEmpty();
-            if($details->isEmpty()) {
+            $details = $this->where('info', '=', $k)->findOrEmpty();
+            if ($details->isEmpty()) {
                 $details->create_time = time();
             }
             $details->info = $k;
@@ -57,14 +57,15 @@ class MemberConfigModel extends Model
 
     /**
      * 获取配置
-     * @param string $info
+     * @param  string  $info
      * @return array
      */
-    public function getMembefConfig($info = ''){
+    public function getMembefConfig($info = '')
+    {
         $value = $this
-            ->where('info','=',$info)
+            ->where('info', '=', $info)
             ->value('value') ?: '';
-        return createReturn(true,$value);
+        return createReturn(true, $value);
     }
 
 }

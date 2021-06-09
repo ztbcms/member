@@ -32,7 +32,7 @@ class MemberGradeModel extends Model
      */
     public function getIsDisplayAttr($value)
     {
-        return (string)$value;
+        return (string) $value;
     }
 
     /**
@@ -45,18 +45,30 @@ class MemberGradeModel extends Model
         $details = $this
             ->where('member_grade_id', '=', $post['member_grade_id'])
             ->findOrEmpty();
-        if (isset($post['member_grade_name'])) $details->member_grade_name = $post['member_grade_name'];
-        if (isset($post['meet_integration'])) $details->meet_integration = $post['meet_integration'];
-        if (isset($post['meet_trade'])) $details->meet_trade = $post['meet_trade'];
-        if (isset($post['member_sort'])) $details->member_sort = $post['member_sort'];
-        if (isset($post['discount'])) $details->discount = $post['discount'];
-        if (isset($post['is_display'])) $details->is_display = $post['is_display'];
+        if (isset($post['member_grade_name'])) {
+            $details->member_grade_name = $post['member_grade_name'];
+        }
+        if (isset($post['meet_integration'])) {
+            $details->meet_integration = $post['meet_integration'];
+        }
+        if (isset($post['meet_trade'])) {
+            $details->meet_trade = $post['meet_trade'];
+        }
+        if (isset($post['member_sort'])) {
+            $details->member_sort = $post['member_sort'];
+        }
+        if (isset($post['discount'])) {
+            $details->discount = $post['discount'];
+        }
+        if (isset($post['is_display'])) {
+            $details->is_display = $post['is_display'];
+        }
         $details->create_time = time();
         $details->update_time = time();
         $details->save();
-        return createReturn(true,[
+        return createReturn(true, [
             'member_grade_id' => $details->member_grade_id
-        ],'保存成功');
+        ], '保存成功');
     }
 
 
@@ -67,8 +79,8 @@ class MemberGradeModel extends Model
      */
     public function sysMemberGrade($user_id)
     {
-        if(empty($user_id)) {
-            return createReturn(false,[],'抱歉，该用户不存在');
+        if (empty($user_id)) {
+            return createReturn(false, [], '抱歉，该用户不存在');
         }
 
         $use_trade = (new TradeRecord('', $user_id, 'user_id'))->useTotal();
@@ -79,17 +91,19 @@ class MemberGradeModel extends Model
         $grade_trigger = $MemberConfigModel->getMembefConfig('grade_trigger')['data'];
 
 
-        $where[] = ['is_display','=',1];
-        if($grade_trigger == 1) {
+        $where[] = ['is_display', '=', 1];
+        if ($grade_trigger == 1) {
             //消费积分达到设置积分即可
-            $where[] = ['meet_integration','>=',$use_integration];
-        } else if($grade_trigger == 2) {
-            //消费金额达到设置金额即可
-            $where[] = ['meet_trade','>=',$use_trade];
+            $where[] = ['meet_integration', '>=', $use_integration];
         } else {
-            //积分和消费金额同时达到
-            $where[] = ['meet_integration','>=',$use_integration];
-            $where[] = ['meet_trade','>=',$use_trade];
+            if ($grade_trigger == 2) {
+                //消费金额达到设置金额即可
+                $where[] = ['meet_trade', '>=', $use_trade];
+            } else {
+                //积分和消费金额同时达到
+                $where[] = ['meet_integration', '>=', $use_integration];
+                $where[] = ['meet_trade', '>=', $use_trade];
+            }
         }
 
         //获取满足等级
@@ -100,14 +114,14 @@ class MemberGradeModel extends Model
 
         $MemberModel = new MemberModel();
         $member = $MemberModel
-            ->where('user_id','=',$user_id)
+            ->where('user_id', '=', $user_id)
             ->findOrEmpty();
-        if(!$member->isEmpty()) {
+        if (!$member->isEmpty()) {
             $member->grade_id = $member_grade_id;
             $member->update_time = time();
             $member->save();
         }
-        return createReturn(true,[],'同步成功');
+        return createReturn(true, [], '同步成功');
     }
 
 }

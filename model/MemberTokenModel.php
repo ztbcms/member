@@ -26,7 +26,7 @@ class MemberTokenModel extends Model
 
     /**
      * 获取token
-     * @param int $user_id
+     * @param  int  $user_id
      * @return string
      */
     public function getToken($user_id = 0)
@@ -40,15 +40,15 @@ class MemberTokenModel extends Model
         }
 
         $config = \think\facade\Config::get('passport');
-        if(isset($config['token_expire'])) {
+        if (isset($config['token_expire'])) {
             $token_expire = $config['token_expire'];
         } else {
             $token_expire = 7 * 86400;
         }
 
         //获取token
-        $key = $member['user_id'] . '_' . $member['username'] . '_' . $member['encrypt'];
-        $access_token = Encrypt::authcode((int)$key,'').Encrypt::authcode((int)$key,'');
+        $key = $member['user_id'].'_'.$member['username'].'_'.$member['encrypt'];
+        $access_token = Encrypt::authcode((int) $key, '').Encrypt::authcode((int) $key, '');
 
         $this->user_id = $member->user_id;
         $this->access_token = $access_token;
@@ -61,13 +61,14 @@ class MemberTokenModel extends Model
 
     /**
      * 获取tokent用户
-     * @param string $access_token
+     * @param  string  $access_token
      * @return int
      */
-    public function decodeToken($access_token = ''){
-       return $this
-            ->where('access_token','=',$access_token)
-            ->where('expires_in','>',time())
+    public function decodeToken($access_token = '')
+    {
+        return $this
+            ->where('access_token', '=', $access_token)
+            ->where('expires_in', '>', time())
             ->value('user_id') ?: 0;
     }
 

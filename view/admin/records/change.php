@@ -35,53 +35,53 @@
         </el-card>
     </div>
 
-<script>
-    $(document).ready(function () {
-        window.__app = new Vue({
-            el: '#app',
-            data: {
-                form: {
-                    user_id: '{:input("get.user_id")}',
-                    type: 'income',
-                    val: 0,
-                    remark: '',
-                    model : '{:input("get.model")}'
+    <script>
+        $(document).ready(function () {
+            window.__app = new Vue({
+                el: '#app',
+                data: {
+                    form: {
+                        user_id: '{:input("get.user_id")}',
+                        type: 'income',
+                        val: 0,
+                        remark: '',
+                        model: '{:input("get.model")}'
+                    },
+                    props: {
+                        checkStrictly: true,
+                        lazy: true
+                    }
                 },
-                props: {
-                    checkStrictly: true,
-                    lazy: true
-                }
-            },
-            watch: {},
-            filters: {},
-            methods: {
-                onCancel: function () {
-                    var index = parent.layer.getFrameIndex(window.name);
-                    parent.layer.close(index);
-                },
-                saveContent: function (audit_status) {
-                    var that = this;
-                    var url = '{:api_url("member/admin.Records/change")}';
-                    layer.confirm('您确定进行此操作？', {
-                        btn: ['确定', '取消'] //按钮
-                    }, function () {
-                        var data = that.form;
-                        data._action = 'submit';
-                        that.httpPost(url, data, function (res) {
-                            if (res.status) {
-                                layer.msg('操作成功', {icon: 1});
-                                that.onCancel();
-                            } else {
-                                layer.msg(res.msg, {icon: 2});
-                            }
+                watch: {},
+                filters: {},
+                methods: {
+                    onCancel: function () {
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);
+                    },
+                    saveContent: function (audit_status) {
+                        var that = this;
+                        var url = '{:api_url("member/admin.Records/change")}';
+                        layer.confirm('您确定进行此操作？', {
+                            btn: ['确定', '取消'] //按钮
+                        }, function () {
+                            var data = that.form;
+                            data._action = 'submit';
+                            that.httpPost(url, data, function (res) {
+                                if (res.status) {
+                                    layer.msg('操作成功', {icon: 1});
+                                    that.onCancel();
+                                } else {
+                                    layer.msg(res.msg, {icon: 2});
+                                }
+                            });
                         });
-                    });
-                }
-            },
-            mounted: function () {
+                    }
+                },
+                mounted: function () {
 
-            }
+                }
+            })
         })
-    })
-</script>
+    </script>
 

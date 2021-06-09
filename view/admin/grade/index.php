@@ -15,7 +15,7 @@
                     <div class="box box-solid">
                         <div class="box-body">
 
-                            <?php if (\app\admin\service\AdminUserService::getInstance()->getInfo()['id'] == \app\admin\model\RoleModel::SUPER_ADMIN_ROLE_ID){ ?>
+                            <?php if (\app\admin\service\AdminUserService::getInstance()->getInfo()['id'] == \app\admin\model\RoleModel::SUPER_ADMIN_ROLE_ID) { ?>
                                 <div class="filter-container" style="margin-bottom: 20px;">
                                     <template>
                                         <el-alert
@@ -23,7 +23,8 @@
                                                 type="info"
                                                 :closable="false"
                                                 description="">
-                                            <p>主动同步用户等级方法 ：  (new \app\member\model\MemberGradeModel())->sysMemberGrade(input('user_id')); </p>
+                                            <p>主动同步用户等级方法 ： (new
+                                                \app\member\model\MemberGradeModel())->sysMemberGrade(input('user_id')); </p>
                                             <p>定时任务同步用户等级方法（10分钟触发一次） ： AutoSysMemberGradeScript</p>
                                         </el-alert>
                                     </template>
@@ -79,11 +80,13 @@
 
                                 <el-table-column fixed="right" label="操作" width="200">
                                     <template slot-scope="scope">
-                                        <el-button @click="getDetails(scope.row.member_grade_id)" type="text" size="mini">详情
+                                        <el-button @click="getDetails(scope.row.member_grade_id)" type="text"
+                                                   size="mini">详情
                                         </el-button>
 
 
-                                        <el-button style="color: red" @click="getDelete(scope.row.member_grade_id)" type="text" size="mini">删除
+                                        <el-button style="color: red" @click="getDelete(scope.row.member_grade_id)"
+                                                   type="text" size="mini">删除
                                         </el-button>
                                     </template>
                                 </el-table-column>
@@ -180,7 +183,7 @@
                         }
                     });
                 },
-                getDelete : function (member_grade_id) {
+                getDelete: function (member_grade_id) {
                     var that = this;
                     var url = '{:api_url("member/admin.Grade/index")}';
                     layer.confirm('您确定需要删除该等级？', {

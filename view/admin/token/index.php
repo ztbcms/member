@@ -102,7 +102,7 @@
                         page: 1,
                         limit: 20,
                         access_token: '',
-                        user_id : ''
+                        user_id: ''
                     },
                     page: 1,
                     limit: 20,

@@ -211,7 +211,7 @@
                     phone: "",
                     email: "",
                     tab: "0",
-                    role_id : ''
+                    role_id: ''
                 },
                 defaultImage: '/statics/images/member/nophoto.gif',
                 multipleSelection: [],

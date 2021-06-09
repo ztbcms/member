@@ -15,9 +15,9 @@
                             <el-select size="small" v-model="form.user_id" filterable placeholder="请选择">
                                 <el-option label="请选择" value=""></el-option>
                                 <el-option
-                                    v-for="item in member"
-                                    :label="'（用户ID :' + item.user_id + '）'+ item.nickname"
-                                    :value="item.user_id">
+                                        v-for="item in member"
+                                        :label="'（用户ID :' + item.user_id + '）'+ item.nickname"
+                                        :value="item.user_id">
                                 </el-option>
                             </el-select>
                             <br>
@@ -44,9 +44,9 @@
             data: {
                 id: "",
                 form: {
-                    user_id : ""
+                    user_id: ""
                 },
-                member : []
+                member: []
             },
             watch: {},
             filters: {},

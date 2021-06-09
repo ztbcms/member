@@ -49,29 +49,47 @@ class Member extends AdminController
     {
         $where = [];
         $user_id = input('user_id');
-        if ($user_id)   $where[] = ['user_id', '=',$user_id];
+        if ($user_id) {
+            $where[] = ['user_id', '=', $user_id];
+        }
 
         $username = input('username');
-        if($username) $where[] = ['username', 'like', $username];
+        if ($username) {
+            $where[] = ['username', 'like', $username];
+        }
 
         $phone = input('phone');
-        if($phone) $where[] = ['phone', 'like', $phone];
+        if ($phone) {
+            $where[] = ['phone', 'like', $phone];
+        }
 
         $email = input('email');
-        if($email) $where[] = ['email', 'like', $email];
+        if ($email) {
+            $where[] = ['email', 'like', $email];
+        }
 
         $role_id = input('role_id');
-        if($role_id) $where[] = ['role_id', '=', $role_id];
+        if ($role_id) {
+            $where[] = ['role_id', '=', $role_id];
+        }
 
         $tab = input('tab');
-        if($tab == 1)  $where[] = ['audit_status', '=', 0];
-        else if($tab) $where[] = ['audit_status', '=', 2];
-        else if($tab) $where[] = ['is_block', '=', 1];
+        if ($tab == 1) {
+            $where[] = ['audit_status', '=', 0];
+        } else {
+            if ($tab) {
+                $where[] = ['audit_status', '=', 2];
+            } else {
+                if ($tab) {
+                    $where[] = ['is_block', '=', 1];
+                }
+            }
+        }
 
         $MemberModel = new MemberModel();
         $list = $MemberModel
             ->where($where)
-            ->with(['role_name','grade_name'])
+            ->with(['role_name', 'grade_name'])
             ->order('reg_time desc')
             ->paginate(input('limit'));
         return json(self::createReturn(true, $list));
@@ -94,7 +112,7 @@ class Member extends AdminController
      */
     private function batchBlockMember()
     {
-        $user_ids = input('user_ids',[]);
+        $user_ids = input('user_ids', []);
         foreach ($user_ids as $userId) {
             MemberService::blockMember($userId, input('is_block', 0));
         }
@@ -109,7 +127,9 @@ class Member extends AdminController
     private function auditMember()
     {
         $user_id = input('user_id');
-        if (empty($user_id))  return self::makeJsonReturn(false, '', '请选择会员');
+        if (empty($user_id)) {
+            return self::makeJsonReturn(false, '', '请选择会员');
+        }
         MemberService::auditMember($user_id, input('audit_status'));
         return self::makeJsonReturn(true, [], '操作成功');
     }
@@ -172,7 +192,7 @@ class Member extends AdminController
 
         // 详情
         if ($this->request->isGet() && $this->request->param('_action') === 'getDetail') {
-            $user_id = input('user_id','0','trim');
+            $user_id = input('user_id', '0', 'trim');
             $memberModel = new MemberModel();
             $res = $memberModel
                 ->where('user_id', $user_id)

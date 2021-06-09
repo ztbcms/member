@@ -19,13 +19,13 @@ class Member extends MemberBase
 
     /**
      * 获取用户信息
-     * @param Request $request
+     * @param  Request  $request
      * @return \think\response\Json
      */
     public function user(Request $request)
     {
         return json(self::createReturn(true, [
-            'user_id' => $request->userId,
+            'user_id'   => $request->userId,
             'user_info' => $request->userInfo
         ]));
     }
@@ -45,7 +45,7 @@ class Member extends MemberBase
             '2', 'recommend_user_id',
             '500', '推荐用户下单奖励'
         );
-        return json(self::createReturn(true,$TradeRecord->createRrcord()));
+        return json(self::createReturn(true, $TradeRecord->createRrcord()));
     }
 
     /**
@@ -63,7 +63,7 @@ class Member extends MemberBase
             '', '',
             '10', '购物商品订单'
         );
-        return json(self::createReturn(true,$TradeRecord->createRrcord()));
+        return json(self::createReturn(true, $TradeRecord->createRrcord()));
     }
 
     /**
@@ -98,7 +98,7 @@ class Member extends MemberBase
             '2', 'recommend_user_id',
             '500', '推荐用户下单奖励'
         );
-        return json(self::createReturn(true,$IntegrationRecord->createRrcord()));
+        return json(self::createReturn(true, $IntegrationRecord->createRrcord()));
     }
 
     /**
@@ -116,7 +116,7 @@ class Member extends MemberBase
             '', '',
             '10', '购物商品订单'
         );
-        return json(self::createReturn(true,$IntegrationRecord->createRrcord()));
+        return json(self::createReturn(true, $IntegrationRecord->createRrcord()));
     }
 
     /**

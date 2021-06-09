@@ -38,7 +38,7 @@ class WeChat extends BaseController
             //当获取手机号成功的情况，注册账号
             $phoneData = $res['data'];
             $res = MemberService::memberLoginRegister(
-                $phoneData['phoneNumber'],$phoneData['phoneNumber'], $phoneData['open_id'], 'open_id'
+                $phoneData['phoneNumber'], $phoneData['phoneNumber'], $phoneData['open_id'], 'open_id'
             );
             return json($res);
         } else {
@@ -50,19 +50,20 @@ class WeChat extends BaseController
      * 微信小程序获取授权登录 (更新用户数据)
      * @return \think\response\Json
      */
-    public function getUserWeChat(){
+    public function getUserWeChat()
+    {
         $code = input('post.code', '', 'trim');
         $userInfo = input('post.userInfo', '', 'trim');
         $appid = input('appid', 'wxf24734e633b168ec', 'trim');
         $MiniService = new MiniService($appid);
         $res = $MiniService->getOpenid($code);
-        if($res['status']) {
+        if ($res['status']) {
             $MemberModel = new MemberModel();
             $memberDetails = $MemberModel
-                ->where('source','=',$res['data']['openid'])
-                ->where('source_type','=','open_id')
+                ->where('source', '=', $res['data']['openid'])
+                ->where('source_type', '=', 'open_id')
                 ->findOrEmpty();
-            if(!$memberDetails->isEmpty()) {
+            if (!$memberDetails->isEmpty()) {
                 $memberDetails->nickname = $userInfo['nickName'] ?? '';
                 $memberDetails->sex = $userInfo['gender'] ?? '';
                 $memberDetails->avatar = $userInfo['avatarUrl'] ?? '';

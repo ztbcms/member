@@ -21,7 +21,7 @@ class MemberAuthority
     /**
      * 进入请求
      * @param $request
-     * @param  \Closure $next
+     * @param  \Closure  $next
      * @return mixed
      */
     public function handle($request, \Closure $next)
@@ -65,7 +65,7 @@ class MemberAuthority
 
     /**
      * 请求返回回调
-     * @param  \think\Response $response
+     * @param  \think\Response  $response
      */
     public function end(\think\Response $response)
     {
