@@ -15,5 +15,9 @@
 
 https://www.apizza.net/project/e939c46895885fa81c56cd46b92e0be8/browse
 
+### 计划任务
+
+- 用户等级更新计划任务`app\member\cronscript\AutoSysMemberGradeScript`
+
 
 
