@@ -1,9 +1,3 @@
-<style>
-    body .el-table th.gutter {
-        display: table-cell !important;
-    }
-</style>
-
 <div id="app" v-cloak>
     <el-card>
         <div slot="header" class="clearfix">

@@ -28,27 +28,26 @@
                                 <el-radio v-model="form.block_switch" label="1">开启</el-radio>
                                 <el-radio v-model="form.block_switch" label="0">关闭</el-radio>
                                 <br>
-                                <span class="prompt">开启后，拉黑用户将无法登陆，并返回402</span>
+                                <span class="prompt">开启后，拉黑用户将无法登录，并返回 402</span>
                             </el-form-item>
 
                             <el-form-item label="审核开关" required>
                                 <el-radio v-model="form.audit_switch" label="1">开启</el-radio>
                                 <el-radio v-model="form.audit_switch" label="0">关闭</el-radio>
                                 <br>
-                                <span class="prompt">开启后，未通过审核用户将无法登陆，并返回403</span>
+                                <span class="prompt">开启后，未通过审核用户将无法登录，并返回 403</span>
                             </el-form-item>
                         </div>
 
                         <div v-show="activeName == 'grade'">
                             <el-form-item label="升级触发条件" required>
-                                <el-radio v-model="form.grade_trigger" label="1">消费积分达到设置积分</el-radio>
-                                <el-radio v-model="form.grade_trigger" label="2">消费金额达到设置金额</el-radio>
-                                <el-radio v-model="form.grade_trigger" label="3">积分，金额同时达到</el-radio>
+                                <el-radio v-model="form.grade_trigger" label="1">满足积分</el-radio>
+                                <el-radio v-model="form.grade_trigger" label="2">满足消费金额</el-radio>
+                                <el-radio v-model="form.grade_trigger" label="3">同时满足积分</el-radio>
                                 <br>
                                 <span class="prompt">用户等级的触发条件</span>
                             </el-form-item>
                         </div>
-
 
                         <el-form-item>
                             <el-button size="small" type="primary" @click="onSubmit">保存</el-button>
