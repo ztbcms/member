@@ -6,7 +6,7 @@ return array(
     //图标
     'icon' => 'https://dn-coding-net-production-pp.qbox.me/e57af720-f26c-4f3b-90b9-88241b680b7b.png',
     //模块简介
-    'introduce' => '会员管理、会员角色管理',
+    'introduce' => '会员、会员角色、会员登记',
     //模块介绍地址
     'address' => 'http://doc.ztbcms.com/',
     //模块作者
@@ -19,13 +19,4 @@ return array(
     'version' => '1.0.0',
     //适配最低CMS版本，
     'adaptation' => '4.0.0',
-    //签名
-    'sign' => 'd04078c5b86475cd5a0c690b9905953d',
-    //依赖模块
-    'depend' => array(),
-    //行为注册
-    'tags' => array(),
-    //缓存，格式：缓存key=>array('module','model','action')
-    'cache' => array(),
-
 );

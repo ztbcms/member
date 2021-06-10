@@ -63,7 +63,7 @@ CREATE TABLE `cms_member_record_integration`
     `target_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL DEFAULT '' COMMENT '记录来源名称',
     `delete_time` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
     PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 65 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员积分表' ROW_FORMAT = DYNAMIC;
+) ENGINE = MyISAM CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员积分表' ;
 
 DROP TABLE IF EXISTS `cms_member_record_trade`;
 CREATE TABLE `cms_member_record_trade`
@@ -89,7 +89,7 @@ CREATE TABLE `cms_member_record_trade`
     `target_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL DEFAULT '' COMMENT '记录来源名称',
     `delete_time` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
     PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 63 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员余额表' ROW_FORMAT = DYNAMIC;
+) ENGINE = MyISAM CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员余额表' ;
 
 DROP TABLE IF EXISTS `cms_member_grade`;
 CREATE TABLE `cms_member_grade`
@@ -105,7 +105,7 @@ CREATE TABLE `cms_member_grade`
     `update_time`       int(11) NOT NULL DEFAULT 0 COMMENT '更新时间戳',
     `delete_time`       int(10) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
     PRIMARY KEY (`member_grade_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员等级表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员等级表' ;
 
 
 DROP TABLE IF EXISTS `cms_member_config`;
@@ -119,7 +119,7 @@ CREATE TABLE `cms_member_config`
     `info`             varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
     `value`            text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
     PRIMARY KEY (`member_config_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员配置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员配置表';
 
 INSERT INTO `cms_member_config`
 VALUES (1, 1623044937, 1623044937, 0, '会员审核开关', 'audit_switch', '0');
@@ -140,7 +140,7 @@ CREATE TABLE `cms_member_token`
     `update_time`     int(11) NOT NULL DEFAULT 0 COMMENT '更新时间戳',
     `delete_time`     int(10) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
     PRIMARY KEY (`access_token_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员TOKEN表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员TOKEN表';
 
 
 
