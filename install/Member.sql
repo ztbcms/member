@@ -6,14 +6,14 @@ CREATE TABLE `cms_member`
     `password`     varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL DEFAULT '' COMMENT '密码',
     `encrypt`      varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci   NOT NULL DEFAULT '' COMMENT '随机码',
     `audit_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '审核状态 0待审核1通过2不通过',
-    `sex`          tinyint(4) NOT NULL DEFAULT 0 COMMENT '性别,1男,2女,0未知',
+    `sex`          tinyint(1) NOT NULL DEFAULT 0 COMMENT '性别,1男,2女,0未知',
     `nickname`     varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL DEFAULT '' COMMENT '昵称',
     `avatar`       varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '会员头像',
     `reg_time`     int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '注册时间',
     `reg_ip`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL COMMENT '注册ip',
     `email`        varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '电子邮箱',
     `phone`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL DEFAULT '' COMMENT '手机号码',
-    `is_block`     int(11) NULL DEFAULT 0 COMMENT '是否被拉黑',
+    `is_block`     tinyint(1) NULL DEFAULT 0 COMMENT '是否被拉黑',
     `update_time`  int(11) NULL DEFAULT 0 COMMENT '更新时间',
     `role_id`      int(11) NULL DEFAULT 0 COMMENT '角色',
     `source`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户来源',
@@ -132,14 +132,11 @@ VALUES (3, 1623044937, 1623044937, 0, '升级触发条件', 'grade_trigger', '2'
 DROP TABLE IF EXISTS `cms_member_token`;
 CREATE TABLE `cms_member_token`
 (
-    `access_token_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `user_id`         int(10) UNSIGNED NULL DEFAULT NULL,
-    `access_token`    text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-    `expires_in`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-    `create_time`     int(11) NOT NULL DEFAULT 0 COMMENT '创建时间戳',
-    `update_time`     int(11) NOT NULL DEFAULT 0 COMMENT '更新时间戳',
-    `delete_time`     int(10) UNSIGNED NULL DEFAULT 0 COMMENT '删除时间',
-    PRIMARY KEY (`access_token_id`) USING BTREE
+    `user_id` int(10) unsigned NOT NULL COMMENT '用户ID',
+    `token_type` varchar(32) DEFAULT NULL COMMENT '凭证类型',
+    `access_token` varchar(255) NOT NULL DEFAULT '' COMMENT '凭证',
+    `expires_in` int(11) NOT NULL COMMENT '过期时间',
+    UNIQUE KEY `access_token` (`access_token`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员TOKEN表';
 
 

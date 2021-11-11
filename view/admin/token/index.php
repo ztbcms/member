@@ -44,12 +44,13 @@
                                     highlight-current-row
                                     style="width: 100%;margin-top: 15px;">
 
-                                <el-table-column fixed="left" prop="access_token" label="token">
+                                <el-table-column fixed="left" prop="token_type" label="Token类型">
+                                </el-table-column>
 
+                                <el-table-column fixed="left" prop="access_token" label="AccessToken">
                                 </el-table-column>
 
                                 <el-table-column prop="user_id" label="用户ID">
-
                                 </el-table-column>
 
                                 <el-table-column label="有效期">
@@ -58,13 +59,9 @@
                                     </template>
                                 </el-table-column>
 
-                                <el-table-column min-width="100px" prop="create_time" label="创建时间">
-
-                                </el-table-column>
-
                                 <el-table-column fixed="right" label="操作" width="200">
                                     <template slot-scope="scope">
-                                        <el-button style="color: red" @click="getDelete(scope.row.access_token_id)"
+                                        <el-button style="color: red" @click="deleteItem(scope.row.access_token)"
                                                    type="text" size="mini">删除
                                         </el-button>
                                     </template>
@@ -137,7 +134,7 @@
                     var that = this;
                     var url = '{:api_url("member/admin.Token/index")}';
                     var data = that.listQuery;
-                    data._action = 'list';
+                    data._action = 'getList';
                     that.httpGet(url, data, function (res) {
                         if (res.status) {
                             that.lists = res.data.data;
@@ -149,15 +146,15 @@
                         }
                     });
                 },
-                getDelete: function (access_token_id) {
+                deleteItem: function (access_token) {
                     var that = this;
                     var url = '{:api_url("member/admin.Token/index")}';
-                    layer.confirm('您确定需要删除该等级？', {
+                    layer.confirm('您确定需要删除？', {
                         btn: ['确定', '取消'] //按钮
                     }, function () {
                         that.httpPost(url, {
-                            _action: 'delete',
-                            access_token_id: access_token_id
+                            _action: 'doDelete',
+                            access_token: access_token
                         }, function (res) {
                             if (res.status) {
                                 layer.msg(res.msg, {time: 3000});

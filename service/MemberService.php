@@ -20,7 +20,9 @@ class MemberService extends BaseService
 
     /**
      * 添加或者编辑会员信息
+     *
      * @param $post
+     *
      * @return array
      */
     static function addOrEditMember($post)
@@ -106,8 +108,10 @@ class MemberService extends BaseService
 
     /**
      * 用户审核
+     *
      * @param $user_id
      * @param $audit_status
+     *
      * @return array
      */
     static function auditMember($user_id = 0, $audit_status = 0)
@@ -124,8 +128,10 @@ class MemberService extends BaseService
 
     /**
      * 用户拉黑
+     *
      * @param $user_id
      * @param $is_block
+     *
      * @return array
      */
     static function blockMember($user_id = 0, $is_block = 0)
@@ -142,10 +148,12 @@ class MemberService extends BaseService
 
     /**
      * 用户登录或者注册
+     *
      * @param  string  $username
      * @param  string  $password
      * @param  string  $source
      * @param  string  $source_type
+     *
      * @return array
      */
     static function memberLoginRegister(
@@ -167,10 +175,12 @@ class MemberService extends BaseService
 
     /**
      * 用户注册
+     *
      * @param  string  $username
      * @param  string  $password
      * @param  string  $source
      * @param  string  $source_type
+     *
      * @return array
      */
     static function membeRegister($username = '', $password = '', $source = '', $source_type = '')
@@ -212,7 +222,7 @@ class MemberService extends BaseService
             return createReturn(true,
                 [
                     'user_id' => $member->user_id,
-                    'token'   => (new MemberTokenModel())->getToken($member->user_id)
+                    'token'   => MemberTokenModel::generateToken($member->user_id)
                 ]
             );
 
@@ -223,9 +233,11 @@ class MemberService extends BaseService
 
     /**
      * 用户登录
+     *
      * @param $username
      * @param $password
      * @param  bool  $ignore_password
+     *
      * @return array
      */
     static function memberLogin($username, $password, $ignore_password = false)
@@ -254,7 +266,7 @@ class MemberService extends BaseService
             return createReturn(true,
                 [
                     'user_id' => $member->user_id,
-                    'token'   => (new MemberTokenModel())->getToken($member->user_id)
+                    'token'   => MemberTokenModel::generateToken($member->user_id)
                 ]
             );
         } catch (ValidateException $e) {

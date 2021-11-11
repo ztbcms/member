@@ -10,13 +10,8 @@ use think\model\concern\SoftDelete;
 
 class MemberConfigModel extends Model
 {
-
-    use SoftDelete;
-
     protected $name = 'member_config';
     protected $pk = 'member_config_id';
-    protected $deleteTime = 'delete_time';
-    protected $defaultSoftDelete = 0;
 
     /**
      * 获取详情
@@ -60,10 +55,9 @@ class MemberConfigModel extends Model
      * @param  string  $info
      * @return array
      */
-    public function getMembefConfig($info = '')
+    static function getMembefConfig($info = '')
     {
-        $value = $this
-            ->where('info', '=', $info)
+        $value = MemberConfigModel::where('info', '=', $info)
             ->value('value') ?: '';
         return createReturn(true, $value);
     }
