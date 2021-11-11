@@ -9,7 +9,7 @@ use app\common\cronscript\CronScript;
 use app\member\model\MemberTokenModel;
 
 /**
- * 删除过期的access_token
+ * 删除过期的access_token （建议每日执行一次）
  */
 class DeleteExpiredAccessToken extends CronScript
 {

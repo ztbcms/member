@@ -11,7 +11,7 @@ use app\member\model\MemberModel;
 
 /**
  * 自动同步用户等级 （建议间隔时间10分钟）
- * Class AutoSysMemberGradeScript
+ *
  * @package app\member\cronscript
  */
 class AutoSysMemberGradeScript extends CronScript

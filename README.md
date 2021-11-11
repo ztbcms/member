@@ -18,6 +18,11 @@ https://www.apizza.net/project/e939c46895885fa81c56cd46b92e0be8/browse
 ### 计划任务
 
 - 用户等级更新计划任务`app\member\cronscript\AutoSysMemberGradeScript`
+- 删除过期的access_token`app\member\cronscript\DeleteExpiredAccessToken`
 
+
+### token生成
+
+sha256算法、64位长度、保证单机唯一
 
 
