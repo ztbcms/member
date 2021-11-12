@@ -26,14 +26,14 @@ class MemberValidate extends Validate
     ];
 
     protected $message = [
-        'username.require'                 => '抱歉，账号不能为空',
-        'password.require'                 => '抱歉，密码不能为空',
-        'password_confirm.requireCallback' => '抱歉，确认密码不能为空',
-        'password_confirm.confirm'         => '抱歉，确认和密码不一致',
-        'source.require'                   => '抱歉，来源不能为空',
-        'source_type.require'              => '抱歉，来源不能为空',
-        'nickname.require'                 => '抱歉，用户昵称不能为空',
-        'role_id.require'                  => '抱歉，用户角色不能为空',
+        'username.require'                 => '账号不能为空',
+        'password.require'                 => '密码不能为空',
+        'password_confirm.requireCallback' => '确认密码不能为空',
+        'password_confirm.confirm'         => '确认和密码不一致',
+        'source.require'                   => '来源不能为空',
+        'source_type.require'              => '来源不能为空',
+        'nickname.require'                 => '用户昵称不能为空',
+        'role_id.require'                  => '用户角色不能为空',
     ];
 
     protected $scene = [
@@ -48,6 +48,9 @@ class MemberValidate extends Validate
         ],
         'edit_admin_user' => [
             'username', 'source', 'password_confirm', 'source_type', 'nickname', 'role_id'
+        ],
+        'reset_password' => [
+            'username', 'password'
         ]
     ];
 

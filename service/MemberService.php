@@ -16,8 +16,6 @@ use think\exception\ValidateException;
 
 class MemberService extends BaseService
 {
-    // 添加、更新会员
-
     /**
      * 添加或者编辑会员信息
      *
@@ -167,7 +165,11 @@ class MemberService extends BaseService
             ->where('username', '=', $username)
             ->count();
         if (empty($isCount)) {
-            return self::membeRegister($username, $password, $source, $source_type);
+            $result = self::membeRegister($username, $password, $source, $source_type);
+            if (!$result['status']) {
+                return $result;
+            }
+            return self::createReturn(true, ['token' => MemberTokenModel::generateToken($result['user_id'])]);
         } else {
             return self::memberLogin($username, $password);
         }
@@ -200,7 +202,7 @@ class MemberService extends BaseService
                 ->where('username', '=', $username)
                 ->findOrEmpty();
             if (!$member->isEmpty()) {
-                return createReturn(false, '', '抱歉，账号已存在');
+                return createReturn(false, null, '账号已存在');
             }
 
             //随机码
@@ -219,11 +221,7 @@ class MemberService extends BaseService
             $member->update_time = time();
             $member->save();
 
-            return createReturn(true,
-                [
-                    'user_id' => $member->user_id,
-                    'token'   => MemberTokenModel::generateToken($member->user_id)
-                ]
+            return createReturn(true, ['user_id' => $member->user_id,]
             );
 
         } catch (ValidateException $e) {
@@ -263,14 +261,44 @@ class MemberService extends BaseService
                 }
             }
 
-            return createReturn(true,
-                [
-                    'user_id' => $member->user_id,
-                    'token'   => MemberTokenModel::generateToken($member->user_id)
-                ]
-            );
+            return createReturn(true, [
+                'token'   => MemberTokenModel::generateToken($member->user_id)
+            ], '登录成功');
         } catch (ValidateException $e) {
             return createReturn(false, '', $e->getError());
+        }
+    }
+
+    /**
+     * 重置密码
+     * @param string $username 用户名
+     * @param string $password 新密码
+     *
+     * @return array
+     */
+    static function memberResetPassword($username, $password)
+    {
+        try {
+            validate(MemberValidate::class)
+                ->scene('reset_password')
+                ->check([
+                    'username' => $username,
+                    'password' => $password,
+                ]);
+
+            $MemberModel = new MemberModel();
+            $member = MemberModel::where('username', '=', $username)->findOrEmpty();
+            if ($member->isEmpty()) {
+                return self::createReturn(false, [], '该账号不存在');
+            }
+            $encrypt = $MemberModel->genRandomString(6);
+            $member->save([
+                'password' => $MemberModel->encryption($password, $encrypt),
+                'encrypt'  => $encrypt,
+            ]);
+            return createReturn(true, null, '修改密码成功');
+        } catch (ValidateException $e) {
+            return createReturn(false, null, $e->getError());
         }
     }
 }
