@@ -145,6 +145,34 @@ class MemberService extends BaseService
     }
 
     /**
+     * 校验账号密码
+     * @param $username
+     * @param $password
+     */
+    static function memberCheckPassword($username, $password){
+        try {
+            validate(MemberValidate::class)
+                ->scene('login')
+                ->check([
+                    'username' => $username,
+                    'password' => $password,
+                ]);
+            $MemberModel = new MemberModel();
+            $member = $MemberModel->where('username', '=', $username)->findOrEmpty();
+            if ($member->isEmpty()) {
+                return self::createReturn(false, [], '账号不存在');
+            }
+            $password = $MemberModel->encryption($password, $member->encrypt);
+            if ($password != $member->password) {
+                return self::createReturn(false, [], '密码错误');
+            }
+            return createReturn(true, null, '密码校验通过');
+        } catch (ValidateException $e) {
+            return createReturn(false, null, $e->getError());
+        }
+    }
+
+    /**
      * 用户登录或者注册
      *
      * @param  string  $username
@@ -238,7 +266,7 @@ class MemberService extends BaseService
      *
      * @return array
      */
-    static function memberLogin($username, $password, $ignore_password = false)
+    static function memberLogin($username, $password, $ignore_password = false, $token_type = 'auth')
     {
         try {
             validate(MemberValidate::class)
@@ -262,7 +290,7 @@ class MemberService extends BaseService
             }
 
             return createReturn(true, [
-                'token'   => MemberTokenModel::generateToken($member->user_id)
+                'token'   => MemberTokenModel::generateToken($member->user_id, $token_type)
             ], '登录成功');
         } catch (ValidateException $e) {
             return createReturn(false, '', $e->getError());
@@ -271,19 +299,20 @@ class MemberService extends BaseService
 
     /**
      * 重置密码
+     *
      * @param string $username 用户名
-     * @param string $password 新密码
+     * @param string  $new_password 新密码
      *
      * @return array
      */
-    static function memberResetPassword($username, $password)
+    static function memberResetPassword($username, $new_password)
     {
         try {
             validate(MemberValidate::class)
                 ->scene('reset_password')
                 ->check([
                     'username' => $username,
-                    'password' => $password,
+                    'password' => $new_password,
                 ]);
 
             $MemberModel = new MemberModel();
@@ -293,7 +322,7 @@ class MemberService extends BaseService
             }
             $encrypt = $MemberModel->genRandomString(6);
             $member->save([
-                'password' => $MemberModel->encryption($password, $encrypt),
+                'password' => $MemberModel->encryption($new_password, $encrypt),
                 'encrypt'  => $encrypt,
             ]);
             return createReturn(true, null, '修改密码成功');
