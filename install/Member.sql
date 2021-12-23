@@ -134,7 +134,7 @@ CREATE TABLE `cms_member_token`
 (
     `user_id` int(10) unsigned NOT NULL COMMENT '用户ID',
     `token_type` varchar(32) DEFAULT NULL COMMENT '凭证类型',
-    `access_token` varchar(255) NOT NULL DEFAULT '' COMMENT '凭证',
+    `access_token` varchar(128) NOT NULL DEFAULT '' COMMENT '凭证',
     `expires_in` int(11) NOT NULL COMMENT '过期时间',
     UNIQUE KEY `access_token` (`access_token`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员TOKEN表';
