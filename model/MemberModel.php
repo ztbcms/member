@@ -28,20 +28,20 @@ class MemberModel extends Model
      * 获取身份名称
      * @return \think\model\relation\HasOne
      */
-    public function roleName()
+    public function roleInfo()
     {
         return $this->hasOne(MemberRoleModel::class, 'id', 'role_id')
-            ->field('id,name as role_name')->bind(['role_name']);
+            ->field('id,name as role_name');
     }
 
     /**
      * 获取等级名称
      * @return \think\model\relation\HasOne
      */
-    public function gradeName()
+    public function gradeInfo()
     {
         return $this->hasOne(MemberGradeModel::class, 'grade_id', 'member_grade_id')
-            ->field('member_grade_id,member_grade_name as grade_name')->bind(['grade_name']);
+            ->field('member_grade_id,member_grade_name as grade_name');
     }
 
     /**

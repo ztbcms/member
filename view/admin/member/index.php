@@ -75,7 +75,7 @@
                     label="角色"
                     min-width="60">
                 <template slot-scope="scope">
-                    <span v-if="scope.row.role_name">{{ scope.row.role_name }}</span>
+                    <span v-if="scope.row.role_info && scope.row.role_info.role_name">{{ scope.row.role_info.role_name }}</span>
                     <span v-else>无角色</span>
                 </template>
             </el-table-column>
@@ -86,7 +86,7 @@
                     label="等级"
                     min-width="60">
                 <template slot-scope="scope">
-                    <span v-if="scope.row.grade_name">{{ scope.row.grade_name }}</span>
+                    <span v-if="scope.row.grade_info && scope.row.grade_info.grade_name">{{ scope.row.grade_info.grade_name }}</span>
                     <span v-else>无等级</span>
                 </template>
             </el-table-column>

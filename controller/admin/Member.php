@@ -89,7 +89,7 @@ class Member extends AdminController
         $MemberModel = new MemberModel();
         $list = $MemberModel
             ->where($where)
-            ->with(['role_name', 'grade_name'])
+            ->with(['role_info', 'grade_info'])
             ->order('reg_time desc')
             ->paginate(input('limit'));
         return json(self::createReturn(true, $list));
